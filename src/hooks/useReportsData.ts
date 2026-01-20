@@ -259,7 +259,7 @@ export function useReportsData(selectedCourse?: string, selectedStudent?: string
           studentCount: studentIds.length,
           avgWellbeing,
           avgTeacherEval,
-          discrepancy: Math.abs(avgWellbeing - avgTeacherEval),
+          discrepancy: Math.round(Math.abs(avgWellbeing - avgTeacherEval) * 10) / 10,
           participation,
           alertCount,
           topEmotions,

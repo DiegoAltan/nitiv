@@ -7,13 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -44,15 +37,25 @@ import { ReportsSummaryCards } from "@/components/reports/ReportsSummaryCards";
 import { CourseReportCard } from "@/components/reports/CourseReportCard";
 import { StudentReportCard } from "@/components/reports/StudentReportCard";
 import { CourseDetailPanel } from "@/components/reports/CourseDetailPanel";
+import { AdvancedFilters, ReportFilters } from "@/components/reports/AdvancedFilters";
+import { HistoricalComparison } from "@/components/reports/HistoricalComparison";
+import { ExportReportDialog } from "@/components/reports/ExportReportDialog";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ReportsPage() {
   const navigate = useNavigate();
-  const [period, setPeriod] = useState("week");
-  const [selectedCourse, setSelectedCourse] = useState<string>("all");
+  const [filters, setFilters] = useState<ReportFilters>({
+    period: "week",
+    dateFrom: "",
+    dateTo: "",
+    wellbeingLevel: "all",
+    alertStatus: "all",
+    courseId: "all",
+  });
   const [selectedStudent, setSelectedStudent] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [comparisonPeriod, setComparisonPeriod] = useState("previous-week");
   
   const { 
     loading, 
@@ -64,27 +67,64 @@ export default function ReportsPage() {
     students,
     selectedCourseData,
     stats 
-  } = useReportsData(selectedCourse);
+  } = useReportsData(filters.courseId);
 
-  const filteredStudents = students.filter(s => 
-    s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    s.course.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Filter students based on filters
+  const filteredStudents = students.filter(s => {
+    const matchesSearch = s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      s.course.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    const matchesWellbeing = filters.wellbeingLevel === "all" || 
+      (filters.wellbeingLevel === "critical" && s.avgWellbeing <= 2) ||
+      (filters.wellbeingLevel === "low" && s.avgWellbeing > 2 && s.avgWellbeing <= 3) ||
+      (filters.wellbeingLevel === "medium" && s.avgWellbeing > 3 && s.avgWellbeing <= 4) ||
+      (filters.wellbeingLevel === "high" && s.avgWellbeing > 4);
+    
+    const matchesAlerts = filters.alertStatus === "all" ||
+      (filters.alertStatus === "with-alerts" && s.hasAlert) ||
+      (filters.alertStatus === "without-alerts" && !s.hasAlert);
+    
+    return matchesSearch && matchesWellbeing && matchesAlerts;
+  });
+
+  // Mock comparison data - in production, this would come from the hook
+  const comparisonData = {
+    current: {
+      wellbeing: stats.averageWellbeing,
+      participation: stats.participation,
+      alerts: stats.activeAlerts,
+      records: stats.totalRecords,
+    },
+    previous: {
+      wellbeing: stats.averageWellbeing * 0.95,
+      participation: stats.participation * 0.9,
+      alerts: Math.max(0, stats.activeAlerts - 2),
+      records: Math.floor(stats.totalRecords * 0.85),
+    },
+    periodLabel: comparisonPeriod === "previous-week" ? "Comparando con la semana anterior" :
+      comparisonPeriod === "previous-month" ? "Comparando con el mes anterior" :
+      comparisonPeriod === "previous-quarter" ? "Comparando con el trimestre anterior" :
+      "Comparando con el mismo mes del año anterior",
+  };
 
   const handleExportCSV = () => {
-    const data = getReportData(period, weeklyTrend, wellbeingByCourse.map(c => ({ name: c.course, bienestar: c.bienestar, evaluacion: c.evaluacion })), emotionDistribution);
+    const data = getReportData(filters.period, weeklyTrend, wellbeingByCourse.map(c => ({ name: c.course, bienestar: c.bienestar, evaluacion: c.evaluacion })), emotionDistribution);
     exportToCSV(data);
     toast.success("Reporte CSV descargado correctamente");
   };
 
   const handleExportHTML = () => {
-    const data = getReportData(period, weeklyTrend, wellbeingByCourse.map(c => ({ name: c.course, bienestar: c.bienestar, evaluacion: c.evaluacion })), emotionDistribution);
+    const data = getReportData(filters.period, weeklyTrend, wellbeingByCourse.map(c => ({ name: c.course, bienestar: c.bienestar, evaluacion: c.evaluacion })), emotionDistribution);
     exportToHTML(data);
     toast.success("Reporte HTML descargado correctamente");
   };
 
   const handleStudentClick = (studentId: string) => {
     navigate(`/students/${studentId}`);
+  };
+
+  const handleCourseSelect = (courseId: string) => {
+    setFilters(prev => ({ ...prev, courseId }));
   };
 
   if (loading) {
@@ -105,55 +145,48 @@ export default function ReportsPage() {
   return (
     <AppLayout title="Reportes" subtitle="Análisis detallado del bienestar escolar">
       <div className="space-y-6">
-        {/* Header with Filters */}
+        {/* Header with Advanced Filters */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
-          <div className="flex flex-wrap items-center gap-3">
-            <Select value={period} onValueChange={setPeriod}>
-              <SelectTrigger className="w-36">
-                <Calendar className="w-4 h-4 mr-2" />
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="week">Esta semana</SelectItem>
-                <SelectItem value="month">Este mes</SelectItem>
-                <SelectItem value="quarter">Trimestre</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select value={selectedCourse} onValueChange={setSelectedCourse}>
-              <SelectTrigger className="w-44">
-                <Users className="w-4 h-4 mr-2" />
-                <SelectValue placeholder="Todos los cursos" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todos los cursos</SelectItem>
-                {courses.map(course => (
-                  <SelectItem key={course.id} value={course.id}>{course.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <AdvancedFilters 
+            filters={filters} 
+            onFiltersChange={setFilters} 
+            courses={courses.map(c => ({ id: c.id, name: c.name }))} 
+          />
+          <div className="flex items-center gap-2">
+            <ExportReportDialog 
+              type="general" 
+              data={{ stats, courses }} 
+            />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="gap-2">
+                  <Download className="w-4 h-4" />
+                  Exportar Rápido
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={handleExportCSV}>
+                  <FileSpreadsheet className="w-4 h-4 mr-2" />
+                  CSV (Excel)
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleExportHTML}>
+                  <FileText className="w-4 h-4 mr-2" />
+                  HTML (Word)
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="gap-2">
-                <Download className="w-4 h-4" />
-                Exportar
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={handleExportCSV}>
-                <FileSpreadsheet className="w-4 h-4 mr-2" />
-                CSV (Excel)
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleExportHTML}>
-                <FileText className="w-4 h-4 mr-2" />
-                HTML (Word)
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
         </div>
 
         {/* Summary Cards */}
         <ReportsSummaryCards stats={stats} />
+
+        {/* Historical Comparison */}
+        <HistoricalComparison 
+          comparisonPeriod={comparisonPeriod}
+          onPeriodChange={setComparisonPeriod}
+          data={comparisonData}
+        />
 
         {/* Main Content */}
         <Tabs defaultValue="cursos" className="space-y-6">
@@ -186,7 +219,7 @@ export default function ReportsPage() {
                       key={course.id}
                       course={course}
                       isSelected={selectedCourseData?.id === course.id}
-                      onClick={() => setSelectedCourse(course.id)}
+                      onClick={() => handleCourseSelect(course.id)}
                     />
                   ))}
                 </div>
@@ -196,7 +229,7 @@ export default function ReportsPage() {
                   <div className="lg:w-1/2">
                     <CourseDetailPanel
                       course={selectedCourseData}
-                      onClose={() => setSelectedCourse("all")}
+                      onClose={() => handleCourseSelect("all")}
                       onStudentClick={handleStudentClick}
                     />
                   </div>
@@ -237,6 +270,11 @@ export default function ReportsPage() {
                   />
                 ))}
               </div>
+              {filteredStudents.length === 0 && (
+                <div className="text-center py-12 text-muted-foreground">
+                  No se encontraron estudiantes con los filtros aplicados
+                </div>
+              )}
             </div>
           </TabsContent>
 

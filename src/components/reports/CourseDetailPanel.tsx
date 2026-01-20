@@ -1,11 +1,15 @@
-import { motion, AnimatePresence } from "framer-motion";
-import { X, Users, Activity, AlertTriangle, TrendingUp, BarChart3 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { X, Users, AlertTriangle, BarChart3, Sparkles, Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { StudentReportCard } from "./StudentReportCard";
+import { ExportReportDialog } from "./ExportReportDialog";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import {
   BarChart,
   Bar,
@@ -61,7 +65,16 @@ const emotionColors: Record<string, string> = {
   "Preocupación": "#8E44AD",
 };
 
+function getDiscrepancyLabel(value: number): string {
+  if (value <= 0.2) return "Baja";
+  if (value <= 0.5) return "Media";
+  return "Alta";
+}
+
 export function CourseDetailPanel({ course, onClose, onStudentClick }: CourseDetailPanelProps) {
+  const [aiAnalysis, setAiAnalysis] = useState<string | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+
   const wellbeingDistribution = [
     { name: "Muy Alto (5)", value: course.students.filter(s => s.avgWellbeing >= 4.5).length, fill: "hsl(var(--wellbeing-5))" },
     { name: "Alto (4)", value: course.students.filter(s => s.avgWellbeing >= 3.5 && s.avgWellbeing < 4.5).length, fill: "hsl(var(--wellbeing-4))" },
@@ -77,11 +90,53 @@ export function CourseDetailPanel({ course, onClose, onStudentClick }: CourseDet
   }));
 
   const sortedStudents = [...course.students].sort((a, b) => {
-    // Prioritize alerts, then low wellbeing
     if (a.hasAlert && !b.hasAlert) return -1;
     if (!a.hasAlert && b.hasAlert) return 1;
     return a.avgWellbeing - b.avgWellbeing;
   });
+
+  const discrepancyLabel = getDiscrepancyLabel(course.discrepancy);
+  const discrepancyRounded = Math.round(course.discrepancy * 10) / 10;
+
+  const fetchAiAnalysis = async () => {
+    setIsAnalyzing(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('analyze-course', {
+        body: {
+          courseData: {
+            name: course.name,
+            studentCount: course.studentCount,
+            avgWellbeing: course.avgWellbeing,
+            avgTeacherEval: course.avgTeacherEval,
+            discrepancyLabel,
+            discrepancyValue: discrepancyRounded,
+            participation: course.participation,
+            alertCount: course.alertCount,
+            topEmotions: course.topEmotions.map(e => e.name),
+          }
+        }
+      });
+
+      if (error) throw error;
+      setAiAnalysis(data.analysis);
+    } catch (error: any) {
+      console.error("Error fetching AI analysis:", error);
+      if (error.message?.includes("429")) {
+        toast.error("Límite de solicitudes excedido. Intenta más tarde.");
+      } else if (error.message?.includes("402")) {
+        toast.error("Créditos de IA insuficientes.");
+      } else {
+        toast.error("No se pudo obtener el análisis de IA");
+      }
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  useEffect(() => {
+    // Auto-fetch analysis when panel opens
+    fetchAiAnalysis();
+  }, [course.id]);
 
   return (
     <motion.div
@@ -99,14 +154,41 @@ export function CourseDetailPanel({ course, onClose, onStudentClick }: CourseDet
                 Reporte detallado del curso
               </p>
             </div>
-            <Button variant="ghost" size="icon" onClick={onClose}>
-              <X className="w-5 h-5" />
-            </Button>
+            <div className="flex items-center gap-2">
+              <ExportReportDialog 
+                type="course" 
+                targetName={course.name} 
+                targetId={course.id} 
+                data={course} 
+              />
+              <Button variant="ghost" size="icon" onClick={onClose}>
+                <X className="w-5 h-5" />
+              </Button>
+            </div>
           </div>
         </CardHeader>
 
         <ScrollArea className="flex-1">
           <CardContent className="p-4 space-y-6">
+            {/* AI Analysis Section */}
+            <div className="p-4 rounded-xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/20">
+              <div className="flex items-center gap-2 mb-3">
+                <Sparkles className="w-5 h-5 text-primary" />
+                <h4 className="font-medium text-primary">Análisis Inteligente</h4>
+                {isAnalyzing && <Loader2 className="w-4 h-4 animate-spin text-primary" />}
+              </div>
+              {aiAnalysis ? (
+                <p className="text-sm text-foreground/90 leading-relaxed">{aiAnalysis}</p>
+              ) : isAnalyzing ? (
+                <p className="text-sm text-muted-foreground">Analizando datos del curso...</p>
+              ) : (
+                <Button variant="outline" size="sm" onClick={fetchAiAnalysis} className="gap-2">
+                  <Sparkles className="w-4 h-4" />
+                  Generar análisis
+                </Button>
+              )}
+            </div>
+
             {/* Quick Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               <div className="p-3 rounded-xl bg-primary/10 text-center">
@@ -149,9 +231,17 @@ export function CourseDetailPanel({ course, onClose, onStudentClick }: CourseDet
                   <Progress value={(course.avgTeacherEval / 5) * 100} className="h-3" />
                 </div>
               </div>
-              {Math.round(course.discrepancy * 10) / 10 > 0.5 && (
-                <Badge variant="outline" className="text-warning border-warning">
-                  Discrepancia: {course.discrepancy <= 0.5 ? "Baja" : course.discrepancy <= 1 ? "Media" : "Alta"}
+              {discrepancyRounded > 0 && (
+                <Badge 
+                  variant="outline" 
+                  className={cn(
+                    "text-sm",
+                    discrepancyLabel === "Alta" && "text-alert border-alert",
+                    discrepancyLabel === "Media" && "text-warning border-warning",
+                    discrepancyLabel === "Baja" && "text-success border-success"
+                  )}
+                >
+                  Discrepancia: {discrepancyLabel}
                 </Badge>
               )}
             </div>
