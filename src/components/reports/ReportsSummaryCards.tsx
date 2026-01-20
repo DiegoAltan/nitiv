@@ -82,12 +82,12 @@ export function ReportsSummaryCards({ stats }: ReportsSummaryCardsProps) {
     },
     {
       title: "Discrepancia",
-      value: stats.averageDiscrepancy,
-      subtitle: "promedio",
+      value: stats.averageDiscrepancy <= 0.5 ? "Baja" : stats.averageDiscrepancy <= 1 ? "Media" : "Alta",
+      subtitle: `±${Math.round(stats.averageDiscrepancy * 10) / 10} pts`,
       icon: Target,
       color: "muted",
-      bgClass: "bg-muted",
-      iconClass: "text-muted-foreground",
+      bgClass: stats.averageDiscrepancy <= 0.5 ? "bg-success/10" : stats.averageDiscrepancy <= 1 ? "bg-warning/10" : "bg-alert/10",
+      iconClass: stats.averageDiscrepancy <= 0.5 ? "text-success" : stats.averageDiscrepancy <= 1 ? "text-warning" : "text-alert",
     },
     {
       title: "Cobertura",

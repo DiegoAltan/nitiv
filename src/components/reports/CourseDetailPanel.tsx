@@ -49,16 +49,16 @@ interface CourseDetailPanelProps {
 }
 
 const emotionColors: Record<string, string> = {
-  "Alegría": "hsl(45 85% 70%)",
-  "Calma": "hsl(195 65% 65%)",
-  "Ansiedad": "hsl(280 55% 70%)",
-  "Tristeza": "hsl(215 55% 65%)",
-  "Enojo": "hsl(355 65% 65%)",
-  "Cansancio": "hsl(215 25% 60%)",
-  "Gratitud": "hsl(160 55% 48%)",
-  "Motivación": "hsl(145 50% 55%)",
-  "Frustración": "hsl(25 75% 65%)",
-  "Preocupación": "hsl(280 55% 70%)",
+  "Alegría": "#FFD93D",
+  "Calma": "#6BCB77",
+  "Ansiedad": "#9B59B6",
+  "Tristeza": "#5DADE2",
+  "Enojo": "#E74C3C",
+  "Cansancio": "#95A5A6",
+  "Gratitud": "#27AE60",
+  "Motivación": "#F39C12",
+  "Frustración": "#E67E22",
+  "Preocupación": "#8E44AD",
 };
 
 export function CourseDetailPanel({ course, onClose, onStudentClick }: CourseDetailPanelProps) {
@@ -149,9 +149,9 @@ export function CourseDetailPanel({ course, onClose, onStudentClick }: CourseDet
                   <Progress value={(course.avgTeacherEval / 5) * 100} className="h-3" />
                 </div>
               </div>
-              {course.discrepancy > 0.3 && (
+              {Math.round(course.discrepancy * 10) / 10 > 0.5 && (
                 <Badge variant="outline" className="text-warning border-warning">
-                  Discrepancia significativa: {course.discrepancy}
+                  Discrepancia: {course.discrepancy <= 0.5 ? "Baja" : course.discrepancy <= 1 ? "Media" : "Alta"}
                 </Badge>
               )}
             </div>
