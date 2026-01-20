@@ -13,10 +13,10 @@ interface AppLayoutProps {
 
 export function AppLayout({ children, title, subtitle }: AppLayoutProps) {
   const [sidebarCollapsed] = useState(false);
-  const { roles } = useAuth();
+  const { activeRole } = useAuth();
 
   // Students get a special layout without sidebar
-  const isStudent = roles.includes("estudiante") && roles.length === 1;
+  const isStudent = activeRole === "estudiante";
 
   if (isStudent) {
     return (
