@@ -55,7 +55,7 @@ export function EmotionSelector({
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2 max-w-full overflow-hidden">
         {emotions.map((emotion, index) => {
           const isSelected = selected.includes(emotion.id);
           return (
@@ -70,7 +70,7 @@ export function EmotionSelector({
               whileHover={!readonly ? { scale: 1.02 } : {}}
               whileTap={!readonly ? { scale: 0.98 } : {}}
               className={cn(
-                "px-4 py-2 rounded-full border-2 font-medium text-sm transition-all duration-200 flex items-center gap-2",
+                "px-3 py-1.5 rounded-full border-2 font-medium text-xs sm:text-sm transition-all duration-200 flex items-center gap-1.5 shrink-0 whitespace-nowrap",
                 isSelected
                   ? emotionColorsSelected[emotion.id]
                   : emotionColors[emotion.id],
@@ -78,8 +78,8 @@ export function EmotionSelector({
                 readonly && "cursor-default opacity-80"
               )}
             >
-              <span className="text-base">{emotion.emoji}</span>
-              <span>{emotion.label}</span>
+              <span className="text-sm">{emotion.emoji}</span>
+              <span className="truncate max-w-[60px] sm:max-w-none">{emotion.label}</span>
             </motion.button>
           );
         })}
