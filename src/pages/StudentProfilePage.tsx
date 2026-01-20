@@ -10,7 +10,9 @@ import {
   TrendingUp,
   MessageSquare,
   Shield,
-  Lock
+  Lock,
+  FileText,
+  Share2
 } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Button } from "@/components/ui/button";
@@ -24,6 +26,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { useAuth } from "@/contexts/AuthContext";
+import { useCaseRecords } from "@/hooks/useCaseRecords";
+import { CaseRecordsList } from "@/components/fichas/CaseRecordsList";
+import { ShareAccessDialog } from "@/components/fichas/ShareAccessDialog";
+import { exportFichaToHTML } from "@/utils/exportFicha";
 
 interface StudentProfile {
   id: string;
@@ -67,7 +73,19 @@ export default function StudentProfilePage() {
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [loading, setLoading] = useState(true);
   const [fileStatus, setFileStatus] = useState<string>("abierta");
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
 
+  // Case records hook for dupla
+  const {
+    records: caseRecords,
+    sharedAccess,
+    loading: caseLoading,
+    addRecord,
+    updateRecord,
+    deleteRecord,
+    grantAccess,
+    revokeAccess,
+  } = useCaseRecords(studentId);
   // Teachers have limited access - they can only see basic indicators, not comments or sensitive details
   const hasFullAccess = isDupla;
 
@@ -327,6 +345,12 @@ export default function StudentProfilePage() {
               Evaluaciones
             </TabsTrigger>
             {hasFullAccess && (
+              <TabsTrigger value="ficha" className="rounded-lg">
+                <FileText className="w-4 h-4 mr-2" />
+                Ficha
+              </TabsTrigger>
+            )}
+            {hasFullAccess && (
               <TabsTrigger value="alerts" className="rounded-lg">
                 <AlertTriangle className="w-4 h-4 mr-2" />
                 Alertas
@@ -456,6 +480,38 @@ export default function StudentProfilePage() {
               </CardContent>
             </Card>
           </TabsContent>
+
+          {/* Ficha Tab - Only for Dupla */}
+          {hasFullAccess && (
+            <TabsContent value="ficha" className="space-y-6">
+              <div className="flex justify-end mb-4">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setShareDialogOpen(true)}
+                >
+                  <Share2 className="w-4 h-4 mr-2" />
+                  Compartir Acceso
+                </Button>
+              </div>
+              <CaseRecordsList
+                records={caseRecords}
+                loading={caseLoading}
+                onAddRecord={addRecord}
+                onUpdateRecord={updateRecord}
+                onDeleteRecord={deleteRecord}
+                onExport={() => exportFichaToHTML(caseRecords, student.full_name)}
+                studentName={student.full_name}
+              />
+              <ShareAccessDialog
+                open={shareDialogOpen}
+                onOpenChange={setShareDialogOpen}
+                studentId={studentId!}
+                sharedAccess={sharedAccess}
+                onGrantAccess={grantAccess}
+                onRevokeAccess={revokeAccess}
+              />
+            </TabsContent>
+          )}
 
           {/* Alerts Tab */}
           <TabsContent value="alerts" className="space-y-6">

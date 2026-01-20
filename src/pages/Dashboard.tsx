@@ -1,3 +1,4 @@
+import { StudentLayout } from "@/components/layout/StudentLayout";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { useAuth } from "@/contexts/AuthContext";
 import { StudentDashboard } from "@/components/dashboards/StudentDashboard";
@@ -6,7 +7,16 @@ import { DuplaDashboard } from "@/components/dashboards/DuplaDashboard";
 import { AdminDashboard } from "@/components/dashboards/AdminDashboard";
 
 const Dashboard = () => {
-  const { isStudent, isTeacher, isDupla, isAdmin, roles } = useAuth();
+  const { isStudent, isTeacher, isDupla, isAdmin } = useAuth();
+
+  // Student has a special layout without sidebar
+  if (isStudent && !isTeacher && !isDupla && !isAdmin) {
+    return (
+      <StudentLayout title="Mi Bienestar" subtitle="Tu espacio personal de bienestar">
+        <StudentDashboard />
+      </StudentLayout>
+    );
+  }
 
   // Determine which dashboard to show based on role priority
   // Priority: Admin > Dupla > Teacher > Student

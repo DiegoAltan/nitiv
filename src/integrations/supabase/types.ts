@@ -203,6 +203,95 @@ export type Database = {
           },
         ]
       }
+      shared_case_access: {
+        Row: {
+          access_type: string
+          created_at: string
+          expires_at: string | null
+          granted_by: string
+          granted_to: string
+          id: string
+          student_id: string
+        }
+        Insert: {
+          access_type?: string
+          created_at?: string
+          expires_at?: string | null
+          granted_by: string
+          granted_to: string
+          id?: string
+          student_id: string
+        }
+        Update: {
+          access_type?: string
+          created_at?: string
+          expires_at?: string | null
+          granted_by?: string
+          granted_to?: string
+          id?: string
+          student_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shared_case_access_granted_to_fkey"
+            columns: ["granted_to"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "shared_case_access_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      student_case_records: {
+        Row: {
+          created_at: string
+          created_by: string
+          date_recorded: string
+          description: string | null
+          id: string
+          record_type: string
+          student_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          date_recorded?: string
+          description?: string | null
+          id?: string
+          record_type: string
+          student_id: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          date_recorded?: string
+          description?: string | null
+          id?: string
+          record_type?: string
+          student_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_case_records_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       student_courses: {
         Row: {
           course_id: string
