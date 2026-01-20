@@ -3,7 +3,10 @@ import { motion } from "framer-motion";
 import { Sidebar } from "./Sidebar";
 import { Header } from "./Header";
 import { StudentLayout } from "./StudentLayout";
+import { Breadcrumbs } from "./Breadcrumbs";
+import { BottomNav } from "./BottomNav";
 import { useAuth } from "@/contexts/AuthContext";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -14,6 +17,7 @@ interface AppLayoutProps {
 export function AppLayout({ children, title, subtitle }: AppLayoutProps) {
   const [sidebarCollapsed] = useState(false);
   const { activeRole } = useAuth();
+  const isMobile = useIsMobile();
 
   // Students get a special layout without sidebar
   const isStudent = activeRole === "estudiante";
@@ -28,15 +32,23 @@ export function AppLayout({ children, title, subtitle }: AppLayoutProps) {
 
   return (
     <div className="min-h-screen bg-background">
-      <Sidebar />
+      {/* Hide sidebar on mobile */}
+      {!isMobile && <Sidebar />}
+      
       <motion.div
         initial={false}
-        animate={{ marginLeft: sidebarCollapsed ? 80 : 280 }}
+        animate={{ marginLeft: isMobile ? 0 : (sidebarCollapsed ? 80 : 280) }}
         className="flex flex-col min-h-screen"
       >
         <Header title={title} subtitle={subtitle} />
-        <main className="flex-1 p-6">{children}</main>
+        <main className="flex-1 p-6 pb-24 md:pb-6">
+          <Breadcrumbs />
+          {children}
+        </main>
       </motion.div>
+      
+      {/* Bottom nav for mobile */}
+      <BottomNav />
     </div>
   );
 }

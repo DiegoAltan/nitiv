@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { LogOut, User } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { BottomNav } from "./BottomNav";
 
 interface StudentLayoutProps {
   children: ReactNode;
@@ -131,10 +132,13 @@ export function StudentLayout({ children, title, subtitle }: StudentLayoutProps)
       <motion.main
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex-1 p-6 max-w-7xl mx-auto"
+        className="flex-1 p-6 pb-24 max-w-7xl mx-auto"
       >
         {children}
       </motion.main>
+      
+      {/* Bottom nav for mobile */}
+      <BottomNav />
     </div>
   );
 }
