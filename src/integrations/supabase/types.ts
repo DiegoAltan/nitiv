@@ -456,29 +456,35 @@ export type Database = {
       }
       wellbeing_records: {
         Row: {
+          anxiety_level: number | null
           comment: string | null
           created_at: string
           emotions: string[] | null
           id: string
           recorded_at: string
+          stress_level: number | null
           student_id: string
           wellbeing_level: number
         }
         Insert: {
+          anxiety_level?: number | null
           comment?: string | null
           created_at?: string
           emotions?: string[] | null
           id?: string
           recorded_at?: string
+          stress_level?: number | null
           student_id: string
           wellbeing_level: number
         }
         Update: {
+          anxiety_level?: number | null
           comment?: string | null
           created_at?: string
           emotions?: string[] | null
           id?: string
           recorded_at?: string
+          stress_level?: number | null
           student_id?: string
           wellbeing_level?: number
         }

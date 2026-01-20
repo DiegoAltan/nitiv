@@ -3,26 +3,64 @@ import { motion } from "framer-motion";
 import { Send, Calendar } from "lucide-react";
 import { WellbeingScale } from "@/components/ui/WellbeingScale";
 import { EmotionSelector, Emotion } from "@/components/ui/EmotionSelector";
+import { ScaleSlider } from "@/components/ui/ScaleSlider";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 export function WellbeingForm() {
   const [wellbeingLevel, setWellbeingLevel] = useState(0);
+  const [anxietyLevel, setAnxietyLevel] = useState(1);
+  const [stressLevel, setStressLevel] = useState(1);
   const [selectedEmotions, setSelectedEmotions] = useState<Emotion[]>([]);
   const [comment, setComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  
+  const { toast } = useToast();
+  const { profile } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (wellbeingLevel === 0) return;
 
     setIsSubmitting(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsSubmitting(false);
-    setIsSubmitted(true);
+    
+    try {
+      if (!profile?.id) {
+        throw new Error("No profile found");
+      }
+
+      const { error } = await supabase.from("wellbeing_records").insert({
+        student_id: profile.id,
+        wellbeing_level: wellbeingLevel,
+        anxiety_level: anxietyLevel,
+        stress_level: stressLevel,
+        emotions: selectedEmotions,
+        comment: comment || null,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "¡Registro guardado!",
+        description: "Tu bienestar ha sido registrado exitosamente.",
+      });
+      
+      setIsSubmitted(true);
+    } catch (error: any) {
+      console.error("Error saving wellbeing:", error);
+      toast({
+        title: "Error",
+        description: error.message || "No se pudo guardar tu registro. Intenta de nuevo.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const today = new Date().toLocaleDateString("es-CL", {
@@ -85,6 +123,34 @@ export function WellbeingForm() {
               value={wellbeingLevel}
               onChange={setWellbeingLevel}
               size="lg"
+            />
+          </div>
+
+          {/* Anxiety Scale */}
+          <div className="p-4 rounded-xl bg-muted/50 backdrop-blur-sm border border-border/50">
+            <ScaleSlider
+              label="Nivel de ansiedad"
+              value={anxietyLevel}
+              onChange={setAnxietyLevel}
+              min={1}
+              max={10}
+              lowLabel="Tranquilo/a"
+              highLabel="Muy ansioso/a"
+              colorVariant="anxiety"
+            />
+          </div>
+
+          {/* Stress Scale */}
+          <div className="p-4 rounded-xl bg-muted/50 backdrop-blur-sm border border-border/50">
+            <ScaleSlider
+              label="Nivel de estrés"
+              value={stressLevel}
+              onChange={setStressLevel}
+              min={1}
+              max={10}
+              lowLabel="Relajado/a"
+              highLabel="Muy estresado/a"
+              colorVariant="stress"
             />
           </div>
 
