@@ -39,6 +39,14 @@ export function WellbeingScale({
             onClick={() => onChange?.(item.value)}
             whileHover={!readonly ? { scale: 1.1 } : {}}
             whileTap={!readonly ? { scale: 0.95 } : {}}
+            animate={value === item.value ? { 
+              scale: [1, 1.08, 1],
+            } : {}}
+            transition={value === item.value ? {
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeInOut"
+            } : {}}
             className={cn(
               "rounded-full flex items-center justify-center transition-all duration-300",
               sizeClasses[size],
