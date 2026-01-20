@@ -52,8 +52,8 @@ export function Sidebar() {
       animate={{ width: collapsed ? 80 : 280 }}
       className="fixed left-0 top-0 h-screen bg-sidebar border-r border-sidebar-border flex flex-col z-40"
     >
-      {/* Logo */}
-      <div className="h-16 flex items-center px-4 border-b border-sidebar-border">
+      {/* Logo - Clickable to go to Dashboard */}
+      <NavLink to="/" className="h-16 flex items-center px-4 border-b border-sidebar-border hover:bg-sidebar-accent/50 transition-colors">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-hero flex items-center justify-center shadow-md">
             <Brain className="w-5 h-5 text-white" />
@@ -70,7 +70,7 @@ export function Sidebar() {
             </motion.div>
           )}
         </div>
-      </div>
+      </NavLink>
 
       {/* Navigation */}
       <nav className="flex-1 p-3 space-y-1.5 overflow-y-auto">
