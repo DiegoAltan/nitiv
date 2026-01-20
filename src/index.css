@@ -96,6 +96,13 @@
     --chart-4: 195 60% 60%;
     --chart-5: 45 75% 60%;
 
+    /* Gamification colors */
+    --level-1: 160 45% 55%;
+    --level-2: 195 60% 55%;
+    --level-3: 265 55% 60%;
+    --level-4: 290 50% 60%;
+    --level-5: 320 55% 60%;
+
     /* Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(265, 65%, 65%), hsl(290, 55%, 70%));
     --gradient-wellbeing: linear-gradient(135deg, hsl(160, 55%, 48%), hsl(145, 50%, 55%));
@@ -164,6 +171,20 @@
     --chart-3: 25 65% 65%;
     --chart-4: 195 55% 60%;
     --chart-5: 45 70% 60%;
+
+    /* Gamification colors - brighter for dark mode */
+    --level-1: 160 55% 50%;
+    --level-2: 195 65% 55%;
+    --level-3: 265 60% 65%;
+    --level-4: 290 55% 65%;
+    --level-5: 320 60% 65%;
+
+    /* Wellbeing scale - adjusted for dark mode */
+    --wellbeing-1: 355 65% 60%;
+    --wellbeing-2: 25 70% 60%;
+    --wellbeing-3: 45 75% 60%;
+    --wellbeing-4: 145 45% 50%;
+    --wellbeing-5: 160 50% 45%;
 
     --sidebar: 250 18% 14%;
     --shadow-card: 0 4px 20px -4px hsl(0 0% 0% / 0.4);

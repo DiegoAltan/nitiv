@@ -274,6 +274,100 @@ export type Database = {
           },
         ]
       }
+      student_missions: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          id: string
+          is_completed: boolean | null
+          mission_description: string
+          mission_type: string
+          student_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          is_completed?: boolean | null
+          mission_description: string
+          mission_type: string
+          student_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          is_completed?: boolean | null
+          mission_description?: string
+          mission_type?: string
+          student_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_missions_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      student_progress: {
+        Row: {
+          created_at: string
+          current_level: number | null
+          current_streak_weeks: number | null
+          dashboard_style: string | null
+          id: string
+          last_record_week: string | null
+          longest_streak_weeks: number | null
+          streak_frozen: boolean | null
+          student_id: string
+          theme_color: string | null
+          theme_icon: string | null
+          total_records: number | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          current_level?: number | null
+          current_streak_weeks?: number | null
+          dashboard_style?: string | null
+          id?: string
+          last_record_week?: string | null
+          longest_streak_weeks?: number | null
+          streak_frozen?: boolean | null
+          student_id: string
+          theme_color?: string | null
+          theme_icon?: string | null
+          total_records?: number | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          current_level?: number | null
+          current_streak_weeks?: number | null
+          dashboard_style?: string | null
+          id?: string
+          last_record_week?: string | null
+          longest_streak_weeks?: number | null
+          streak_frozen?: boolean | null
+          student_id?: string
+          theme_color?: string | null
+          theme_icon?: string | null
+          total_records?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_progress_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       teacher_courses: {
         Row: {
           course_id: string

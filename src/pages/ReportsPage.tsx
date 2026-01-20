@@ -37,6 +37,7 @@ import {
 } from "recharts";
 import { exportToCSV, exportToHTML, getReportData } from "@/utils/exportReport";
 import { toast } from "sonner";
+import { useReportsData } from "@/hooks/useReportsData";
 
 // Mock data for charts
 const weeklyTrend = [
@@ -90,6 +91,19 @@ const discrepancyData = [
 export default function ReportsPage() {
   const [period, setPeriod] = useState("week");
   const [selectedLevel, setSelectedLevel] = useState("all");
+  const { wellbeingByCourse } = useReportsData();
+
+  // Use real data when available, fallback to mock data
+  const courseComparison = wellbeingByCourse.length > 0 
+    ? wellbeingByCourse.map(c => ({ name: c.course, bienestar: c.bienestar, evaluacion: c.evaluacion }))
+    : [
+        { name: "6°A", bienestar: 4.1, evaluacion: 3.9 },
+        { name: "6°B", bienestar: 3.8, evaluacion: 3.6 },
+        { name: "7°A", bienestar: 3.5, evaluacion: 3.3 },
+        { name: "7°B", bienestar: 3.9, evaluacion: 3.7 },
+        { name: "8°A", bienestar: 3.7, evaluacion: 3.5 },
+        { name: "8°B", bienestar: 4.0, evaluacion: 3.8 },
+      ];
 
   const handleExportCSV = () => {
     const data = getReportData(period, weeklyTrend, courseComparison, emotionDistribution);
