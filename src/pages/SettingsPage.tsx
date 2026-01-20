@@ -42,7 +42,7 @@ const allRoles: { value: AppRole; label: string; description: string }[] = [
 ];
 
 export default function SettingsPage() {
-  const { profile, signOut, roles, switchRole } = useAuth();
+  const { profile, signOut, roles, activeRole, switchRole, canSwitchRole } = useAuth();
   const { theme, setTheme } = useTheme();
   const { toast } = useToast();
 
@@ -53,7 +53,7 @@ export default function SettingsPage() {
   const [weeklySummary, setWeeklySummary] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  const currentRole = roles[0];
+  const currentRole = activeRole || roles[0];
 
   useEffect(() => {
     if (profile) {
@@ -196,6 +196,11 @@ export default function SettingsPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
+              {!canSwitchRole ? (
+                <p className="text-sm text-muted-foreground">
+                  El cambio de perfil está disponible solo durante el desarrollo.
+                </p>
+              ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                 {allRoles.map((role) => (
                   <button
@@ -222,6 +227,7 @@ export default function SettingsPage() {
                   </button>
                 ))}
               </div>
+              )}
             </CardContent>
           </Card>
         </motion.div>
