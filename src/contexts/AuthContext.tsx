@@ -22,6 +22,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signUp: (email: string, password: string, fullName: string, role: AppRole) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
+  switchRole: (role: AppRole) => void;
   isAdmin: boolean;
   isDupla: boolean;
   isTeacher: boolean;
@@ -157,6 +158,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setRoles([]);
   };
 
+  // Dev mode: Switch role for testing
+  const switchRole = (role: AppRole) => {
+    setRoles([role]);
+  };
+
   const isAdmin = roles.includes("administrador");
   const isDupla = roles.includes("psicologo") || roles.includes("trabajador_social");
   const isTeacher = roles.includes("docente");
@@ -173,6 +179,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signIn,
         signUp,
         signOut,
+        switchRole,
         isAdmin,
         isDupla,
         isTeacher,
