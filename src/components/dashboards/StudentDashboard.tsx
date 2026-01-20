@@ -4,12 +4,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatCard } from "@/components/ui/StatCard";
 import { WellbeingTrendChart } from "@/components/charts/WellbeingTrendChart";
 import { WellbeingScale } from "@/components/ui/WellbeingScale";
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { WellbeingForm } from "@/components/forms/WellbeingForm";
 import { useAuth } from "@/contexts/AuthContext";
 import { useStudentWellbeing } from "@/hooks/useStudentWellbeing";
+import { useStudentEmotions } from "@/hooks/useStudentEmotions";
 import { ProgressCard } from "@/components/gamification/ProgressCard";
 import { PersonalizationCard } from "@/components/gamification/PersonalizationCard";
+import { NarrativeTimeline } from "@/components/gamification/NarrativeTimeline";
+import { EmotionMap } from "@/components/gamification/EmotionMap";
+import { MissionsCard } from "@/components/gamification/MissionsCard";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
@@ -27,9 +31,9 @@ const itemVariants = {
 };
 
 export function StudentDashboard() {
-  const navigate = useNavigate();
   const { profile } = useAuth();
   const { stats, loading } = useStudentWellbeing();
+  const { timeline, emotionMap, totalRecords, loading: emotionsLoading } = useStudentEmotions();
   
   const firstName = profile?.full_name?.split(" ")[0] || "Estudiante";
 
@@ -66,112 +70,134 @@ export function StudentDashboard() {
                   <Sparkles className="w-5 h-5 text-warning" />
                 </h2>
                 <p className="text-muted-foreground">
-                  Recuerda registrar cómo te sientes hoy. Tu bienestar es importante.
+                  Este es tu espacio personal de bienestar. Todo aquí es privado.
                 </p>
               </div>
-              <Button 
-                onClick={() => navigate("/wellbeing")}
-                className="bg-gradient-hero hover:opacity-90 shadow-lg rounded-xl"
-              >
-                Registrar mi bienestar
-              </Button>
             </div>
           </CardContent>
         </Card>
       </motion.div>
 
-      {/* Personal Stats */}
-      <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <StatCard
-          title="Mi Bienestar Promedio"
-          value={loading ? "..." : stats.averageWellbeing.toString()}
-          subtitle="Esta semana"
-          icon={Heart}
-          trend={stats.averageWellbeing >= 3 ? { value: 5, isPositive: true } : undefined}
-          variant="primary"
-        />
-        <StatCard
-          title="Días Registrados"
-          value={loading ? "..." : stats.daysRegistered.toString()}
-          subtitle="Este mes"
-          icon={Calendar}
-          variant="secondary"
-        />
-        <StatCard
-          title="Racha Actual"
-          value={loading ? "..." : stats.currentStreak.toString()}
-          subtitle="Días consecutivos"
-          icon={TrendingUp}
-          variant="default"
-        />
-      </motion.div>
+      {/* Tabs for different sections */}
+      <Tabs defaultValue="register" className="w-full">
+        <TabsList className="grid w-full grid-cols-4 mb-6">
+          <TabsTrigger value="register">Registrar</TabsTrigger>
+          <TabsTrigger value="progress">Mi Progreso</TabsTrigger>
+          <TabsTrigger value="history">Mi Historia</TabsTrigger>
+          <TabsTrigger value="personalize">Personalizar</TabsTrigger>
+        </TabsList>
 
-      {/* Gamification - Progress Card */}
-      <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <ProgressCard />
-        <PersonalizationCard />
-      </motion.div>
+        {/* Register Tab */}
+        <TabsContent value="register" className="space-y-6">
+          <motion.div variants={itemVariants}>
+            <WellbeingForm />
+          </motion.div>
+        </TabsContent>
 
-      {/* Wellbeing Chart */}
-      <motion.div variants={itemVariants}>
-        <WellbeingTrendChart studentName="mi bienestar" />
-      </motion.div>
+        {/* Progress Tab */}
+        <TabsContent value="progress" className="space-y-6">
+          {/* Personal Stats */}
+          <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <StatCard
+              title="Mi Bienestar Promedio"
+              value={loading ? "..." : stats.averageWellbeing.toString()}
+              subtitle="Esta semana"
+              icon={Heart}
+              trend={stats.averageWellbeing >= 3 ? { value: 5, isPositive: true } : undefined}
+              variant="primary"
+            />
+            <StatCard
+              title="Días Registrados"
+              value={loading ? "..." : stats.daysRegistered.toString()}
+              subtitle="Este mes"
+              icon={Calendar}
+              variant="secondary"
+            />
+            <StatCard
+              title="Racha Actual"
+              value={loading ? "..." : stats.currentStreak.toString()}
+              subtitle="Días consecutivos"
+              icon={TrendingUp}
+              variant="default"
+            />
+          </motion.div>
 
-      {/* Recent Records */}
-      <motion.div variants={itemVariants}>
-        <Card className="border-0 bg-card/80 backdrop-blur-xl shadow-lg">
-          <CardHeader>
-            <CardTitle className="text-lg font-display">Mis registros recientes</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {loading ? (
-              <div className="text-center py-8 text-muted-foreground">
-                Cargando registros...
-              </div>
-            ) : stats.recentRecords.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                <p>Aún no tienes registros de bienestar.</p>
-                <Button
-                  variant="outline"
-                  className="mt-4"
-                  onClick={() => navigate("/wellbeing")}
-                >
-                  Crear mi primer registro
-                </Button>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {stats.recentRecords.map((record, index) => (
-                  <motion.div
-                    key={record.id}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="flex items-center justify-between p-4 rounded-xl bg-muted/30 backdrop-blur-sm border border-border/50"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="text-sm font-medium text-muted-foreground w-28">
-                        {formatRecordDate(record.recorded_at)}
-                      </div>
-                      <WellbeingScale value={record.wellbeing_level} readonly size="sm" />
-                    </div>
-                    <div className="flex gap-2 flex-wrap max-w-[200px]">
-                      {record.emotions?.slice(0, 3).map((emotion) => (
-                        <span
-                          key={emotion}
-                          className="px-2 py-1 text-xs rounded-full bg-primary/10 text-primary truncate max-w-[80px]"
-                        >
-                          {emotion}
-                        </span>
-                      ))}
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </motion.div>
+          {/* Gamification Cards */}
+          <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <ProgressCard />
+            <MissionsCard />
+          </motion.div>
+
+          {/* Wellbeing Chart */}
+          <motion.div variants={itemVariants}>
+            <WellbeingTrendChart studentName="mi bienestar" />
+          </motion.div>
+        </TabsContent>
+
+        {/* History Tab */}
+        <TabsContent value="history" className="space-y-6">
+          <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <NarrativeTimeline entries={timeline} loading={emotionsLoading} />
+            <EmotionMap emotions={emotionMap} totalRecords={totalRecords} loading={emotionsLoading} />
+          </motion.div>
+
+          {/* Recent Records */}
+          <motion.div variants={itemVariants}>
+            <Card className="border-0 bg-card/80 backdrop-blur-xl shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-lg font-display">Mis registros recientes</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {loading ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    Cargando registros...
+                  </div>
+                ) : stats.recentRecords.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <p>Aún no tienes registros de bienestar.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {stats.recentRecords.map((record, index) => (
+                      <motion.div
+                        key={record.id}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className="flex items-center justify-between p-4 rounded-xl bg-muted/30 backdrop-blur-sm border border-border/50"
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className="text-sm font-medium text-muted-foreground w-28">
+                            {formatRecordDate(record.recorded_at)}
+                          </div>
+                          <WellbeingScale value={record.wellbeing_level} readonly size="sm" />
+                        </div>
+                        <div className="flex gap-2 flex-wrap max-w-[200px]">
+                          {record.emotions?.slice(0, 3).map((emotion) => (
+                            <span
+                              key={emotion}
+                              className="px-2 py-1 text-xs rounded-full bg-primary/10 text-primary truncate max-w-[80px]"
+                            >
+                              {emotion}
+                            </span>
+                          ))}
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </motion.div>
+        </TabsContent>
+
+        {/* Personalize Tab */}
+        <TabsContent value="personalize" className="space-y-6">
+          <motion.div variants={itemVariants}>
+            <PersonalizationCard />
+          </motion.div>
+        </TabsContent>
+      </Tabs>
 
       {/* Supportive Message */}
       <motion.div variants={itemVariants}>

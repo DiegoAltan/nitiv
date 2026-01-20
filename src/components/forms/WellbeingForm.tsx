@@ -1,17 +1,22 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Send, Calendar, Heart } from "lucide-react";
+import { Send, Calendar as CalendarIcon, ChevronLeft } from "lucide-react";
 import { WellbeingScale } from "@/components/ui/WellbeingScale";
 import { EmotionSelector, Emotion } from "@/components/ui/EmotionSelector";
 import { ScaleSlider } from "@/components/ui/ScaleSlider";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { ValidatingMessage } from "@/components/gamification/ValidatingMessage";
 import { LevelBadge } from "@/components/gamification/LevelBadge";
+import { format, subDays, isAfter, isBefore, startOfDay } from "date-fns";
+import { es } from "date-fns/locale";
+import { cn } from "@/lib/utils";
 
 export function WellbeingForm() {
   const [wellbeingLevel, setWellbeingLevel] = useState(0);
@@ -21,9 +26,14 @@ export function WellbeingForm() {
   const [comment, setComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [calendarOpen, setCalendarOpen] = useState(false);
   
   const { toast } = useToast();
   const { profile } = useAuth();
+
+  const today = new Date();
+  const minDate = subDays(today, 7); // Can register up to 7 days back
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,6 +46,8 @@ export function WellbeingForm() {
         throw new Error("No profile found");
       }
 
+      const recordedAt = format(selectedDate, "yyyy-MM-dd");
+
       const { error } = await supabase.from("wellbeing_records").insert({
         student_id: profile.id,
         wellbeing_level: wellbeingLevel,
@@ -43,16 +55,18 @@ export function WellbeingForm() {
         stress_level: stressLevel,
         emotions: selectedEmotions,
         comment: comment || null,
+        recorded_at: recordedAt,
       });
 
       if (error) throw error;
-
+      
+      setIsSubmitted(true);
+      
+      // Show toast after successful submission
       toast({
         title: "¡Registro guardado!",
         description: "Tu bienestar ha sido registrado exitosamente.",
       });
-      
-      setIsSubmitted(true);
     } catch (error: any) {
       console.error("Error saving wellbeing:", error);
       toast({
@@ -65,7 +79,8 @@ export function WellbeingForm() {
     }
   };
 
-  const today = new Date().toLocaleDateString("es-CL", {
+  const isToday = format(selectedDate, "yyyy-MM-dd") === format(today, "yyyy-MM-dd");
+  const displayDate = selectedDate.toLocaleDateString("es-CL", {
     weekday: "long",
     year: "numeric",
     month: "long",
@@ -105,6 +120,7 @@ export function WellbeingForm() {
               setStressLevel(1);
               setSelectedEmotions([]);
               setComment("");
+              setSelectedDate(new Date());
             }}
             variant="outline"
             className="mt-6"
@@ -119,11 +135,49 @@ export function WellbeingForm() {
   return (
     <Card className="card-elevated max-w-2xl mx-auto">
       <CardHeader className="text-center pb-2">
-        <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground mb-2">
-          <Calendar className="w-4 h-4" />
-          <span className="capitalize">{today}</span>
+        <div className="flex items-center justify-center gap-2 mb-2">
+          <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className={cn(
+                  "justify-start text-left font-normal",
+                  !isToday && "border-primary/50 bg-primary/5"
+                )}
+              >
+                <CalendarIcon className="w-4 h-4 mr-2" />
+                <span className="capitalize">{displayDate}</span>
+                {!isToday && (
+                  <span className="ml-2 text-xs text-primary">(fecha anterior)</span>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="center">
+              <Calendar
+                mode="single"
+                selected={selectedDate}
+                onSelect={(date) => {
+                  if (date) {
+                    setSelectedDate(date);
+                    setCalendarOpen(false);
+                  }
+                }}
+                disabled={(date) =>
+                  isAfter(startOfDay(date), startOfDay(today)) ||
+                  isBefore(startOfDay(date), startOfDay(minDate))
+                }
+                locale={es}
+                initialFocus
+              />
+              <div className="p-3 border-t text-xs text-muted-foreground text-center">
+                Puedes registrar hasta 7 días atrás
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
-        <CardTitle className="text-2xl font-display">¿Cómo te sientes hoy?</CardTitle>
+        <CardTitle className="text-2xl font-display">
+          {isToday ? "¿Cómo te sientes hoy?" : "¿Cómo te sentiste ese día?"}
+        </CardTitle>
         <CardDescription>
           Tómate un momento para reflexionar sobre tu bienestar
         </CardDescription>

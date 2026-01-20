@@ -2,6 +2,8 @@ import { ReactNode, useState } from "react";
 import { motion } from "framer-motion";
 import { Sidebar } from "./Sidebar";
 import { Header } from "./Header";
+import { StudentLayout } from "./StudentLayout";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -11,6 +13,18 @@ interface AppLayoutProps {
 
 export function AppLayout({ children, title, subtitle }: AppLayoutProps) {
   const [sidebarCollapsed] = useState(false);
+  const { roles } = useAuth();
+
+  // Students get a special layout without sidebar
+  const isStudent = roles.includes("estudiante") && roles.length === 1;
+
+  if (isStudent) {
+    return (
+      <StudentLayout title={title} subtitle={subtitle}>
+        {children}
+      </StudentLayout>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
