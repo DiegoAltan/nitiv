@@ -38,11 +38,12 @@ const bottomNavigation = [
 export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
-  const { roles } = useAuth();
+  const { activeRole } = useAuth();
 
   const filteredNavigation = navigation.filter((item) => {
     if (!item.roles) return true;
-    return item.roles.some((role) => roles.includes(role as any));
+    if (!activeRole) return false;
+    return item.roles.includes(activeRole);
   });
 
   return (
