@@ -18,11 +18,13 @@ interface AuthContextType {
   session: Session | null;
   profile: Profile | null;
   roles: AppRole[];
+  activeRole: AppRole | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signUp: (email: string, password: string, fullName: string, role: AppRole) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
   switchRole: (role: AppRole) => void;
+  canSwitchRole: boolean;
   isAdmin: boolean;
   isDupla: boolean;
   isTeacher: boolean;
@@ -64,13 +66,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const userRoles = rolesData.map((r) => r.role as AppRole);
         setRoles(userRoles);
         
-        // Restore selected role from storage if valid for this user
+        // Restore selected role from storage.
+        // In DEV we allow overriding to any role for testing.
         const storedRole = sessionStorage.getItem(ROLE_STORAGE_KEY) as AppRole | null;
-        if (storedRole && userRoles.includes(storedRole)) {
+        const canUseStored = import.meta.env.DEV
+          ? Boolean(storedRole)
+          : Boolean(storedRole && userRoles.includes(storedRole));
+
+        if (canUseStored && storedRole) {
           setSelectedRole(storedRole);
         } else if (userRoles.length > 0) {
           // Default to first role if no valid stored role
           setSelectedRole(userRoles[0]);
+        } else {
+          setSelectedRole(null);
         }
       }
     } catch (error) {
@@ -93,6 +102,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         } else {
           setProfile(null);
           setRoles([]);
+          setSelectedRole(null);
+          sessionStorage.removeItem(ROLE_STORAGE_KEY);
         }
         setLoading(false);
       }
@@ -175,12 +186,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Dev mode: Switch role for testing - persists in sessionStorage
   const switchRole = (role: AppRole) => {
+    if (!import.meta.env.DEV) return;
     setSelectedRole(role);
     sessionStorage.setItem(ROLE_STORAGE_KEY, role);
   };
 
   // Use selectedRole for permission checks (if set), fallback to checking all roles
   const activeRole = selectedRole || roles[0];
+  const canSwitchRole = import.meta.env.DEV;
   const isAdmin = activeRole === "administrador";
   const isDupla = activeRole === "psicologo" || activeRole === "trabajador_social";
   const isTeacher = activeRole === "docente";
@@ -193,11 +206,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         session,
         profile,
         roles,
+        activeRole: activeRole ?? null,
         loading,
         signIn,
         signUp,
         signOut,
         switchRole,
+        canSwitchRole,
         isAdmin,
         isDupla,
         isTeacher,
