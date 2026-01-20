@@ -11,8 +11,10 @@ import {
   PieChart,
   X,
   Eye,
-  Shield
+  Shield,
+  Plus
 } from "lucide-react";
+import { CreateRecordDialog } from "@/components/fichas/CreateRecordDialog";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -79,6 +81,7 @@ export default function FichasPage() {
   const [severityFilter, setSeverityFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [showFilters, setShowFilters] = useState(false);
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
 
   // Teachers only see students they have shared access to
   const canViewFullFichas = isDupla;
@@ -376,6 +379,12 @@ export default function FichasPage() {
                 {isDupla ? "Listado de Fichas" : "Fichas Autorizadas"}
               </CardTitle>
               <div className="flex gap-2 flex-wrap">
+                {isDupla && (
+                  <Button onClick={() => setShowCreateDialog(true)} size="sm">
+                    <Plus className="w-4 h-4 mr-2" />
+                    Nuevo Registro
+                  </Button>
+                )}
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
@@ -565,6 +574,13 @@ export default function FichasPage() {
             </CardContent>
           </Card>
         )}
+
+        {/* Create Record Dialog */}
+        <CreateRecordDialog 
+          open={showCreateDialog} 
+          onOpenChange={setShowCreateDialog}
+          onSuccess={fetchFichas}
+        />
       </div>
     </AppLayout>
   );

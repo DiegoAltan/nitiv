@@ -31,11 +31,14 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const ROLE_STORAGE_KEY = "selectedRole";
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [roles, setRoles] = useState<AppRole[]>([]);
+  const [selectedRole, setSelectedRole] = useState<AppRole | null>(null);
   const [loading, setLoading] = useState(true);
 
   const fetchUserData = async (userId: string) => {
@@ -58,7 +61,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .eq("user_id", userId);
 
       if (rolesData) {
-        setRoles(rolesData.map((r) => r.role as AppRole));
+        const userRoles = rolesData.map((r) => r.role as AppRole);
+        setRoles(userRoles);
+        
+        // Restore selected role from storage if valid for this user
+        const storedRole = sessionStorage.getItem(ROLE_STORAGE_KEY) as AppRole | null;
+        if (storedRole && userRoles.includes(storedRole)) {
+          setSelectedRole(storedRole);
+        } else if (userRoles.length > 0) {
+          // Default to first role if no valid stored role
+          setSelectedRole(userRoles[0]);
+        }
       }
     } catch (error) {
       console.error("Error fetching user data:", error);
@@ -156,17 +169,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await supabase.auth.signOut();
     setProfile(null);
     setRoles([]);
+    setSelectedRole(null);
+    sessionStorage.removeItem(ROLE_STORAGE_KEY);
   };
 
-  // Dev mode: Switch role for testing
+  // Dev mode: Switch role for testing - persists in sessionStorage
   const switchRole = (role: AppRole) => {
-    setRoles([role]);
+    setSelectedRole(role);
+    sessionStorage.setItem(ROLE_STORAGE_KEY, role);
   };
 
-  const isAdmin = roles.includes("administrador");
-  const isDupla = roles.includes("psicologo") || roles.includes("trabajador_social");
-  const isTeacher = roles.includes("docente");
-  const isStudent = roles.includes("estudiante");
+  // Use selectedRole for permission checks (if set), fallback to checking all roles
+  const activeRole = selectedRole || roles[0];
+  const isAdmin = activeRole === "administrador";
+  const isDupla = activeRole === "psicologo" || activeRole === "trabajador_social";
+  const isTeacher = activeRole === "docente";
+  const isStudent = activeRole === "estudiante";
 
   return (
     <AuthContext.Provider
