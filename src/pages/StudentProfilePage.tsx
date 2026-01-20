@@ -66,7 +66,7 @@ interface Alert {
 export default function StudentProfilePage() {
   const { studentId } = useParams<{ studentId: string }>();
   const navigate = useNavigate();
-  const { isTeacher, isDupla } = useAuth();
+  const { isTeacher, isDupla, isAdmin } = useAuth();
   const [student, setStudent] = useState<StudentProfile | null>(null);
   const [wellbeingRecords, setWellbeingRecords] = useState<WellbeingRecord[]>([]);
   const [evaluations, setEvaluations] = useState<TeacherEvaluation[]>([]);
@@ -86,8 +86,9 @@ export default function StudentProfilePage() {
     grantAccess,
     revokeAccess,
   } = useCaseRecords(studentId);
+
   // Teachers have limited access - they can only see basic indicators, not comments or sensitive details
-  const hasFullAccess = isDupla;
+  const hasFullAccess = isDupla || isAdmin;
 
   useEffect(() => {
     if (studentId) {
@@ -233,40 +234,54 @@ export default function StudentProfilePage() {
     <AppLayout title="Perfil de Estudiante" subtitle={student.full_name}>
       <div className="space-y-6">
         {/* Back button and header */}
-        <div className="flex items-center gap-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate("/students")}
-            className="rounded-xl"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </Button>
+        <div className="flex items-center justify-between flex-wrap gap-4">
           <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-hero flex items-center justify-center text-white text-xl font-bold shadow-lg">
-              {student.full_name.split(" ").map(n => n[0]).slice(0, 2).join("")}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate("/students")}
+              className="rounded-xl"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-hero flex items-center justify-center text-white text-xl font-bold shadow-lg">
+                {student.full_name.split(" ").map(n => n[0]).slice(0, 2).join("")}
+              </div>
+              <div>
+                <h2 className="text-2xl font-display font-bold">{student.full_name}</h2>
+                {hasFullAccess && student.email && (
+                  <p className="text-muted-foreground">{student.email}</p>
+                )}
+                {hasFullAccess && (
+                  <div className="flex items-center gap-2 mt-1">
+                    <Badge 
+                      variant="outline"
+                      className={
+                        fileStatus === "confidencial" ? "border-alert text-alert" :
+                        fileStatus === "restringida" ? "border-warning text-warning" :
+                        "border-success text-success"
+                      }
+                    >
+                      <Shield className="w-3 h-3 mr-1" />
+                      Ficha {fileStatus}
+                    </Badge>
+                  </div>
+                )}
+              </div>
             </div>
-            <div>
-              <h2 className="text-2xl font-display font-bold">{student.full_name}</h2>
-              {hasFullAccess && student.email && (
-                <p className="text-muted-foreground">{student.email}</p>
-              )}
-              {hasFullAccess && (
-                <div className="flex items-center gap-2 mt-1">
-                  <Badge 
-                    variant="outline"
-                    className={
-                      fileStatus === "confidencial" ? "border-alert text-alert" :
-                      fileStatus === "restringida" ? "border-warning text-warning" :
-                      "border-success text-success"
-                    }
-                  >
-                    <Shield className="w-3 h-3 mr-1" />
-                    Ficha {fileStatus}
-                  </Badge>
-                </div>
-              )}
-            </div>
+          </div>
+
+          {/* Navigation buttons */}
+          <div className="flex gap-2">
+            <Button 
+              variant="outline"
+              onClick={() => navigate("/")}
+              className="rounded-xl"
+            >
+              <Heart className="w-4 h-4 mr-2" />
+              Ir al Dashboard
+            </Button>
           </div>
         </div>
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { format } from "date-fns";
+import { format, isWithinInterval, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
 import { 
   FileText, 
@@ -12,7 +12,9 @@ import {
   MessageSquare,
   Pencil,
   Trash2,
-  Download
+  Download,
+  Filter,
+  X
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -29,6 +31,16 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { DateRange } from "react-day-picker";
 
 interface CaseRecordsListProps {
   records: CaseRecord[];
@@ -61,6 +73,11 @@ export function CaseRecordsList({
   const [editingRecord, setEditingRecord] = useState<CaseRecord | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [recordToDelete, setRecordToDelete] = useState<string | null>(null);
+  
+  // Filters
+  const [typeFilter, setTypeFilter] = useState<string>("all");
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
+  const [showFilters, setShowFilters] = useState(false);
 
   const handleSave = async (data: { record_type: string; title: string; description?: string; date_recorded?: string }) => {
     if (editingRecord) {
@@ -95,6 +112,37 @@ export function CaseRecordsList({
     }
   };
 
+  const clearFilters = () => {
+    setTypeFilter("all");
+    setDateRange(undefined);
+  };
+
+  // Apply filters
+  const filteredRecords = records.filter((record) => {
+    // Type filter
+    if (typeFilter !== "all" && record.record_type !== typeFilter) {
+      return false;
+    }
+
+    // Date range filter
+    if (dateRange?.from) {
+      const recordDate = parseISO(record.date_recorded);
+      if (dateRange.to) {
+        if (!isWithinInterval(recordDate, { start: dateRange.from, end: dateRange.to })) {
+          return false;
+        }
+      } else {
+        if (recordDate < dateRange.from) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  });
+
+  const hasActiveFilters = typeFilter !== "all" || dateRange?.from;
+
   if (loading) {
     return (
       <Card className="card-elevated">
@@ -112,12 +160,25 @@ export function CaseRecordsList({
   return (
     <>
       <Card className="card-elevated">
-        <CardHeader className="flex flex-row items-center justify-between">
+        <CardHeader className="flex flex-row items-center justify-between flex-wrap gap-4">
           <CardTitle className="text-lg font-display flex items-center gap-2">
             <FileText className="w-5 h-5 text-primary" />
             Ficha de {studentName}
           </CardTitle>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
+            <Button 
+              variant={showFilters ? "secondary" : "outline"} 
+              size="sm" 
+              onClick={() => setShowFilters(!showFilters)}
+            >
+              <Filter className="w-4 h-4 mr-2" />
+              Filtros
+              {hasActiveFilters && (
+                <Badge variant="secondary" className="ml-2 px-1.5">
+                  {(typeFilter !== "all" ? 1 : 0) + (dateRange?.from ? 1 : 0)}
+                </Badge>
+              )}
+            </Button>
             <Button variant="outline" size="sm" onClick={onExport}>
               <Download className="w-4 h-4 mr-2" />
               Exportar
@@ -128,16 +189,98 @@ export function CaseRecordsList({
             </Button>
           </div>
         </CardHeader>
+
+        {/* Filters section */}
+        {showFilters && (
+          <div className="px-6 pb-4">
+            <div className="flex flex-wrap gap-4 p-4 rounded-xl bg-muted/30 border border-border/50">
+              <div className="flex-1 min-w-[200px]">
+                <label className="text-sm font-medium mb-2 block">Tipo de registro</label>
+                <Select value={typeFilter} onValueChange={setTypeFilter}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Todos los tipos" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todos los tipos</SelectItem>
+                    {Object.entries(recordTypeConfig).map(([key, config]) => (
+                      <SelectItem key={key} value={key}>
+                        {config.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex-1 min-w-[200px]">
+                <label className="text-sm font-medium mb-2 block">Rango de fechas</label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" className="w-full justify-start text-left font-normal">
+                      <Calendar className="mr-2 h-4 w-4" />
+                      {dateRange?.from ? (
+                        dateRange.to ? (
+                          <>
+                            {format(dateRange.from, "d MMM", { locale: es })} - {format(dateRange.to, "d MMM yyyy", { locale: es })}
+                          </>
+                        ) : (
+                          format(dateRange.from, "d 'de' MMMM, yyyy", { locale: es })
+                        )
+                      ) : (
+                        "Seleccionar fechas"
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <CalendarComponent
+                      mode="range"
+                      selected={dateRange}
+                      onSelect={setDateRange}
+                      numberOfMonths={2}
+                      disabled={(date) => date > new Date()}
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+
+              {hasActiveFilters && (
+                <div className="flex items-end">
+                  <Button variant="ghost" size="sm" onClick={clearFilters}>
+                    <X className="w-4 h-4 mr-1" />
+                    Limpiar
+                  </Button>
+                </div>
+              )}
+            </div>
+
+            {hasActiveFilters && (
+              <p className="text-sm text-muted-foreground mt-2">
+                Mostrando {filteredRecords.length} de {records.length} registros
+              </p>
+            )}
+          </div>
+        )}
+
         <CardContent>
-          {records.length === 0 ? (
+          {filteredRecords.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
               <FileText className="w-12 h-12 mx-auto mb-4 opacity-50" />
-              <p>No hay registros en la ficha</p>
-              <p className="text-sm mt-1">Agrega el primer registro para comenzar</p>
+              {hasActiveFilters ? (
+                <>
+                  <p>No hay registros que coincidan con los filtros</p>
+                  <Button variant="link" onClick={clearFilters} className="mt-2">
+                    Limpiar filtros
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <p>No hay registros en la ficha</p>
+                  <p className="text-sm mt-1">Agrega el primer registro para comenzar</p>
+                </>
+              )}
             </div>
           ) : (
             <div className="space-y-3">
-              {records.map((record, index) => {
+              {filteredRecords.map((record, index) => {
                 const config = recordTypeConfig[record.record_type] || recordTypeConfig.observacion;
                 const Icon = config.icon;
 

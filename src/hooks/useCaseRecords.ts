@@ -26,7 +26,8 @@ export interface SharedAccess {
 }
 
 export function useCaseRecords(studentId?: string) {
-  const { isDupla, profile } = useAuth();
+  const { isDupla, isAdmin, profile } = useAuth();
+  const hasAccess = isDupla || isAdmin;
   const [records, setRecords] = useState<CaseRecord[]>([]);
   const [sharedAccess, setSharedAccess] = useState<SharedAccess[]>([]);
   const [loading, setLoading] = useState(true);
@@ -45,8 +46,8 @@ export function useCaseRecords(studentId?: string) {
       if (error) throw error;
       setRecords(data || []);
 
-      // Fetch shared access if dupla
-      if (isDupla) {
+      // Fetch shared access if dupla or admin
+      if (hasAccess) {
         const { data: accessData } = await supabase
           .from("shared_case_access")
           .select("*")
@@ -59,7 +60,7 @@ export function useCaseRecords(studentId?: string) {
     } finally {
       setLoading(false);
     }
-  }, [studentId, isDupla]);
+  }, [studentId, hasAccess]);
 
   useEffect(() => {
     fetchRecords();
