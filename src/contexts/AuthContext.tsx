@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from "react
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 
-export type AppRole = "administrador" | "psicologo" | "trabajador_social" | "docente" | "estudiante";
+export type AppRole = "administrador" | "psicologo" | "trabajador_social" | "docente" | "estudiante" | "inspector_general" | "orientador";
 
 interface Profile {
   id: string;
@@ -27,7 +27,10 @@ interface AuthContextType {
   canSwitchRole: boolean;
   isAdmin: boolean;
   isDupla: boolean;
+  isInspector: boolean;
+  isOrientador: boolean;
   isTeacher: boolean;
+  hasPsychosocialAccess: boolean;
   isStudent: boolean;
 }
 
@@ -206,8 +209,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const canSwitchRole = import.meta.env.DEV;
   const isAdmin = activeRole === "administrador";
   const isDupla = activeRole === "psicologo" || activeRole === "trabajador_social";
+  const isInspector = activeRole === "inspector_general";
+  const isOrientador = activeRole === "orientador";
   const isTeacher = activeRole === "docente";
   const isStudent = activeRole === "estudiante";
+  // Dupla and Inspector have full psychosocial access (can manage files, grant access, etc.)
+  const hasPsychosocialAccess = isDupla || isInspector;
 
   return (
     <AuthContext.Provider
@@ -225,8 +232,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         canSwitchRole,
         isAdmin,
         isDupla,
+        isInspector,
+        isOrientador,
         isTeacher,
         isStudent,
+        hasPsychosocialAccess,
       }}
     >
       {children}

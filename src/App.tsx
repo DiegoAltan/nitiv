@@ -56,38 +56,38 @@ const App = () => (
                   </ProtectedRoute>
                 }
               />
-              {/* Teacher and Dupla: view students */}
+              {/* Teacher, Dupla, Inspector, Orientador: view students */}
               <Route
                 path="/students"
                 element={
-                  <ProtectedRoute allowedRoles={["docente", "psicologo", "trabajador_social"]}>
+                  <ProtectedRoute allowedRoles={["docente", "psicologo", "trabajador_social", "inspector_general", "orientador"]}>
                     <StudentsPage />
                   </ProtectedRoute>
                 }
               />
-              {/* Admin and Dupla: aggregated reports */}
+              {/* Admin, Dupla, Inspector: aggregated reports */}
               <Route
                 path="/reports"
                 element={
-                  <ProtectedRoute allowedRoles={["administrador", "psicologo", "trabajador_social"]}>
+                  <ProtectedRoute allowedRoles={["administrador", "psicologo", "trabajador_social", "inspector_general"]}>
                     <ReportsPage />
                   </ProtectedRoute>
                 }
               />
-              {/* Dupla only: alerts management */}
+              {/* Dupla, Inspector: full alerts management; Orientador: view only authorized */}
               <Route
                 path="/alerts"
                 element={
-                  <ProtectedRoute allowedRoles={["psicologo", "trabajador_social"]}>
+                  <ProtectedRoute allowedRoles={["psicologo", "trabajador_social", "inspector_general", "orientador"]}>
                     <AlertsPage />
                   </ProtectedRoute>
                 }
               />
-              {/* Fichas module: Dupla full, Admin stats only, Teachers with shared access */}
+              {/* Fichas module: Dupla/Inspector full, Admin stats only, Teachers/Orientador with shared access */}
               <Route
                 path="/fichas"
                 element={
-                  <ProtectedRoute allowedRoles={["psicologo", "trabajador_social", "administrador", "docente"]}>
+                  <ProtectedRoute allowedRoles={["psicologo", "trabajador_social", "administrador", "docente", "inspector_general", "orientador"]}>
                     <FichasPage />
                   </ProtectedRoute>
                 }
@@ -100,11 +100,11 @@ const App = () => (
                   </ProtectedRoute>
                 }
               />
-              {/* Student profile: Dupla has full access, Teacher limited access */}
+              {/* Student profile: Dupla/Inspector has full access, Teacher/Orientador limited access */}
               <Route
                 path="/students/:studentId"
                 element={
-                  <ProtectedRoute allowedRoles={["docente", "psicologo", "trabajador_social"]}>
+                  <ProtectedRoute allowedRoles={["docente", "psicologo", "trabajador_social", "inspector_general", "orientador"]}>
                     <StudentProfilePage />
                   </ProtectedRoute>
                 }

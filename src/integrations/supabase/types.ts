@@ -698,6 +698,10 @@ export type Database = {
         Args: { _student_profile_id: string }
         Returns: Database["public"]["Enums"]["file_access_status"]
       }
+      has_full_psychosocial_access: {
+        Args: { _user_id: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -707,8 +711,14 @@ export type Database = {
       }
       is_admin: { Args: { _user_id: string }; Returns: boolean }
       is_dupla: { Args: { _user_id: string }; Returns: boolean }
+      is_inspector: { Args: { _user_id: string }; Returns: boolean }
+      is_orientador: { Args: { _user_id: string }; Returns: boolean }
       is_student: { Args: { _user_id: string }; Returns: boolean }
       is_teacher: { Args: { _user_id: string }; Returns: boolean }
+      orientador_has_student_access: {
+        Args: { _orientador_user_id: string; _student_profile_id: string }
+        Returns: boolean
+      }
       teacher_has_extended_access: {
         Args: { _student_profile_id: string; _teacher_user_id: string }
         Returns: boolean
@@ -725,6 +735,8 @@ export type Database = {
         | "trabajador_social"
         | "docente"
         | "estudiante"
+        | "inspector_general"
+        | "orientador"
       file_access_status: "abierta" | "restringida" | "confidencial"
       severity_level: "leve" | "moderada" | "alta" | "critica"
     }
@@ -860,6 +872,8 @@ export const Constants = {
         "trabajador_social",
         "docente",
         "estudiante",
+        "inspector_general",
+        "orientador",
       ],
       file_access_status: ["abierta", "restringida", "confidencial"],
       severity_level: ["leve", "moderada", "alta", "critica"],

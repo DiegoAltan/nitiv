@@ -40,6 +40,8 @@ const allRoles: { value: AppRole; label: string; description: string; colorClass
   { value: "docente", label: "Docente", description: "Evaluación de estudiantes", colorClass: "bg-[hsl(var(--role-docente))]" },
   { value: "psicologo", label: "Psicólogo/a", description: "Dupla psicosocial", colorClass: "bg-[hsl(var(--role-psicologo))]" },
   { value: "trabajador_social", label: "Trabajador/a Social", description: "Dupla psicosocial", colorClass: "bg-[hsl(var(--role-trabajador-social))]" },
+  { value: "inspector_general", label: "Inspector General", description: "Convivencia escolar", colorClass: "bg-[hsl(var(--role-inspector))]" },
+  { value: "orientador", label: "Orientador/a", description: "Orientación estudiantil", colorClass: "bg-[hsl(var(--role-orientador))]" },
   { value: "administrador", label: "Administrador", description: "Gestión completa", colorClass: "bg-[hsl(var(--role-administrador))]" },
 ];
 
@@ -48,6 +50,8 @@ const roleBorderColors: Record<string, string> = {
   docente: "border-[hsl(var(--role-docente))]",
   psicologo: "border-[hsl(var(--role-psicologo))]",
   trabajador_social: "border-[hsl(var(--role-trabajador-social))]",
+  inspector_general: "border-[hsl(var(--role-inspector))]",
+  orientador: "border-[hsl(var(--role-orientador))]",
   administrador: "border-[hsl(var(--role-administrador))]",
 };
 
@@ -103,6 +107,8 @@ export default function SettingsPage() {
       trabajador_social: "Trabajador/a Social",
       docente: "Docente",
       estudiante: "Estudiante",
+      inspector_general: "Inspector General",
+      orientador: "Orientador/a",
     };
     return labels[role] || role;
   };
