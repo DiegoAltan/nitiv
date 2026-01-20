@@ -43,7 +43,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [selectedRole, setSelectedRole] = useState<AppRole | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchUserData = async (userId: string) => {
+  const fetchUserData = async (userId: string, isInitialLoad: boolean = false) => {
     try {
       // Fetch profile
       const { data: profileData } = await supabase
@@ -66,20 +66,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const userRoles = rolesData.map((r) => r.role as AppRole);
         setRoles(userRoles);
         
-        // Restore selected role from storage.
-        // In DEV we allow overriding to any role for testing.
-        const storedRole = sessionStorage.getItem(ROLE_STORAGE_KEY) as AppRole | null;
-        const canUseStored = import.meta.env.DEV
-          ? Boolean(storedRole)
-          : Boolean(storedRole && userRoles.includes(storedRole));
+        // Only set selected role on initial load or if not already set
+        // This prevents overwriting user's manual role selection during navigation
+        if (isInitialLoad || selectedRole === null) {
+          // Restore selected role from storage.
+          // In DEV we allow overriding to any role for testing.
+          const storedRole = sessionStorage.getItem(ROLE_STORAGE_KEY) as AppRole | null;
+          const canUseStored = import.meta.env.DEV
+            ? Boolean(storedRole)
+            : Boolean(storedRole && userRoles.includes(storedRole));
 
-        if (canUseStored && storedRole) {
-          setSelectedRole(storedRole);
-        } else if (userRoles.length > 0) {
-          // Default to first role if no valid stored role
-          setSelectedRole(userRoles[0]);
-        } else {
-          setSelectedRole(null);
+          if (canUseStored && storedRole) {
+            setSelectedRole(storedRole);
+          } else if (userRoles.length > 0) {
+            // Default to first role if no valid stored role
+            setSelectedRole(userRoles[0]);
+          } else {
+            setSelectedRole(null);
+          }
         }
       }
     } catch (error) {
@@ -88,6 +92,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
+    let initialLoadDone = false;
+    
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
@@ -95,10 +101,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(session?.user ?? null);
 
         if (session?.user) {
+          // Only treat as initial load for SIGNED_IN events, not for TOKEN_REFRESHED
+          const isInitialLoad = !initialLoadDone || event === 'SIGNED_IN';
           // Defer Supabase calls with setTimeout to prevent deadlock
           setTimeout(() => {
-            fetchUserData(session.user.id);
+            fetchUserData(session.user.id, isInitialLoad);
           }, 0);
+          initialLoadDone = true;
         } else {
           setProfile(null);
           setRoles([]);
@@ -114,7 +123,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
-        fetchUserData(session.user.id);
+        fetchUserData(session.user.id, true);
+        initialLoadDone = true;
       }
       setLoading(false);
     });
