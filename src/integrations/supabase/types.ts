@@ -712,6 +712,7 @@ export type Database = {
       is_admin: { Args: { _user_id: string }; Returns: boolean }
       is_dupla: { Args: { _user_id: string }; Returns: boolean }
       is_inspector: { Args: { _user_id: string }; Returns: boolean }
+      is_moderador: { Args: { _user_id: string }; Returns: boolean }
       is_orientador: { Args: { _user_id: string }; Returns: boolean }
       is_student: { Args: { _user_id: string }; Returns: boolean }
       is_teacher: { Args: { _user_id: string }; Returns: boolean }
@@ -737,6 +738,7 @@ export type Database = {
         | "estudiante"
         | "inspector_general"
         | "orientador"
+        | "moderador"
       file_access_status: "abierta" | "restringida" | "confidencial"
       severity_level: "leve" | "moderada" | "alta" | "critica"
     }
@@ -874,6 +876,7 @@ export const Constants = {
         "estudiante",
         "inspector_general",
         "orientador",
+        "moderador",
       ],
       file_access_status: ["abierta", "restringida", "confidencial"],
       severity_level: ["leve", "moderada", "alta", "critica"],
