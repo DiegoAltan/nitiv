@@ -17,9 +17,9 @@ const scaleLabels = [
 ];
 
 const sizeClasses = {
-  sm: "w-10 h-10 text-lg",
-  md: "w-14 h-14 text-2xl",
-  lg: "w-18 h-18 text-3xl",
+  sm: "w-8 h-8 text-base",
+  md: "w-10 h-10 text-xl",
+  lg: "w-12 h-12 text-2xl",
 };
 
 export function WellbeingScale({ 
@@ -29,8 +29,8 @@ export function WellbeingScale({
   size = "md" 
 }: WellbeingScaleProps) {
   return (
-    <div className="flex flex-col items-center gap-4">
-      <div className="flex items-center gap-3">
+    <div className="flex flex-col items-center gap-2 w-full max-w-xs mx-auto">
+      <div className="flex items-center justify-center gap-2 flex-wrap">
         {scaleLabels.map((item) => (
           <motion.button
             key={item.value}
