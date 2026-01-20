@@ -35,13 +35,21 @@ const themeOptions: { value: ThemeOption; label: string; icon: React.ElementType
   { value: "system", label: "Sistema", icon: Monitor },
 ];
 
-const allRoles: { value: AppRole; label: string; description: string }[] = [
-  { value: "estudiante", label: "Estudiante", description: "Registro de bienestar personal" },
-  { value: "docente", label: "Docente", description: "Evaluación de estudiantes" },
-  { value: "psicologo", label: "Psicólogo/a", description: "Dupla psicosocial" },
-  { value: "trabajador_social", label: "Trabajador/a Social", description: "Dupla psicosocial" },
-  { value: "administrador", label: "Administrador", description: "Gestión completa" },
+const allRoles: { value: AppRole; label: string; description: string; colorClass: string }[] = [
+  { value: "estudiante", label: "Estudiante", description: "Registro de bienestar personal", colorClass: "bg-[hsl(var(--role-estudiante))]" },
+  { value: "docente", label: "Docente", description: "Evaluación de estudiantes", colorClass: "bg-[hsl(var(--role-docente))]" },
+  { value: "psicologo", label: "Psicólogo/a", description: "Dupla psicosocial", colorClass: "bg-[hsl(var(--role-psicologo))]" },
+  { value: "trabajador_social", label: "Trabajador/a Social", description: "Dupla psicosocial", colorClass: "bg-[hsl(var(--role-trabajador-social))]" },
+  { value: "administrador", label: "Administrador", description: "Gestión completa", colorClass: "bg-[hsl(var(--role-administrador))]" },
 ];
+
+const roleBorderColors: Record<string, string> = {
+  estudiante: "border-[hsl(var(--role-estudiante))]",
+  docente: "border-[hsl(var(--role-docente))]",
+  psicologo: "border-[hsl(var(--role-psicologo))]",
+  trabajador_social: "border-[hsl(var(--role-trabajador-social))]",
+  administrador: "border-[hsl(var(--role-administrador))]",
+};
 
 export default function SettingsPage() {
   const { profile, signOut, roles, activeRole, switchRole, canSwitchRole, isStudent } = useAuth();
@@ -237,23 +245,35 @@ export default function SettingsPage() {
                     key={role.value}
                     onClick={() => handleSwitchRole(role.value)}
                     className={cn(
-                      "flex flex-col items-start gap-1 p-4 rounded-xl border-2 transition-all text-left",
+                      "flex flex-col items-start gap-2 p-4 rounded-xl border-2 transition-all text-left relative overflow-hidden",
                       currentRole === role.value
-                        ? "border-primary bg-primary/10"
-                        : "border-border hover:border-primary/50 bg-card"
+                        ? `${roleBorderColors[role.value]} bg-card shadow-md`
+                        : "border-border hover:border-muted-foreground/30 bg-card"
                     )}
                   >
-                    <span
-                      className={cn(
-                        "font-semibold",
-                        currentRole === role.value ? "text-primary" : "text-foreground"
-                      )}
-                    >
-                      {role.label}
-                    </span>
+                    {/* Color indicator */}
+                    <div className="flex items-center gap-2">
+                      <div className={cn("w-3 h-3 rounded-full", role.colorClass)} />
+                      <span
+                        className={cn(
+                          "font-semibold",
+                          currentRole === role.value ? "text-foreground" : "text-foreground"
+                        )}
+                      >
+                        {role.label}
+                      </span>
+                    </div>
                     <span className="text-xs text-muted-foreground">
                       {role.description}
                     </span>
+                    {currentRole === role.value && (
+                      <div className={cn(
+                        "absolute top-0 right-0 px-2 py-0.5 text-xs font-medium text-white rounded-bl-lg",
+                        role.colorClass
+                      )}>
+                        Activo
+                      </div>
+                    )}
                   </button>
                 ))}
               </div>

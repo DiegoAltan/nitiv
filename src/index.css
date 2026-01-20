@@ -108,6 +108,13 @@
     --level-4: 290 50% 60%;
     --level-5: 320 55% 60%;
 
+    /* Role colors - Pastel palette */
+    --role-estudiante: 195 70% 65%;
+    --role-docente: 145 55% 55%;
+    --role-psicologo: 265 60% 68%;
+    --role-trabajador-social: 320 55% 68%;
+    --role-administrador: 25 75% 62%;
+
     /* Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(265, 65%, 65%), hsl(290, 55%, 70%));
     --gradient-wellbeing: linear-gradient(135deg, hsl(160, 55%, 48%), hsl(145, 50%, 55%));
@@ -183,6 +190,13 @@
     --level-3: 265 60% 65%;
     --level-4: 290 55% 65%;
     --level-5: 320 60% 65%;
+
+    /* Role colors - Adjusted for dark mode */
+    --role-estudiante: 195 65% 60%;
+    --role-docente: 145 50% 50%;
+    --role-psicologo: 265 55% 65%;
+    --role-trabajador-social: 320 50% 65%;
+    --role-administrador: 25 70% 58%;
 
     /* Wellbeing scale - adjusted for dark mode */
     --wellbeing-1: 355 65% 60%;
