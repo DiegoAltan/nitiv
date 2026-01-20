@@ -37,6 +37,7 @@ interface CreateRecordDialogProps {
 interface StudentOption {
   id: string;
   full_name: string;
+  course_name?: string;
 }
 
 const recordTypes = [
@@ -93,12 +94,27 @@ export function CreateRecordDialog({ open, onOpenChange, onSuccess }: CreateReco
         
         const { data: profilesData } = await supabase
           .from("profiles")
-          .select("id, full_name")
+          .select("id, full_name, user_id")
           .in("user_id", userIds)
           .order("full_name");
 
-        setStudents(profilesData || []);
-        setFilteredStudents(profilesData || []);
+        if (profilesData && profilesData.length > 0) {
+          // Fetch courses for these students
+          const studentIds = profilesData.map(p => p.id);
+          const { data: coursesData } = await supabase
+            .from("student_courses")
+            .select("student_id, courses(name)")
+            .in("student_id", studentIds);
+
+          const studentsWithCourses = profilesData.map(p => ({
+            id: p.id,
+            full_name: p.full_name,
+            course_name: (coursesData?.find(c => c.student_id === p.id)?.courses as any)?.name || undefined,
+          }));
+
+          setStudents(studentsWithCourses);
+          setFilteredStudents(studentsWithCourses);
+        }
       }
     } catch (error) {
       console.error("Error fetching students:", error);
@@ -241,7 +257,12 @@ export function CreateRecordDialog({ open, onOpenChange, onSuccess }: CreateReco
                         <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary text-sm font-medium">
                           {student.full_name.split(" ").map(n => n[0]).slice(0, 2).join("")}
                         </div>
-                        <span>{student.full_name}</span>
+                        <div className="flex-1">
+                          <span className="block">{student.full_name}</span>
+                          {student.course_name && (
+                            <span className="text-xs text-muted-foreground">{student.course_name}</span>
+                          )}
+                        </div>
                       </button>
                     ))
                   )}
@@ -251,6 +272,7 @@ export function CreateRecordDialog({ open, onOpenChange, onSuccess }: CreateReco
             {selectedStudent && (
               <Badge variant="secondary" className="gap-1">
                 {selectedStudent.full_name}
+                {selectedStudent.course_name && <span className="text-muted-foreground">• {selectedStudent.course_name}</span>}
                 <button
                   type="button"
                   onClick={() => {
