@@ -7,7 +7,8 @@ import {
   ArrowRight,
   Shield,
   Eye,
-  Search
+  Search,
+  FolderOpen
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatCard } from "@/components/ui/StatCard";
@@ -19,6 +20,7 @@ import { Badge } from "@/components/ui/badge";
 import { StudentFileCard } from "@/components/students/StudentFileCard";
 import { useStudentData } from "@/hooks/useStudentData";
 import { useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -290,6 +292,49 @@ export function DuplaDashboard() {
           </Card>
         </motion.div>
       )}
+
+      {/* Student Case Files Section */}
+      <motion.div variants={itemVariants}>
+        <Card className="card-elevated">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle className="text-lg font-display flex items-center gap-2">
+              <FolderOpen className="w-5 h-5 text-primary" />
+              Fichas de Estudiantes
+            </CardTitle>
+            <Button variant="ghost" size="sm" onClick={() => navigate("/students")}>
+              Ver todos <ArrowRight className="w-4 h-4 ml-1" />
+            </Button>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground mb-4">
+              Accede a las fichas de seguimiento de cada estudiante. Puedes agregar registros de conducta, atenciones, citas y más.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {students.slice(0, 6).map((student, index) => (
+                <motion.div
+                  key={student.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  className="p-4 rounded-xl bg-muted/30 border border-border/50 hover:border-primary/30 cursor-pointer transition-all"
+                  onClick={() => navigate(`/students/${student.id}`)}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-gradient-hero flex items-center justify-center text-white text-sm font-bold">
+                      {student.full_name.split(" ").map(n => n[0]).slice(0, 2).join("")}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium truncate">{student.full_name}</p>
+                      <p className="text-xs text-muted-foreground truncate">{student.course || "Sin curso"}</p>
+                    </div>
+                    <FileText className="w-4 h-4 text-muted-foreground" />
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
 
       {/* Quick Access */}
       <motion.div variants={itemVariants}>
