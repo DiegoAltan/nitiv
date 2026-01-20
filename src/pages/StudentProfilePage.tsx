@@ -8,7 +8,9 @@ import {
   ClipboardCheck, 
   Calendar,
   TrendingUp,
-  MessageSquare
+  MessageSquare,
+  Shield,
+  Lock
 } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Button } from "@/components/ui/button";
@@ -21,6 +23,7 @@ import { AlertBadge } from "@/components/ui/AlertBadge";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface StudentProfile {
   id: string;
@@ -57,11 +60,16 @@ interface Alert {
 export default function StudentProfilePage() {
   const { studentId } = useParams<{ studentId: string }>();
   const navigate = useNavigate();
+  const { isTeacher, isDupla } = useAuth();
   const [student, setStudent] = useState<StudentProfile | null>(null);
   const [wellbeingRecords, setWellbeingRecords] = useState<WellbeingRecord[]>([]);
   const [evaluations, setEvaluations] = useState<TeacherEvaluation[]>([]);
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fileStatus, setFileStatus] = useState<string>("abierta");
+
+  // Teachers have limited access - they can only see basic indicators, not comments or sensitive details
+  const hasFullAccess = isDupla;
 
   useEffect(() => {
     if (studentId) {
@@ -116,15 +124,28 @@ export default function StudentProfilePage() {
         setEvaluations(evalData.map(e => ({ ...e, teacher: null })));
       }
 
-      // Fetch alerts
-      const { data: alertsData } = await supabase
-        .from("alerts")
-        .select("*")
-        .eq("student_id", studentId)
-        .order("created_at", { ascending: false });
+      // Fetch alerts - only for dupla
+      if (isDupla) {
+        const { data: alertsData } = await supabase
+          .from("alerts")
+          .select("*")
+          .eq("student_id", studentId)
+          .order("created_at", { ascending: false });
 
-      if (alertsData) {
-        setAlerts(alertsData);
+        if (alertsData) {
+          setAlerts(alertsData);
+        }
+
+        // Fetch file status
+        const { data: fileData } = await supabase
+          .from("student_files")
+          .select("access_status")
+          .eq("student_id", studentId)
+          .maybeSingle();
+
+        if (fileData) {
+          setFileStatus(fileData.access_status);
+        }
       }
     } catch (error) {
       console.error("Error fetching student data:", error);
@@ -209,7 +230,24 @@ export default function StudentProfilePage() {
             </div>
             <div>
               <h2 className="text-2xl font-display font-bold">{student.full_name}</h2>
-              <p className="text-muted-foreground">{student.email}</p>
+              {hasFullAccess && student.email && (
+                <p className="text-muted-foreground">{student.email}</p>
+              )}
+              {hasFullAccess && (
+                <div className="flex items-center gap-2 mt-1">
+                  <Badge 
+                    variant="outline"
+                    className={
+                      fileStatus === "confidencial" ? "border-alert text-alert" :
+                      fileStatus === "restringida" ? "border-warning text-warning" :
+                      "border-success text-success"
+                    }
+                  >
+                    <Shield className="w-3 h-3 mr-1" />
+                    Ficha {fileStatus}
+                  </Badge>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -249,18 +287,33 @@ export default function StudentProfilePage() {
               </div>
             </CardContent>
           </Card>
-          <Card className={`card-elevated ${activeAlerts > 0 ? "border-l-4 border-l-alert" : ""}`}>
-            <CardContent className="p-4 flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-alert/10 flex items-center justify-center">
-                <AlertTriangle className="w-6 h-6 text-alert" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{activeAlerts}</p>
-                <p className="text-sm text-muted-foreground">Alertas activas</p>
-              </div>
+          {hasFullAccess && (
+            <Card className={`card-elevated ${activeAlerts > 0 ? "border-l-4 border-l-alert" : ""}`}>
+              <CardContent className="p-4 flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-alert/10 flex items-center justify-center">
+                  <AlertTriangle className="w-6 h-6 text-alert" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold">{activeAlerts}</p>
+                  <p className="text-sm text-muted-foreground">Alertas activas</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+
+        {/* Teacher limited access notice */}
+        {isTeacher && !isDupla && (
+          <Card className="card-elevated border-warning/30 bg-warning/5">
+            <CardContent className="p-4 flex items-center gap-3">
+              <Lock className="w-5 h-5 text-warning" />
+              <p className="text-sm text-muted-foreground">
+                Como docente, puedes ver indicadores generales de bienestar. Para acceder a comentarios 
+                sensibles o fichas completas, contacta al equipo psicosocial.
+              </p>
             </CardContent>
           </Card>
-        </div>
+        )}
 
         {/* Tabs */}
         <Tabs defaultValue="wellbeing" className="space-y-6">
@@ -273,10 +326,12 @@ export default function StudentProfilePage() {
               <ClipboardCheck className="w-4 h-4 mr-2" />
               Evaluaciones
             </TabsTrigger>
-            <TabsTrigger value="alerts" className="rounded-lg">
-              <AlertTriangle className="w-4 h-4 mr-2" />
-              Alertas
-            </TabsTrigger>
+            {hasFullAccess && (
+              <TabsTrigger value="alerts" className="rounded-lg">
+                <AlertTriangle className="w-4 h-4 mr-2" />
+                Alertas
+              </TabsTrigger>
+            )}
           </TabsList>
 
           {/* Wellbeing Tab */}
@@ -330,7 +385,8 @@ export default function StudentProfilePage() {
                                 ))}
                               </div>
                             )}
-                            {record.comment && (
+                            {/* Comments only visible to Dupla */}
+                            {hasFullAccess && record.comment && (
                               <p className="text-sm text-muted-foreground mt-2 flex items-start gap-1">
                                 <MessageSquare className="w-3 h-3 mt-0.5 flex-shrink-0" />
                                 {record.comment}

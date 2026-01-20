@@ -97,6 +97,50 @@ export type Database = {
           },
         ]
       }
+      file_access_logs: {
+        Row: {
+          changed_by: string
+          created_at: string
+          id: string
+          new_status: Database["public"]["Enums"]["file_access_status"]
+          previous_status:
+            | Database["public"]["Enums"]["file_access_status"]
+            | null
+          reason: string | null
+          student_file_id: string
+        }
+        Insert: {
+          changed_by: string
+          created_at?: string
+          id?: string
+          new_status: Database["public"]["Enums"]["file_access_status"]
+          previous_status?:
+            | Database["public"]["Enums"]["file_access_status"]
+            | null
+          reason?: string | null
+          student_file_id: string
+        }
+        Update: {
+          changed_by?: string
+          created_at?: string
+          id?: string
+          new_status?: Database["public"]["Enums"]["file_access_status"]
+          previous_status?:
+            | Database["public"]["Enums"]["file_access_status"]
+            | null
+          reason?: string | null
+          student_file_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "file_access_logs_student_file_id_fkey"
+            columns: ["student_file_id"]
+            isOneToOne: false
+            referencedRelation: "student_files"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       institutions: {
         Row: {
           created_at: string
@@ -195,6 +239,41 @@ export type Database = {
           },
         ]
       }
+      student_files: {
+        Row: {
+          access_status: Database["public"]["Enums"]["file_access_status"]
+          created_at: string
+          id: string
+          restricted_reason: string | null
+          student_id: string
+          updated_at: string
+        }
+        Insert: {
+          access_status?: Database["public"]["Enums"]["file_access_status"]
+          created_at?: string
+          id?: string
+          restricted_reason?: string | null
+          student_id: string
+          updated_at?: string
+        }
+        Update: {
+          access_status?: Database["public"]["Enums"]["file_access_status"]
+          created_at?: string
+          id?: string
+          restricted_reason?: string | null
+          student_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_files_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       teacher_courses: {
         Row: {
           course_id: string
@@ -269,6 +348,51 @@ export type Database = {
           },
           {
             foreignKeyName: "teacher_evaluations_teacher_id_fkey"
+            columns: ["teacher_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      teacher_student_access: {
+        Row: {
+          access_level: string
+          expires_at: string | null
+          granted_at: string
+          granted_by: string
+          id: string
+          student_id: string
+          teacher_id: string
+        }
+        Insert: {
+          access_level?: string
+          expires_at?: string | null
+          granted_at?: string
+          granted_by: string
+          id?: string
+          student_id: string
+          teacher_id: string
+        }
+        Update: {
+          access_level?: string
+          expires_at?: string | null
+          granted_at?: string
+          granted_by?: string
+          id?: string
+          student_id?: string
+          teacher_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "teacher_student_access_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "teacher_student_access_teacher_id_fkey"
             columns: ["teacher_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -375,6 +499,10 @@ export type Database = {
     Functions: {
       get_institution_id: { Args: { _user_id: string }; Returns: string }
       get_profile_id: { Args: { _user_id: string }; Returns: string }
+      get_student_file_status: {
+        Args: { _student_profile_id: string }
+        Returns: Database["public"]["Enums"]["file_access_status"]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -386,6 +514,10 @@ export type Database = {
       is_dupla: { Args: { _user_id: string }; Returns: boolean }
       is_student: { Args: { _user_id: string }; Returns: boolean }
       is_teacher: { Args: { _user_id: string }; Returns: boolean }
+      teacher_has_extended_access: {
+        Args: { _student_profile_id: string; _teacher_user_id: string }
+        Returns: boolean
+      }
       teacher_has_student_access: {
         Args: { _student_profile_id: string; _teacher_user_id: string }
         Returns: boolean
@@ -398,6 +530,7 @@ export type Database = {
         | "trabajador_social"
         | "docente"
         | "estudiante"
+      file_access_status: "abierta" | "restringida" | "confidencial"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -532,6 +665,7 @@ export const Constants = {
         "docente",
         "estudiante",
       ],
+      file_access_status: ["abierta", "restringida", "confidencial"],
     },
   },
 } as const

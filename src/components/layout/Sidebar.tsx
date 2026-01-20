@@ -18,11 +18,14 @@ import { useAuth } from "@/contexts/AuthContext";
 
 const navigation = [
   { name: "Dashboard", href: "/", icon: LayoutDashboard },
-  { name: "Mi Bienestar", href: "/wellbeing", icon: Heart },
-  { name: "Evaluación Docente", href: "/teacher-assessment", icon: ClipboardCheck, roles: ["docente", "administrador", "psicologo", "trabajador_social"] },
-  { name: "Estudiantes", href: "/students", icon: Users, roles: ["docente", "administrador", "psicologo", "trabajador_social"] },
-  { name: "Reportes", href: "/reports", icon: BarChart3, roles: ["docente", "administrador", "psicologo", "trabajador_social"] },
-  { name: "Alertas", href: "/alerts", icon: Bell, roles: ["administrador", "psicologo", "trabajador_social"] },
+  // Student only
+  { name: "Mi Bienestar", href: "/wellbeing", icon: Heart, roles: ["estudiante"] },
+  // Teacher, Dupla, Admin
+  { name: "Evaluación Docente", href: "/teacher-assessment", icon: ClipboardCheck, roles: ["docente"] },
+  { name: "Estudiantes", href: "/students", icon: Users, roles: ["docente", "psicologo", "trabajador_social"] },
+  // Dupla and Admin
+  { name: "Reportes", href: "/reports", icon: BarChart3, roles: ["administrador", "psicologo", "trabajador_social"] },
+  { name: "Alertas", href: "/alerts", icon: Bell, roles: ["psicologo", "trabajador_social"] },
 ];
 
 const bottomNavigation = [
