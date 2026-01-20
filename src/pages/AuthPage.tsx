@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { GraduationCap, Mail, Lock, User, Eye, EyeOff, ArrowRight } from "lucide-react";
+import { Brain, Mail, Lock, User, Eye, EyeOff, ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -143,7 +143,7 @@ export default function AuthPage() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="min-h-screen flex items-center justify-center bg-pattern-auth">
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
@@ -154,12 +154,12 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-background via-background to-primary/5 p-4">
-      {/* Decorative elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/5 rounded-full blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-secondary/5 rounded-full blur-3xl" />
-      </div>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-pattern-auth p-4 relative overflow-hidden">
+      {/* Floating abstract shapes */}
+      <div className="floating-shape w-96 h-96 bg-primary/20 -top-20 -left-20" style={{ animationDelay: '0s' }} />
+      <div className="floating-shape w-80 h-80 bg-secondary/25 top-1/4 -right-20" style={{ animationDelay: '-7s' }} />
+      <div className="floating-shape w-64 h-64 bg-accent/30 bottom-20 left-1/4" style={{ animationDelay: '-14s' }} />
+      <div className="floating-shape w-72 h-72 bg-primary/15 -bottom-20 right-1/3" style={{ animationDelay: '-5s' }} />
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -169,21 +169,42 @@ export default function AuthPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
+            initial={{ scale: 0, rotate: -180 }}
+            animate={{ scale: 1, rotate: 0 }}
             transition={{ type: "spring", stiffness: 200, damping: 15 }}
-            className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-hero flex items-center justify-center shadow-lg"
+            className="w-20 h-20 mx-auto mb-5 rounded-3xl bg-gradient-hero flex items-center justify-center shadow-elevated relative"
           >
-            <GraduationCap className="w-8 h-8 text-white" />
+            <Brain className="w-10 h-10 text-white" />
+            <motion.div
+              className="absolute -top-1 -right-1"
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              <Sparkles className="w-5 h-5 text-warning" />
+            </motion.div>
           </motion.div>
-          <h1 className="text-2xl font-display font-bold text-foreground">BienestarEscolar</h1>
-          <p className="text-muted-foreground mt-1">Monitoreo socioemocional preventivo</p>
+          <motion.h1 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="text-3xl font-display font-extrabold text-gradient-hero"
+          >
+            Nitiv
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="text-muted-foreground mt-2"
+          >
+            Bienestar estudiantil inteligente
+          </motion.p>
         </div>
 
-        <Card className="card-elevated border-0 shadow-elevated">
+        <Card className="card-glass border-0 shadow-elevated backdrop-blur-xl">
           <CardHeader className="text-center pb-4">
             <CardTitle className="text-xl font-display">
-              {isLogin ? "Iniciar sesión" : "Crear cuenta"}
+              {isLogin ? "Bienvenido de vuelta" : "Crea tu cuenta"}
             </CardTitle>
             <CardDescription>
               {isLogin
@@ -212,7 +233,7 @@ export default function AuthPage() {
                           placeholder="Tu nombre completo"
                           value={fullName}
                           onChange={(e) => setFullName(e.target.value)}
-                          className="pl-10"
+                          className="pl-10 rounded-xl bg-background/50 border-border/50 focus:border-primary"
                         />
                       </div>
                     </div>
@@ -220,10 +241,10 @@ export default function AuthPage() {
                     <div className="space-y-2">
                       <Label htmlFor="role">Rol</Label>
                       <Select value={role} onValueChange={(v) => setRole(v as AppRole)}>
-                        <SelectTrigger>
+                        <SelectTrigger className="rounded-xl bg-background/50 border-border/50">
                           <SelectValue placeholder="Selecciona tu rol" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="rounded-xl">
                           {Object.entries(roleLabels).map(([value, label]) => (
                             <SelectItem key={value} value={value}>
                               <div className="flex flex-col">
@@ -254,7 +275,7 @@ export default function AuthPage() {
                       setEmail(e.target.value);
                       setErrors((prev) => ({ ...prev, email: undefined }));
                     }}
-                    className={`pl-10 ${errors.email ? "border-destructive" : ""}`}
+                    className={`pl-10 rounded-xl bg-background/50 border-border/50 focus:border-primary ${errors.email ? "border-destructive" : ""}`}
                   />
                 </div>
                 {errors.email && (
@@ -275,12 +296,12 @@ export default function AuthPage() {
                       setPassword(e.target.value);
                       setErrors((prev) => ({ ...prev, password: undefined }));
                     }}
-                    className={`pl-10 pr-10 ${errors.password ? "border-destructive" : ""}`}
+                    className={`pl-10 pr-10 rounded-xl bg-background/50 border-border/50 focus:border-primary ${errors.password ? "border-destructive" : ""}`}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -293,7 +314,7 @@ export default function AuthPage() {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gradient-hero hover:opacity-90"
+                className="w-full bg-gradient-hero hover:opacity-90 rounded-xl h-12 text-base font-semibold shadow-lg"
                 size="lg"
               >
                 {loading ? (
@@ -323,12 +344,12 @@ export default function AuthPage() {
                 {isLogin ? (
                   <>
                     ¿No tienes cuenta?{" "}
-                    <span className="text-primary font-medium">Regístrate</span>
+                    <span className="text-primary font-semibold">Regístrate</span>
                   </>
                 ) : (
                   <>
                     ¿Ya tienes cuenta?{" "}
-                    <span className="text-primary font-medium">Inicia sesión</span>
+                    <span className="text-primary font-semibold">Inicia sesión</span>
                   </>
                 )}
               </button>
@@ -336,9 +357,14 @@ export default function AuthPage() {
           </CardContent>
         </Card>
 
-        <p className="text-center text-xs text-muted-foreground mt-6">
-          Plataforma de monitoreo socioemocional preventivo
-        </p>
+        <motion.p 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="text-center text-xs text-muted-foreground mt-6"
+        >
+          Plataforma de bienestar estudiantil
+        </motion.p>
       </motion.div>
     </div>
   );

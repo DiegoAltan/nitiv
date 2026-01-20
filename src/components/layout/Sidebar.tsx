@@ -11,17 +11,18 @@ import {
   Heart,
   ChevronLeft,
   ChevronRight,
-  GraduationCap,
+  Brain,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
 
 const navigation = [
   { name: "Dashboard", href: "/", icon: LayoutDashboard },
   { name: "Mi Bienestar", href: "/wellbeing", icon: Heart },
-  { name: "Evaluación Docente", href: "/teacher-assessment", icon: ClipboardCheck },
-  { name: "Estudiantes", href: "/students", icon: Users },
-  { name: "Reportes", href: "/reports", icon: BarChart3 },
-  { name: "Alertas", href: "/alerts", icon: Bell },
+  { name: "Evaluación Docente", href: "/teacher-assessment", icon: ClipboardCheck, roles: ["docente", "administrador", "psicologo", "trabajador_social"] },
+  { name: "Estudiantes", href: "/students", icon: Users, roles: ["docente", "administrador", "psicologo", "trabajador_social"] },
+  { name: "Reportes", href: "/reports", icon: BarChart3, roles: ["docente", "administrador", "psicologo", "trabajador_social"] },
+  { name: "Alertas", href: "/alerts", icon: Bell, roles: ["administrador", "psicologo", "trabajador_social"] },
 ];
 
 const bottomNavigation = [
@@ -31,6 +32,12 @@ const bottomNavigation = [
 export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
+  const { roles } = useAuth();
+
+  const filteredNavigation = navigation.filter((item) => {
+    if (!item.roles) return true;
+    return item.roles.some((role) => roles.includes(role as any));
+  });
 
   return (
     <motion.aside
@@ -41,8 +48,8 @@ export function Sidebar() {
       {/* Logo */}
       <div className="h-16 flex items-center px-4 border-b border-sidebar-border">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-hero flex items-center justify-center">
-            <GraduationCap className="w-6 h-6 text-white" />
+          <div className="w-10 h-10 rounded-xl bg-gradient-hero flex items-center justify-center shadow-md">
+            <Brain className="w-5 h-5 text-white" />
           </div>
           {!collapsed && (
             <motion.div
@@ -50,8 +57,8 @@ export function Sidebar() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-              <h1 className="font-display font-bold text-lg text-sidebar-foreground">
-                BienestarEscolar
+              <h1 className="font-display font-extrabold text-xl text-gradient-hero">
+                Nitiv
               </h1>
             </motion.div>
           )}
@@ -59,17 +66,17 @@ export function Sidebar() {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
-        {navigation.map((item) => {
+      <nav className="flex-1 p-3 space-y-1.5 overflow-y-auto">
+        {filteredNavigation.map((item) => {
           const isActive = location.pathname === item.href;
           return (
             <NavLink
               key={item.name}
               to={item.href}
               className={cn(
-                "flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium transition-all duration-200",
+                "flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all duration-200",
                 isActive
-                  ? "bg-sidebar-primary text-sidebar-primary-foreground"
+                  ? "bg-gradient-hero text-white shadow-md"
                   : "text-sidebar-foreground hover:bg-sidebar-accent"
               )}
             >
@@ -84,7 +91,7 @@ export function Sidebar() {
                 </motion.span>
               )}
               {isActive && item.name === "Alertas" && (
-                <span className="ml-auto bg-alert text-alert-foreground text-xs font-bold px-2 py-0.5 rounded-full">
+                <span className="ml-auto bg-white/20 text-white text-xs font-bold px-2 py-0.5 rounded-full">
                   3
                 </span>
               )}
@@ -100,9 +107,9 @@ export function Sidebar() {
             key={item.name}
             to={item.href}
             className={cn(
-              "flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium transition-all duration-200",
+              "flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all duration-200",
               location.pathname === item.href
-                ? "bg-sidebar-primary text-sidebar-primary-foreground"
+                ? "bg-gradient-hero text-white shadow-md"
                 : "text-sidebar-foreground hover:bg-sidebar-accent"
             )}
           >

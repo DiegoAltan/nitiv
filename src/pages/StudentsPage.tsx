@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Search, Filter, Users, AlertTriangle, Heart, ChevronRight } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
@@ -43,6 +44,7 @@ const wellbeingFilters = ["Todos", "Bajo (1-2)", "Medio (3)", "Alto (4-5)"];
 const alertFilters = ["Todos", "Con alertas", "Sin alertas"];
 
 export default function StudentsPage() {
+  const navigate = useNavigate();
   const [students, setStudents] = useState<Student[]>(mockStudents);
   const [searchQuery, setSearchQuery] = useState("");
   const [courseFilter, setCourseFilter] = useState("Todos");
@@ -184,6 +186,7 @@ export default function StudentsPage() {
               transition={{ delay: index * 0.05 }}
             >
               <Card
+                onClick={() => navigate(`/students/${student.id}`)}
                 className={cn(
                   "card-elevated hover:shadow-lg transition-all cursor-pointer group",
                   student.hasAlert && "border-l-4 border-l-alert"
