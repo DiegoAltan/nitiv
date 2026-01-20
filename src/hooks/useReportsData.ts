@@ -70,19 +70,20 @@ export function useReportsData(selectedCourse?: string, selectedStudent?: string
     lowWellbeingCount: 0,
   });
 
+  // Distinct vibrant colors for each emotion
   const emotionColors: Record<string, string> = {
-    "Alegría": "hsl(var(--emotion-joy))",
-    "Calma": "hsl(var(--emotion-calm))",
-    "Ansiedad": "hsl(var(--emotion-anxiety))",
-    "Tristeza": "hsl(var(--emotion-sadness))",
-    "Enojo": "hsl(var(--emotion-anger))",
-    "Cansancio": "hsl(var(--emotion-tiredness))",
-    "Gratitud": "hsl(var(--wellbeing-5))",
-    "Motivación": "hsl(var(--wellbeing-4))",
-    "Frustración": "hsl(var(--wellbeing-2))",
-    "Preocupación": "hsl(var(--emotion-anxiety))",
-    "Esperanza": "hsl(var(--wellbeing-5))",
-    "Aburrimiento": "hsl(var(--muted-foreground))",
+    "Alegría": "#FFD93D",
+    "Calma": "#6BCB77",
+    "Ansiedad": "#9B59B6",
+    "Tristeza": "#5DADE2",
+    "Enojo": "#E74C3C",
+    "Cansancio": "#95A5A6",
+    "Gratitud": "#27AE60",
+    "Motivación": "#F39C12",
+    "Frustración": "#E67E22",
+    "Preocupación": "#8E44AD",
+    "Esperanza": "#1ABC9C",
+    "Aburrimiento": "#7F8C8D",
   };
 
   const fetchData = async () => {
