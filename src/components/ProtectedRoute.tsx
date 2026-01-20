@@ -9,7 +9,7 @@ interface ProtectedRouteProps {
 }
 
 export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
-  const { user, roles, loading } = useAuth();
+  const { user, roles, activeRole, loading, canSwitchRole } = useAuth();
 
   if (loading) {
     return (
@@ -27,9 +27,14 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
     return <Navigate to="/auth" replace />;
   }
 
-  // Check if user has any of the allowed roles
+  // Check if user has any of the allowed roles.
+  // In DEV we allow testing by switching the active role (client-side) without changing DB roles.
+  const effectiveRoles: AppRole[] = import.meta.env.DEV && canSwitchRole && activeRole
+    ? [activeRole]
+    : roles;
+
   if (allowedRoles && allowedRoles.length > 0) {
-    const hasAllowedRole = allowedRoles.some((role) => roles.includes(role));
+    const hasAllowedRole = allowedRoles.some((role) => effectiveRoles.includes(role));
     if (!hasAllowedRole) {
       return <Navigate to="/" replace />;
     }
