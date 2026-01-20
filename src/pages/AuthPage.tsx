@@ -155,11 +155,6 @@ export default function AuthPage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-pattern-auth p-4 relative overflow-hidden">
-      {/* Floating abstract shapes */}
-      <div className="floating-shape w-96 h-96 bg-primary/20 -top-20 -left-20" style={{ animationDelay: '0s' }} />
-      <div className="floating-shape w-80 h-80 bg-secondary/25 top-1/4 -right-20" style={{ animationDelay: '-7s' }} />
-      <div className="floating-shape w-64 h-64 bg-accent/30 bottom-20 left-1/4" style={{ animationDelay: '-14s' }} />
-      <div className="floating-shape w-72 h-72 bg-primary/15 -bottom-20 right-1/3" style={{ animationDelay: '-5s' }} />
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}

@@ -11,6 +11,7 @@ import {
   LogOut,
   Save,
   Palette,
+  UserCog,
 } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -20,7 +21,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth, AppRole } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { cn } from "@/lib/utils";
 
@@ -32,8 +33,16 @@ const themeOptions: { value: ThemeOption; label: string; icon: React.ElementType
   { value: "system", label: "Sistema", icon: Monitor },
 ];
 
+const allRoles: { value: AppRole; label: string; description: string }[] = [
+  { value: "estudiante", label: "Estudiante", description: "Registro de bienestar personal" },
+  { value: "docente", label: "Docente", description: "Evaluación de estudiantes" },
+  { value: "psicologo", label: "Psicólogo/a", description: "Dupla psicosocial" },
+  { value: "trabajador_social", label: "Trabajador/a Social", description: "Dupla psicosocial" },
+  { value: "administrador", label: "Administrador", description: "Gestión completa" },
+];
+
 export default function SettingsPage() {
-  const { profile, signOut, roles } = useAuth();
+  const { profile, signOut, roles, switchRole } = useAuth();
   const { theme, setTheme } = useTheme();
   const { toast } = useToast();
 
@@ -43,6 +52,8 @@ export default function SettingsPage() {
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [weeklySummary, setWeeklySummary] = useState(true);
   const [saving, setSaving] = useState(false);
+
+  const currentRole = roles[0];
 
   useEffect(() => {
     if (profile) {
@@ -64,6 +75,14 @@ export default function SettingsPage() {
 
   const handleSignOut = async () => {
     await signOut();
+  };
+
+  const handleSwitchRole = (role: AppRole) => {
+    switchRole(role);
+    toast({
+      title: "Perfil cambiado",
+      description: `Ahora estás viendo como: ${allRoles.find(r => r.value === role)?.label}`,
+    });
   };
 
   const getRoleLabel = (role: string) => {
@@ -160,11 +179,58 @@ export default function SettingsPage() {
           </Card>
         </motion.div>
 
-        {/* Appearance Section */}
+        {/* Role Switcher Section (Dev Mode) */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
+        >
+          <Card className="card-elevated border-2 border-dashed border-warning/50 bg-warning-light/30">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 font-display">
+                <UserCog className="w-5 h-5 text-warning" />
+                Cambiar Perfil (Modo Desarrollo)
+              </CardTitle>
+              <CardDescription>
+                Prueba la aplicación con diferentes roles de usuario
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                {allRoles.map((role) => (
+                  <button
+                    key={role.value}
+                    onClick={() => handleSwitchRole(role.value)}
+                    className={cn(
+                      "flex flex-col items-start gap-1 p-4 rounded-xl border-2 transition-all text-left",
+                      currentRole === role.value
+                        ? "border-primary bg-primary/10"
+                        : "border-border hover:border-primary/50 bg-card"
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "font-semibold",
+                        currentRole === role.value ? "text-primary" : "text-foreground"
+                      )}
+                    >
+                      {role.label}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {role.description}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Appearance Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
         >
           <Card className="card-elevated">
             <CardHeader>
@@ -215,7 +281,7 @@ export default function SettingsPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
+          transition={{ delay: 0.3 }}
         >
           <Card className="card-elevated">
             <CardHeader>
@@ -279,7 +345,7 @@ export default function SettingsPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
+          transition={{ delay: 0.4 }}
         >
           <Card className="card-elevated">
             <CardHeader>
