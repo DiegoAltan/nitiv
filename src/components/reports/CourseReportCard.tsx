@@ -109,7 +109,7 @@ export function CourseReportCard({ course, onClick, isSelected }: CourseReportCa
                 variant={course.discrepancy > 0.5 ? "destructive" : "secondary"}
                 className="text-xs"
               >
-                {course.discrepancy > 0.5 ? "Alta" : course.discrepancy > 0.2 ? "Moderada" : "Baja"}: {course.discrepancy}
+                {course.discrepancy > 0.5 ? "Alta" : course.discrepancy > 0.2 ? "Moderada" : "Baja"}
               </Badge>
             </div>
           )}
