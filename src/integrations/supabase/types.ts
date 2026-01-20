@@ -256,7 +256,9 @@ export type Database = {
           description: string | null
           id: string
           record_type: string
+          severity_level: Database["public"]["Enums"]["severity_level"] | null
           student_id: string
+          tags: string[] | null
           title: string
           updated_at: string
         }
@@ -267,7 +269,9 @@ export type Database = {
           description?: string | null
           id?: string
           record_type: string
+          severity_level?: Database["public"]["Enums"]["severity_level"] | null
           student_id: string
+          tags?: string[] | null
           title: string
           updated_at?: string
         }
@@ -278,7 +282,9 @@ export type Database = {
           description?: string | null
           id?: string
           record_type?: string
+          severity_level?: Database["public"]["Enums"]["severity_level"] | null
           student_id?: string
+          tags?: string[] | null
           title?: string
           updated_at?: string
         }
@@ -720,6 +726,7 @@ export type Database = {
         | "docente"
         | "estudiante"
       file_access_status: "abierta" | "restringida" | "confidencial"
+      severity_level: "leve" | "moderada" | "alta" | "critica"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -855,6 +862,7 @@ export const Constants = {
         "estudiante",
       ],
       file_access_status: ["abierta", "restringida", "confidencial"],
+      severity_level: ["leve", "moderada", "alta", "critica"],
     },
   },
 } as const

@@ -45,7 +45,14 @@ import { DateRange } from "react-day-picker";
 interface CaseRecordsListProps {
   records: CaseRecord[];
   loading: boolean;
-  onAddRecord: (data: { record_type: string; title: string; description?: string; date_recorded?: string }) => Promise<CaseRecord | null>;
+  onAddRecord: (data: { 
+    record_type: string; 
+    title: string; 
+    description?: string; 
+    date_recorded?: string;
+    severity_level?: string;
+    tags?: string[];
+  }) => Promise<CaseRecord | null>;
   onUpdateRecord: (id: string, data: Partial<CaseRecord>) => Promise<boolean>;
   onDeleteRecord: (id: string) => Promise<boolean>;
   onExport: () => void;
@@ -58,6 +65,13 @@ const recordTypeConfig: Record<string, { label: string; icon: typeof FileText; c
   cita: { label: "Cita", icon: Calendar, color: "bg-secondary/10 text-secondary-foreground border-secondary/30" },
   observacion: { label: "Observación", icon: MessageSquare, color: "bg-accent/10 text-accent-foreground border-accent/30" },
   seguimiento: { label: "Seguimiento", icon: Clipboard, color: "bg-success/10 text-success border-success/30" },
+};
+
+const severityConfig: Record<string, { label: string; color: string }> = {
+  leve: { label: "Leve", color: "bg-success/10 text-success border-success/30" },
+  moderada: { label: "Moderada", color: "bg-warning/10 text-warning border-warning/30" },
+  alta: { label: "Alta", color: "bg-orange-100 text-orange-700 border-orange-300 dark:bg-orange-900/20 dark:text-orange-400" },
+  critica: { label: "Crítica", color: "bg-alert/10 text-alert border-alert/30" },
 };
 
 export function CaseRecordsList({
@@ -302,6 +316,11 @@ export function CaseRecordsList({
                             <Badge variant="outline" className={config.color}>
                               {config.label}
                             </Badge>
+                            {record.severity_level && severityConfig[record.severity_level] && (
+                              <Badge variant="outline" className={severityConfig[record.severity_level].color}>
+                                {severityConfig[record.severity_level].label}
+                              </Badge>
+                            )}
                             <span className="text-xs text-muted-foreground">
                               {format(new Date(record.date_recorded), "d 'de' MMMM, yyyy", { locale: es })}
                             </span>
@@ -311,6 +330,15 @@ export function CaseRecordsList({
                             <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
                               {record.description}
                             </p>
+                          )}
+                          {record.tags && record.tags.length > 0 && (
+                            <div className="flex flex-wrap gap-1 mt-2">
+                              {record.tags.map((tag) => (
+                                <Badge key={tag} variant="secondary" className="text-xs px-1.5 py-0">
+                                  {tag}
+                                </Badge>
+                              ))}
+                            </div>
                           )}
                         </div>
                       </div>

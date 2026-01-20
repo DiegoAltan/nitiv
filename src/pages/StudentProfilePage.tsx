@@ -28,6 +28,7 @@ import { es } from "date-fns/locale";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCaseRecords } from "@/hooks/useCaseRecords";
 import { CaseRecordsList } from "@/components/fichas/CaseRecordsList";
+import { FichaSummaryCharts } from "@/components/fichas/FichaSummaryCharts";
 import { ShareAccessDialog } from "@/components/fichas/ShareAccessDialog";
 import { exportFichaToHTML } from "@/utils/exportFicha";
 
@@ -508,6 +509,10 @@ export default function StudentProfilePage() {
                   Compartir Acceso
                 </Button>
               </div>
+
+              {/* Summary Charts */}
+              <FichaSummaryCharts records={caseRecords} />
+
               <CaseRecordsList
                 records={caseRecords}
                 loading={caseLoading}

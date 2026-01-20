@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
+export type SeverityLevel = "leve" | "moderada" | "alta" | "critica";
+
 export interface CaseRecord {
   id: string;
   student_id: string;
@@ -12,6 +14,8 @@ export interface CaseRecord {
   created_by: string;
   created_at: string;
   updated_at: string;
+  severity_level: SeverityLevel | null;
+  tags: string[] | null;
 }
 
 export interface SharedAccess {
@@ -71,6 +75,8 @@ export function useCaseRecords(studentId?: string) {
     title: string;
     description?: string;
     date_recorded?: string;
+    severity_level?: SeverityLevel;
+    tags?: string[];
   }) => {
     if (!studentId || !profile?.id) return null;
 
@@ -84,6 +90,8 @@ export function useCaseRecords(studentId?: string) {
           description: data.description || null,
           date_recorded: data.date_recorded || new Date().toISOString().split("T")[0],
           created_by: profile.id,
+          severity_level: data.severity_level || "moderada",
+          tags: data.tags || [],
         })
         .select()
         .single();
