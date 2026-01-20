@@ -15,6 +15,7 @@ import ReportsPage from "./pages/ReportsPage";
 import SettingsPage from "./pages/SettingsPage";
 import AuthPage from "./pages/AuthPage";
 import StudentProfilePage from "./pages/StudentProfilePage";
+import FichasPage from "./pages/FichasPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -79,6 +80,15 @@ const App = () => (
                 element={
                   <ProtectedRoute allowedRoles={["psicologo", "trabajador_social"]}>
                     <AlertsPage />
+                  </ProtectedRoute>
+                }
+              />
+              {/* Fichas module: Dupla full, Admin stats only, Teachers with shared access */}
+              <Route
+                path="/fichas"
+                element={
+                  <ProtectedRoute allowedRoles={["psicologo", "trabajador_social", "administrador", "docente"]}>
+                    <FichasPage />
                   </ProtectedRoute>
                 }
               />

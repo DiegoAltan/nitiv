@@ -12,6 +12,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Brain,
+  FileText,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
@@ -23,6 +24,8 @@ const navigation = [
   // Teacher, Dupla, Admin
   { name: "Evaluación Docente", href: "/teacher-assessment", icon: ClipboardCheck, roles: ["docente"] },
   { name: "Estudiantes", href: "/students", icon: Users, roles: ["docente", "psicologo", "trabajador_social"] },
+  // Dupla, Admin, Teachers with shared access
+  { name: "Fichas/Registros", href: "/fichas", icon: FileText, roles: ["psicologo", "trabajador_social", "administrador", "docente"] },
   // Dupla and Admin
   { name: "Reportes", href: "/reports", icon: BarChart3, roles: ["administrador", "psicologo", "trabajador_social"] },
   { name: "Alertas", href: "/alerts", icon: Bell, roles: ["psicologo", "trabajador_social"] },
