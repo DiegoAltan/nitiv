@@ -116,7 +116,7 @@ export function DuplaDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Active Alerts */}
         <motion.div variants={itemVariants}>
-          <Card className="card-elevated h-full">
+          <Card className="border-0 bg-card/80 backdrop-blur-xl shadow-lg h-full">
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-lg font-display flex items-center gap-2">
                 <AlertTriangle className="w-5 h-5 text-alert" />
@@ -139,7 +139,7 @@ export function DuplaDashboard() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.1 }}
-                      className="p-3 rounded-lg border border-border hover:border-primary/30 transition-colors cursor-pointer"
+                      className="p-3 rounded-xl bg-muted/30 backdrop-blur-sm border border-border/50 hover:border-primary/30 transition-all cursor-pointer"
                       onClick={() => navigate(`/students/${alert.student_id}`)}
                     >
                       <div className="flex items-center justify-between mb-2">
@@ -162,7 +162,7 @@ export function DuplaDashboard() {
 
         {/* Discrepancy Cases */}
         <motion.div variants={itemVariants}>
-          <Card className="card-elevated h-full">
+          <Card className="border-0 bg-card/80 backdrop-blur-xl shadow-lg h-full">
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-lg font-display flex items-center gap-2">
                 <Eye className="w-5 h-5 text-warning" />
@@ -185,7 +185,7 @@ export function DuplaDashboard() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.1 }}
-                      className="p-3 rounded-lg border border-warning/30 bg-warning/5 cursor-pointer hover:border-warning/50"
+                      className="p-3 rounded-xl bg-warning/10 backdrop-blur-sm border border-warning/30 cursor-pointer hover:border-warning/50 transition-all"
                       onClick={() => navigate(`/students/${item.student_id}`)}
                     >
                       <div className="flex items-center justify-between mb-2">
@@ -204,7 +204,7 @@ export function DuplaDashboard() {
 
       {/* File Status Overview */}
       <motion.div variants={itemVariants}>
-        <Card className="card-elevated">
+        <Card className="border-0 bg-card/80 backdrop-blur-xl shadow-lg">
           <CardHeader>
             <CardTitle className="text-lg font-display flex items-center gap-2">
               <FileText className="w-5 h-5 text-primary" />
@@ -213,7 +213,7 @@ export function DuplaDashboard() {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="p-4 rounded-xl bg-success/10 border border-success/20">
+              <div className="p-4 rounded-xl bg-success/10 backdrop-blur-sm border border-success/20">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-success">Abiertas</span>
                   <Badge variant="outline" className="border-success text-success">
@@ -224,7 +224,7 @@ export function DuplaDashboard() {
                   Acceso normal para docentes de curso
                 </p>
               </div>
-              <div className="p-4 rounded-xl bg-warning/10 border border-warning/20">
+              <div className="p-4 rounded-xl bg-warning/10 backdrop-blur-sm border border-warning/20">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-warning">Restringidas</span>
                   <Badge variant="outline" className="border-warning text-warning">
@@ -235,7 +235,7 @@ export function DuplaDashboard() {
                   Requieren autorización para acceso docente
                 </p>
               </div>
-              <div className="p-4 rounded-xl bg-alert/10 border border-alert/20">
+              <div className="p-4 rounded-xl bg-alert/10 backdrop-blur-sm border border-alert/20">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-alert">Confidenciales</span>
                   <Badge variant="outline" className="border-alert text-alert">
