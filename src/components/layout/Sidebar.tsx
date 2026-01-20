@@ -21,14 +21,16 @@ const navigation = [
   { name: "Dashboard", href: "/", icon: LayoutDashboard },
   // Student only
   { name: "Mi Bienestar", href: "/wellbeing", icon: Heart, roles: ["estudiante"] },
-  // Teacher, Dupla, Admin
+  // Teacher
   { name: "Evaluación Docente", href: "/teacher-assessment", icon: ClipboardCheck, roles: ["docente"] },
-  { name: "Estudiantes", href: "/students", icon: Users, roles: ["docente", "psicologo", "trabajador_social"] },
-  // Dupla, Admin, Teachers with shared access
-  { name: "Fichas/Registros", href: "/fichas", icon: FileText, roles: ["psicologo", "trabajador_social", "administrador", "docente"] },
-  // Dupla and Admin
-  { name: "Reportes", href: "/reports", icon: BarChart3, roles: ["administrador", "psicologo", "trabajador_social"] },
-  { name: "Alertas", href: "/alerts", icon: Bell, roles: ["psicologo", "trabajador_social"] },
+  // Teacher, Dupla, Inspector, Orientador (with access)
+  { name: "Estudiantes", href: "/students", icon: Users, roles: ["docente", "psicologo", "trabajador_social", "inspector_general", "orientador"] },
+  // Dupla, Admin, Inspector, Teachers with shared access, Orientador with access
+  { name: "Fichas/Registros", href: "/fichas", icon: FileText, roles: ["psicologo", "trabajador_social", "administrador", "docente", "inspector_general", "orientador"] },
+  // Dupla, Admin, Inspector
+  { name: "Reportes", href: "/reports", icon: BarChart3, roles: ["administrador", "psicologo", "trabajador_social", "inspector_general"] },
+  // Dupla, Inspector (full access), Orientador (limited)
+  { name: "Alertas", href: "/alerts", icon: Bell, roles: ["psicologo", "trabajador_social", "inspector_general", "orientador"] },
 ];
 
 const bottomNavigation = [

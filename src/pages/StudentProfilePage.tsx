@@ -67,7 +67,7 @@ interface Alert {
 export default function StudentProfilePage() {
   const { studentId } = useParams<{ studentId: string }>();
   const navigate = useNavigate();
-  const { isTeacher, isDupla, isAdmin } = useAuth();
+  const { isTeacher, isDupla, isAdmin, isInspector, isOrientador, hasPsychosocialAccess } = useAuth();
   const [student, setStudent] = useState<StudentProfile | null>(null);
   const [wellbeingRecords, setWellbeingRecords] = useState<WellbeingRecord[]>([]);
   const [evaluations, setEvaluations] = useState<TeacherEvaluation[]>([]);
@@ -76,7 +76,7 @@ export default function StudentProfilePage() {
   const [fileStatus, setFileStatus] = useState<string>("abierta");
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
 
-  // Case records hook for dupla
+  // Case records hook for dupla/inspector
   const {
     records: caseRecords,
     sharedAccess,
@@ -88,8 +88,10 @@ export default function StudentProfilePage() {
     revokeAccess,
   } = useCaseRecords(studentId);
 
-  // Teachers have limited access - they can only see basic indicators, not comments or sensitive details
-  const hasFullAccess = isDupla || isAdmin;
+  // Dupla, Inspector, and Admin have full access. Orientador only if they have shared access.
+  const hasFullAccess = hasPsychosocialAccess || isAdmin;
+  // Can manage files and grant access - only Dupla and Inspector
+  const canManageFiles = hasPsychosocialAccess;
 
   useEffect(() => {
     if (studentId) {

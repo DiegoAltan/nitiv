@@ -26,6 +26,8 @@ const roleLabels: Record<string, string> = {
   trabajador_social: "Trabajador/a Social",
   docente: "Docente",
   estudiante: "Estudiante",
+  inspector_general: "Inspector General",
+  orientador: "Orientador/a",
 };
 
 const roleColors: Record<string, string> = {
@@ -34,6 +36,8 @@ const roleColors: Record<string, string> = {
   psicologo: "bg-[hsl(var(--role-psicologo))]",
   trabajador_social: "bg-[hsl(var(--role-trabajador-social))]",
   administrador: "bg-[hsl(var(--role-administrador))]",
+  inspector_general: "bg-[hsl(var(--role-inspector))]",
+  orientador: "bg-[hsl(var(--role-orientador))]",
 };
 
 const roleBorderColors: Record<string, string> = {
@@ -42,9 +46,11 @@ const roleBorderColors: Record<string, string> = {
   psicologo: "border-[hsl(var(--role-psicologo))]",
   trabajador_social: "border-[hsl(var(--role-trabajador-social))]",
   administrador: "border-[hsl(var(--role-administrador))]",
+  inspector_general: "border-[hsl(var(--role-inspector))]",
+  orientador: "border-[hsl(var(--role-orientador))]",
 };
 
-const allRoles: AppRole[] = ["estudiante", "docente", "psicologo", "trabajador_social", "administrador"];
+const allRoles: AppRole[] = ["estudiante", "docente", "psicologo", "trabajador_social", "inspector_general", "orientador", "administrador"];
 
 export function Header({ title, subtitle }: HeaderProps) {
   const { profile, roles, activeRole, switchRole, canSwitchRole, signOut } = useAuth();

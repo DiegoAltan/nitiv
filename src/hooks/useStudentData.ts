@@ -31,7 +31,7 @@ export interface FileStatusCounts {
 }
 
 export function useStudentData() {
-  const { profile, isDupla, isTeacher, isAdmin } = useAuth();
+  const { profile, isDupla, isTeacher, isAdmin, isInspector, isOrientador, hasPsychosocialAccess } = useAuth();
   const [students, setStudents] = useState<StudentWithData[]>([]);
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [fileStatusCounts, setFileStatusCounts] = useState<FileStatusCounts>({
@@ -106,9 +106,9 @@ export function useStudentData() {
         }
       });
 
-      // Fetch alerts if dupla or admin
+      // Fetch alerts if has psychosocial access or admin
       let alertsData: Alert[] = [];
-      if (isDupla || isAdmin) {
+      if (hasPsychosocialAccess || isAdmin) {
         const { data: rawAlerts } = await supabase
           .from("alerts")
           .select("*")
@@ -127,8 +127,8 @@ export function useStudentData() {
         setAlerts(alertsData);
       }
 
-      // Fetch student file statuses if dupla
-      if (isDupla) {
+      // Fetch student file statuses if has psychosocial access
+      if (hasPsychosocialAccess) {
         const { data: filesData } = await supabase
           .from("student_files")
           .select("student_id, access_status");
@@ -199,7 +199,7 @@ export function useStudentData() {
 
   useEffect(() => {
     fetchData();
-  }, [profile, isDupla, isTeacher, isAdmin]);
+  }, [profile, hasPsychosocialAccess, isTeacher, isAdmin]);
 
   return {
     students,

@@ -113,6 +113,8 @@
     --role-docente: 145 55% 55%;
     --role-psicologo: 265 60% 68%;
     --role-trabajador-social: 320 55% 68%;
+    --role-inspector: 35 75% 58%;
+    --role-orientador: 175 55% 55%;
     --role-administrador: 25 75% 62%;
 
     /* Gradients */
@@ -196,6 +198,8 @@
     --role-docente: 145 50% 50%;
     --role-psicologo: 265 55% 65%;
     --role-trabajador-social: 320 50% 65%;
+    --role-inspector: 35 70% 55%;
+    --role-orientador: 175 50% 50%;
     --role-administrador: 25 70% 58%;
 
     /* Wellbeing scale - adjusted for dark mode */
