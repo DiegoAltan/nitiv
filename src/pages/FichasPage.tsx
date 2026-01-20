@@ -125,12 +125,20 @@ export default function FichasPage() {
           .in("student_id", studentIds)
           .neq("status", "resuelta");
 
+        // Fetch student courses
+        const { data: studentCoursesData } = await supabase
+          .from("student_courses")
+          .select("student_id, course_id, courses(name)")
+          .in("student_id", studentIds);
+
         // Build fichas list
         const fichasList: FichaListItem[] = studentIds.map(studentId => {
           const studentRecords = recordsData?.filter(r => r.student_id === studentId) || [];
           const profile = profilesData?.find(p => p.id === studentId);
           const file = filesData?.find(f => f.student_id === studentId);
           const alertCount = alertsData?.filter(a => a.student_id === studentId).length || 0;
+          const studentCourse = studentCoursesData?.find(sc => sc.student_id === studentId);
+          const courseName = (studentCourse?.courses as any)?.name || null;
           
           // Get highest severity from records
           const severities = studentRecords.map(r => r.severity_level).filter(Boolean);
@@ -145,7 +153,7 @@ export default function FichasPage() {
           return {
             studentId,
             studentName: profile?.full_name || "Desconocido",
-            courseName: null, // Would need course join
+            courseName,
             fileStatus: file?.access_status || "abierta",
             severityLevel: highestSeverity,
             activeAlerts: alertCount,
@@ -191,9 +199,17 @@ export default function FichasPage() {
             .select("student_id, severity_level, tags, updated_at")
             .in("student_id", studentIds);
 
+          // Fetch student courses
+          const { data: studentCoursesData } = await supabase
+            .from("student_courses")
+            .select("student_id, course_id, courses(name)")
+            .in("student_id", studentIds);
+
           const fichasList: FichaListItem[] = studentIds.map(studentId => {
             const studentRecords = recordsData?.filter(r => r.student_id === studentId) || [];
             const profile = profilesData?.find(p => p.id === studentId);
+            const studentCourse = studentCoursesData?.find(sc => sc.student_id === studentId);
+            const courseName = (studentCourse?.courses as any)?.name || null;
             const severities = studentRecords.map(r => r.severity_level).filter(Boolean);
             const highestSeverity = getHighestSeverity(severities as string[]);
             const allTags = [...new Set(studentRecords.flatMap(r => r.tags || []))];
@@ -202,7 +218,7 @@ export default function FichasPage() {
             return {
               studentId,
               studentName: profile?.full_name || "Desconocido",
-              courseName: null,
+              courseName,
               fileStatus: "abierta",
               severityLevel: highestSeverity,
               activeAlerts: 0,
@@ -476,6 +492,7 @@ export default function FichasPage() {
                     <TableHeader>
                       <TableRow>
                         <TableHead>Estudiante</TableHead>
+                        <TableHead>Curso</TableHead>
                         <TableHead>Gravedad</TableHead>
                         {isDupla && <TableHead>Estado</TableHead>}
                         <TableHead>Alertas</TableHead>
@@ -514,6 +531,15 @@ export default function FichasPage() {
                                 )}
                               </div>
                             </div>
+                          </TableCell>
+                          <TableCell>
+                            {ficha.courseName ? (
+                              <Badge variant="secondary" className="font-medium">
+                                {ficha.courseName}
+                              </Badge>
+                            ) : (
+                              <span className="text-muted-foreground text-sm">—</span>
+                            )}
                           </TableCell>
                           <TableCell>
                             {ficha.severityLevel ? (
