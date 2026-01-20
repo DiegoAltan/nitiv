@@ -52,13 +52,14 @@ export function useStudentData() {
     setLoading(true);
 
     try {
-      // Fetch profiles (students) with their course info
-      const { data: profilesData } = await supabase
-        .from("profiles")
-        .select("id, full_name, email, avatar_url")
-        .order("full_name");
+      // First, get all user IDs that have a role (non-students)
+      const { data: usersWithRoles } = await supabase
+        .from("user_roles")
+        .select("user_id");
+      
+      const nonStudentIds = new Set(usersWithRoles?.map(u => u.user_id) || []);
 
-      // Fetch student courses to get course names
+      // Fetch student courses to get course names and identify students
       const { data: studentCoursesData } = await supabase
         .from("student_courses")
         .select(`
@@ -70,13 +71,26 @@ export function useStudentData() {
           )
         `);
 
-      // Map student to course
+      // Map student to course and identify students
       const studentCourseMap: Record<string, string> = {};
+      const studentIds = new Set<string>();
       studentCoursesData?.forEach((sc: any) => {
         if (sc.courses) {
           studentCourseMap[sc.student_id] = sc.courses.name;
+          studentIds.add(sc.student_id);
         }
       });
+
+      // Fetch profiles for students only (those in student_courses or without roles)
+      const { data: profilesData } = await supabase
+        .from("profiles")
+        .select("id, full_name, email, avatar_url")
+        .order("full_name");
+
+      // Filter to only include students (either in student_courses or without roles)
+      const studentProfiles = profilesData?.filter(p => 
+        studentIds.has(p.id) || !nonStudentIds.has(p.id)
+      ) || [];
 
       // Fetch wellbeing records for latest wellbeing
       const { data: wellbeingData } = await supabase
@@ -100,9 +114,9 @@ export function useStudentData() {
           .select("*")
           .order("created_at", { ascending: false });
 
-        if (rawAlerts && profilesData) {
+        if (rawAlerts && studentProfiles) {
           alertsData = rawAlerts.map((alert) => {
-            const student = profilesData.find((p) => p.id === alert.student_id);
+            const student = studentProfiles.find((p) => p.id === alert.student_id);
             return {
               ...alert,
               student_name: student?.full_name || "Estudiante",
@@ -130,25 +144,23 @@ export function useStudentData() {
         });
 
         // Count students without explicit file status as "abierta"
-        const studentsWithoutFile = (profilesData?.length || 0) - (filesData?.length || 0);
+        const studentsWithoutFile = studentProfiles.length - (filesData?.length || 0);
         counts.abierta += studentsWithoutFile;
         
         setFileStatusCounts(counts);
 
         // Add file status and course to students
-        if (profilesData) {
-          const studentsWithStatus: StudentWithData[] = profilesData.map((p) => ({
-            ...p,
-            course: studentCourseMap[p.id],
-            lastWellbeing: latestWellbeing[p.id],
-            hasAlert: alertsData.some((a) => a.student_id === p.id && a.status !== "resuelta"),
-            fileStatus: (fileStatusMap[p.id] as "abierta" | "restringida" | "confidencial") || "abierta",
-          }));
-          setStudents(studentsWithStatus);
-        }
-      } else if (profilesData) {
+        const studentsWithStatus: StudentWithData[] = studentProfiles.map((p) => ({
+          ...p,
+          course: studentCourseMap[p.id],
+          lastWellbeing: latestWellbeing[p.id],
+          hasAlert: alertsData.some((a) => a.student_id === p.id && a.status !== "resuelta"),
+          fileStatus: (fileStatusMap[p.id] as "abierta" | "restringida" | "confidencial") || "abierta",
+        }));
+        setStudents(studentsWithStatus);
+      } else {
         // For teachers, just basic info with course
-        const studentsBasic: StudentWithData[] = profilesData.map((p) => ({
+        const studentsBasic: StudentWithData[] = studentProfiles.map((p) => ({
           ...p,
           course: studentCourseMap[p.id],
           lastWellbeing: latestWellbeing[p.id],
@@ -172,7 +184,7 @@ export function useStudentData() {
       const uniqueStudentsToday = new Set(todayRecords.map((r) => r.student_id)).size;
 
       setStats({
-        totalStudents: profilesData?.length || 0,
+        totalStudents: studentProfiles.length,
         activeAlerts: activeAlertsCount,
         averageWellbeing: Math.round(avgWellbeing * 10) / 10,
         todayParticipation: uniqueStudentsToday,
