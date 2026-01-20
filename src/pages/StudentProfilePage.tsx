@@ -377,9 +377,13 @@ export default function StudentProfilePage() {
                               {format(new Date(record.recorded_at), "EEEE, d 'de' MMMM", { locale: es })}
                             </p>
                             {record.emotions && record.emotions.length > 0 && (
-                              <div className="flex gap-1 mt-1">
+                              <div className="flex flex-wrap gap-1 mt-1 max-w-full overflow-hidden">
                                 {record.emotions.map((emotion) => (
-                                  <Badge key={emotion} variant="secondary" className="text-xs">
+                                  <Badge 
+                                    key={emotion} 
+                                    variant="secondary" 
+                                    className="text-xs whitespace-nowrap shrink-0 max-w-[100px] truncate"
+                                  >
                                     {emotion}
                                   </Badge>
                                 ))}

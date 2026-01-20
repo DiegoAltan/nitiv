@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { BarChart3, TrendingUp, Users, Download, Calendar } from "lucide-react";
+import { BarChart3, TrendingUp, Users, Download, Calendar, FileSpreadsheet, FileText } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   AreaChart,
@@ -29,6 +35,8 @@ import {
   Pie,
   Cell,
 } from "recharts";
+import { exportToCSV, exportToHTML, getReportData } from "@/utils/exportReport";
+import { toast } from "sonner";
 
 // Mock data for charts
 const weeklyTrend = [
@@ -83,6 +91,18 @@ export default function ReportsPage() {
   const [period, setPeriod] = useState("week");
   const [selectedLevel, setSelectedLevel] = useState("all");
 
+  const handleExportCSV = () => {
+    const data = getReportData(period, weeklyTrend, courseComparison, emotionDistribution);
+    exportToCSV(data);
+    toast.success("Reporte CSV descargado correctamente");
+  };
+
+  const handleExportHTML = () => {
+    const data = getReportData(period, weeklyTrend, courseComparison, emotionDistribution);
+    exportToHTML(data);
+    toast.success("Reporte HTML descargado correctamente");
+  };
+
   return (
     <AppLayout title="Reportes" subtitle="Visualizaciones y análisis del bienestar escolar">
       <div className="space-y-6">
@@ -112,10 +132,24 @@ export default function ReportsPage() {
               </SelectContent>
             </Select>
           </div>
-          <Button variant="outline" className="gap-2">
-            <Download className="w-4 h-4" />
-            Exportar reporte
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="gap-2">
+                <Download className="w-4 h-4" />
+                Exportar reporte
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={handleExportCSV}>
+                <FileSpreadsheet className="w-4 h-4 mr-2" />
+                Descargar como CSV (Excel)
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleExportHTML}>
+                <FileText className="w-4 h-4 mr-2" />
+                Descargar como HTML (Word)
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         {/* Summary Cards */}

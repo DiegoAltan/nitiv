@@ -6,16 +6,19 @@ import {
   TrendingUp, 
   ArrowRight,
   Shield,
-  Eye
+  Eye,
+  Search
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatCard } from "@/components/ui/StatCard";
 import { AlertBadge } from "@/components/ui/AlertBadge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
-import { WellbeingScale } from "@/components/ui/WellbeingScale";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
+import { StudentFileCard } from "@/components/students/StudentFileCard";
+import { useStudentData } from "@/hooks/useStudentData";
+import { useState } from "react";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -30,26 +33,44 @@ const itemVariants = {
   visible: { opacity: 1, y: 0 },
 };
 
-// Sample data - will be replaced with real data
-const recentAlerts = [
-  { id: 1, student: "Estudiante A", studentId: "1", type: "sustained-low" as const, course: "8°A", date: "Hace 2h" },
-  { id: 2, student: "Estudiante B", studentId: "2", type: "discrepancy" as const, course: "7°B", date: "Hace 5h" },
-  { id: 3, student: "Estudiante C", studentId: "3", type: "low-wellbeing" as const, course: "6°A", date: "Hoy" },
-];
-
-const discrepancyCases = [
-  { id: 1, student: "Estudiante D", studentId: "4", studentLevel: 4, teacherLevel: "bajo", course: "8°A" },
-  { id: 2, student: "Estudiante E", studentId: "5", studentLevel: 2, teacherLevel: "alto", course: "7°B" },
-];
-
-const fileStatusCounts = {
-  abierta: 820,
-  restringida: 18,
-  confidencial: 9,
-};
-
 export function DuplaDashboard() {
   const navigate = useNavigate();
+  const { students, alerts, fileStatusCounts, stats, loading, refetch } = useStudentData();
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const activeAlerts = alerts.filter((a) => a.status !== "resuelta").slice(0, 5);
+  
+  // Find discrepancy cases from alerts
+  const discrepancyCases = alerts
+    .filter((a) => a.alert_type === "discrepancia" && a.status !== "resuelta")
+    .slice(0, 4);
+
+  // Filter students with restricted/confidential status
+  const restrictedStudents = students
+    .filter((s) => s.fileStatus === "restringida" || s.fileStatus === "confidencial")
+    .filter((s) => s.full_name.toLowerCase().includes(searchQuery.toLowerCase()))
+    .slice(0, 6);
+
+  const getAlertType = (type: string): "low-wellbeing" | "sustained-low" | "discrepancy" => {
+    switch (type) {
+      case "bienestar_bajo": return "low-wellbeing";
+      case "sostenido_bajo": return "sustained-low";
+      case "discrepancia": return "discrepancy";
+      default: return "low-wellbeing";
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full"
+        />
+      </div>
+    );
+  }
 
   return (
     <motion.div
@@ -62,14 +83,14 @@ export function DuplaDashboard() {
       <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <StatCard
           title="Total Estudiantes"
-          value="847"
+          value={String(stats.totalStudents)}
           subtitle="En seguimiento"
           icon={Users}
           variant="primary"
         />
         <StatCard
           title="Alertas Activas"
-          value="7"
+          value={String(stats.activeAlerts)}
           subtitle="Requieren atención"
           icon={AlertTriangle}
           variant="alert"
@@ -83,7 +104,7 @@ export function DuplaDashboard() {
         />
         <StatCard
           title="Bienestar Promedio"
-          value="3.8"
+          value={String(stats.averageWellbeing || "N/A")}
           subtitle="Institucional"
           icon={TrendingUp}
           trend={{ value: 2, isPositive: true }}
@@ -106,27 +127,35 @@ export function DuplaDashboard() {
               </Button>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
-                {recentAlerts.map((alert, index) => (
-                  <motion.div
-                    key={alert.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="p-3 rounded-lg border border-border hover:border-primary/30 transition-colors cursor-pointer"
-                    onClick={() => navigate(`/students/${alert.studentId}`)}
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <p className="font-medium">{alert.student}</p>
-                        <span className="text-xs text-muted-foreground">{alert.course}</span>
+              {activeAlerts.length === 0 ? (
+                <p className="text-center text-muted-foreground py-8">
+                  No hay alertas activas
+                </p>
+              ) : (
+                <div className="space-y-3">
+                  {activeAlerts.map((alert, index) => (
+                    <motion.div
+                      key={alert.id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="p-3 rounded-lg border border-border hover:border-primary/30 transition-colors cursor-pointer"
+                      onClick={() => navigate(`/students/${alert.student_id}`)}
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <p className="font-medium">{alert.student_name}</p>
+                          <span className="text-xs text-muted-foreground">{alert.course}</span>
+                        </div>
+                        <span className="text-xs text-muted-foreground">
+                          {new Date(alert.created_at).toLocaleDateString()}
+                        </span>
                       </div>
-                      <span className="text-xs text-muted-foreground">{alert.date}</span>
-                    </div>
-                    <AlertBadge type={alert.type} />
-                  </motion.div>
-                ))}
-              </div>
+                      <AlertBadge type={getAlertType(alert.alert_type)} />
+                    </motion.div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </motion.div>
@@ -144,41 +173,30 @@ export function DuplaDashboard() {
               </Button>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
-                {discrepancyCases.map((item, index) => (
-                  <motion.div
-                    key={item.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="p-3 rounded-lg border border-warning/30 bg-warning/5 cursor-pointer hover:border-warning/50"
-                    onClick={() => navigate(`/students/${item.studentId}`)}
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <p className="font-medium">{item.student}</p>
-                      <span className="text-xs text-muted-foreground">{item.course}</span>
-                    </div>
-                    <div className="flex items-center gap-4 text-sm">
-                      <div className="flex items-center gap-2">
-                        <span className="text-muted-foreground">Estudiante:</span>
-                        <WellbeingScale value={item.studentLevel} readonly size="sm" />
+              {discrepancyCases.length === 0 ? (
+                <p className="text-center text-muted-foreground py-8">
+                  No hay discrepancias activas
+                </p>
+              ) : (
+                <div className="space-y-3">
+                  {discrepancyCases.map((item, index) => (
+                    <motion.div
+                      key={item.id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="p-3 rounded-lg border border-warning/30 bg-warning/5 cursor-pointer hover:border-warning/50"
+                      onClick={() => navigate(`/students/${item.student_id}`)}
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="font-medium">{item.student_name}</p>
+                        <span className="text-xs text-muted-foreground">{item.course}</span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-muted-foreground">Docente:</span>
-                        <Badge 
-                          variant="outline"
-                          className={cn(
-                            item.teacherLevel === "bajo" && "border-alert text-alert",
-                            item.teacherLevel === "alto" && "border-success text-success"
-                          )}
-                        >
-                          {item.teacherLevel}
-                        </Badge>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
+                      <p className="text-sm text-muted-foreground">{item.description}</p>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </motion.div>
@@ -232,6 +250,46 @@ export function DuplaDashboard() {
           </CardContent>
         </Card>
       </motion.div>
+
+      {/* Restricted/Confidential Students Management */}
+      {(fileStatusCounts.restringida + fileStatusCounts.confidencial) > 0 && (
+        <motion.div variants={itemVariants}>
+          <Card className="card-elevated">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle className="text-lg font-display flex items-center gap-2">
+                <Shield className="w-5 h-5 text-warning" />
+                Fichas con Acceso Limitado
+              </CardTitle>
+              <div className="relative w-64">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  placeholder="Buscar estudiante..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {restrictedStudents.map((student, index) => (
+                  <StudentFileCard
+                    key={student.id}
+                    student={student}
+                    onStatusChanged={refetch}
+                    index={index}
+                  />
+                ))}
+              </div>
+              {restrictedStudents.length === 0 && (
+                <p className="text-center text-muted-foreground py-8">
+                  No se encontraron estudiantes
+                </p>
+              )}
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
 
       {/* Quick Access */}
       <motion.div variants={itemVariants}>
