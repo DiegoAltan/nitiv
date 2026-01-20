@@ -5,9 +5,10 @@ import { StudentDashboard } from "@/components/dashboards/StudentDashboard";
 import { TeacherDashboard } from "@/components/dashboards/TeacherDashboard";
 import { DuplaDashboard } from "@/components/dashboards/DuplaDashboard";
 import { AdminDashboard } from "@/components/dashboards/AdminDashboard";
+import { ExecutiveDashboard } from "@/components/dashboards/ExecutiveDashboard";
 
 const Dashboard = () => {
-  const { isStudent, isTeacher, isDupla, isAdmin } = useAuth();
+  const { isStudent, isTeacher, isDupla, isAdmin, isModerador } = useAuth();
 
   // Student has a special layout without sidebar
   if (isStudent && !isTeacher && !isDupla && !isAdmin) {
@@ -19,8 +20,15 @@ const Dashboard = () => {
   }
 
   // Determine which dashboard to show based on role priority
-  // Priority: Admin > Dupla > Teacher > Student
+  // Priority: Moderador > Admin > Dupla > Teacher > Student
   const getDashboardConfig = () => {
+    if (isModerador) {
+      return {
+        component: <ExecutiveDashboard />,
+        title: "Panel Ejecutivo",
+        subtitle: "Acceso completo como moderador de la plataforma",
+      };
+    }
     if (isAdmin) {
       return {
         component: <AdminDashboard />,

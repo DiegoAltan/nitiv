@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from "react
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 
-export type AppRole = "administrador" | "psicologo" | "trabajador_social" | "docente" | "estudiante" | "inspector_general" | "orientador";
+export type AppRole = "administrador" | "psicologo" | "trabajador_social" | "docente" | "estudiante" | "inspector_general" | "orientador" | "moderador";
 
 interface Profile {
   id: string;
@@ -26,6 +26,7 @@ interface AuthContextType {
   switchRole: (role: AppRole) => void;
   canSwitchRole: boolean;
   isAdmin: boolean;
+  isModerador: boolean;
   isDupla: boolean;
   isInspector: boolean;
   isOrientador: boolean;
@@ -207,14 +208,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Use selectedRole for permission checks (if set), fallback to checking all roles
   const activeRole = selectedRole || roles[0];
   const canSwitchRole = import.meta.env.DEV;
-  const isAdmin = activeRole === "administrador";
-  const isDupla = activeRole === "psicologo" || activeRole === "trabajador_social";
-  const isInspector = activeRole === "inspector_general";
+  const isModerador = activeRole === "moderador";
+  const isAdmin = activeRole === "administrador" || isModerador;
+  const isDupla = activeRole === "psicologo" || activeRole === "trabajador_social" || isModerador;
+  const isInspector = activeRole === "inspector_general" || isModerador;
   const isOrientador = activeRole === "orientador";
-  const isTeacher = activeRole === "docente";
+  const isTeacher = activeRole === "docente" || isModerador;
   const isStudent = activeRole === "estudiante";
-  // Dupla and Inspector have full psychosocial access (can manage files, grant access, etc.)
-  const hasPsychosocialAccess = isDupla || isInspector;
+  // Dupla, Inspector, and Moderador have full psychosocial access
+  const hasPsychosocialAccess = isDupla || isInspector || isModerador;
 
   return (
     <AuthContext.Provider
@@ -231,6 +233,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         switchRole,
         canSwitchRole,
         isAdmin,
+        isModerador,
         isDupla,
         isInspector,
         isOrientador,

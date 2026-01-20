@@ -22,15 +22,15 @@ const navigation = [
   // Student only
   { name: "Mi Bienestar", href: "/wellbeing", icon: Heart, roles: ["estudiante"] },
   // Teacher
-  { name: "Evaluación Docente", href: "/teacher-assessment", icon: ClipboardCheck, roles: ["docente"] },
-  // Teacher, Dupla, Inspector, Orientador (with access)
-  { name: "Estudiantes", href: "/students", icon: Users, roles: ["docente", "psicologo", "trabajador_social", "inspector_general", "orientador"] },
-  // Dupla, Admin, Inspector, Teachers with shared access, Orientador with access
-  { name: "Fichas/Registros", href: "/fichas", icon: FileText, roles: ["psicologo", "trabajador_social", "administrador", "docente", "inspector_general", "orientador"] },
-  // Dupla, Admin, Inspector
-  { name: "Reportes", href: "/reports", icon: BarChart3, roles: ["administrador", "psicologo", "trabajador_social", "inspector_general"] },
-  // Dupla, Inspector (full access), Orientador (limited)
-  { name: "Alertas", href: "/alerts", icon: Bell, roles: ["psicologo", "trabajador_social", "inspector_general", "orientador"] },
+  { name: "Evaluación Docente", href: "/teacher-assessment", icon: ClipboardCheck, roles: ["docente", "moderador"] },
+  // Teacher, Dupla, Inspector, Orientador, Moderador
+  { name: "Estudiantes", href: "/students", icon: Users, roles: ["docente", "psicologo", "trabajador_social", "inspector_general", "orientador", "moderador"] },
+  // Dupla, Admin, Inspector, Teachers with shared access, Orientador, Moderador
+  { name: "Fichas/Registros", href: "/fichas", icon: FileText, roles: ["psicologo", "trabajador_social", "administrador", "docente", "inspector_general", "orientador", "moderador"] },
+  // Dupla, Admin, Inspector, Moderador
+  { name: "Reportes", href: "/reports", icon: BarChart3, roles: ["administrador", "psicologo", "trabajador_social", "inspector_general", "moderador"] },
+  // Dupla, Inspector, Orientador, Moderador
+  { name: "Alertas", href: "/alerts", icon: Bell, roles: ["psicologo", "trabajador_social", "inspector_general", "orientador", "moderador"] },
 ];
 
 const bottomNavigation = [
