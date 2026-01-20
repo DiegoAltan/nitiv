@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   User,
@@ -12,6 +13,7 @@ import {
   Save,
   Palette,
   UserCog,
+  Home,
 } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -42,7 +44,8 @@ const allRoles: { value: AppRole; label: string; description: string }[] = [
 ];
 
 export default function SettingsPage() {
-  const { profile, signOut, roles, activeRole, switchRole, canSwitchRole } = useAuth();
+  const { profile, signOut, roles, activeRole, switchRole, canSwitchRole, isStudent } = useAuth();
+  const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const { toast } = useToast();
 
@@ -99,6 +102,33 @@ export default function SettingsPage() {
   return (
     <AppLayout title="Configuración" subtitle="Ajustes de tu cuenta y preferencias">
       <div className="max-w-3xl mx-auto space-y-6">
+        {/* Dashboard Button for Students */}
+        {isStudent && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <Card className="card-elevated bg-gradient-to-r from-primary/10 to-primary/5 border-primary/20">
+              <CardContent className="py-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
+                      <Home className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-foreground">Mi Bienestar</p>
+                      <p className="text-sm text-muted-foreground">Volver al registro de bienestar</p>
+                    </div>
+                  </div>
+                  <Button onClick={() => navigate("/")} className="gap-2">
+                    <Home className="w-4 h-4" />
+                    Ir al Dashboard
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
         {/* Profile Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

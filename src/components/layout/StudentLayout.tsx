@@ -44,15 +44,18 @@ export function StudentLayout({ children, title, subtitle }: StudentLayoutProps)
       {/* Header for students without sidebar */}
       <header className="h-16 border-b border-border bg-card/80 backdrop-blur-md sticky top-0 z-30 px-6 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          {/* Logo */}
-          <div className="flex items-center gap-3">
+          {/* Logo - Clickable to go to Dashboard */}
+          <button
+            onClick={() => navigate("/")}
+            className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+          >
             <div className="w-10 h-10 rounded-xl bg-gradient-hero flex items-center justify-center shadow-md">
               <Brain className="w-5 h-5 text-white" />
             </div>
             <h1 className="font-display font-extrabold text-xl text-gradient-hero">
               Nitiv
             </h1>
-          </div>
+          </button>
           
           <div className="h-6 w-px bg-border mx-2" />
           
