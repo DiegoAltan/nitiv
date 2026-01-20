@@ -2,190 +2,172 @@
 @tailwind components;
 @tailwind utilities;
 
-/* BienestarEscolar - Design System
-   Institutional, calm, and clear design for student wellbeing monitoring
+/* Nitiv - Student Wellbeing Platform
+   Friendly, minimalist design with vivid pastel colors
    All colors in HSL format
 */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap');
-
-@import url("https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap");
-
-@import url("https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&display=swap");
-
-@import url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap");
-
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
-
-@import url("https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&display=swap");
-
-@import url("https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
 
 @layer base {
   :root {
-    /* Core colors - Calming institutional palette */
-    --background: 0 0% 100%;
-    --foreground: 265 4% 12.9%;
+    /* Core colors - Warm, friendly pastels */
+    --background: 45 40% 98%;
+    --foreground: 240 10% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 265 4% 12.9%;
+    --card-foreground: 240 10% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 265 4% 12.9%;
+    --popover-foreground: 240 10% 15%;
 
-    /* Primary - Calming institutional blue */
-    --primary: 266 4% 20.8%;
-    --primary-foreground: 248 0.3% 98.4%;
-    --primary-light: 210 60% 92%;
-    --primary-dark: 210 65% 35%;
+    /* Primary - Soft lavender/violet */
+    --primary: 265 65% 65%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 265 60% 92%;
+    --primary-dark: 265 55% 45%;
 
-    /* Secondary - Soft sage for wellbeing */
-    --secondary: 248 0.7% 96.8%;
-    --secondary-foreground: 266 4% 20.8%;
-    --secondary-light: 155 35% 92%;
+    /* Secondary - Soft mint green */
+    --secondary: 160 45% 88%;
+    --secondary-foreground: 160 50% 25%;
+    --secondary-light: 160 50% 94%;
 
     /* Muted tones */
-    --muted: 248 0.7% 96.8%;
-    --muted-foreground: 257 4.6% 55.4%;
+    --muted: 40 30% 95%;
+    --muted-foreground: 240 5% 45%;
 
-    /* Accent - Warm for engagement */
-    --accent: 248 0.7% 96.8%;
-    --accent-foreground: 266 4% 20.8%;
-    --accent-light: 35 85% 92%;
+    /* Accent - Soft peach/coral */
+    --accent: 25 75% 90%;
+    --accent-foreground: 25 60% 35%;
+    --accent-light: 25 80% 95%;
 
-    /* Wellbeing scale colors */
-    --wellbeing-1: 0 70% 55%;      /* Low - Coral red */
-    --wellbeing-2: 25 80% 55%;     /* Low-medium - Orange */
-    --wellbeing-3: 45 85% 55%;     /* Medium - Amber */
-    --wellbeing-4: 120 45% 50%;    /* Medium-high - Light green */
-    --wellbeing-5: 155 50% 45%;    /* High - Sage green */
+    /* Wellbeing scale colors - Softer pastels */
+    --wellbeing-1: 355 70% 65%;     /* Soft coral red */
+    --wellbeing-2: 25 75% 65%;      /* Soft peach */
+    --wellbeing-3: 45 80% 65%;      /* Soft amber */
+    --wellbeing-4: 145 50% 55%;     /* Soft mint */
+    --wellbeing-5: 160 55% 48%;     /* Soft teal */
 
-    /* Emotion colors */
-    --emotion-joy: 45 90% 55%;
-    --emotion-calm: 195 60% 55%;
-    --emotion-anxiety: 280 50% 55%;
-    --emotion-sadness: 215 50% 55%;
-    --emotion-anger: 0 70% 55%;
-    --emotion-tiredness: 215 20% 55%;
+    /* Emotion colors - Pastels */
+    --emotion-joy: 45 85% 70%;
+    --emotion-calm: 195 65% 65%;
+    --emotion-anxiety: 280 55% 70%;
+    --emotion-sadness: 215 55% 65%;
+    --emotion-anger: 355 65% 65%;
+    --emotion-tiredness: 215 25% 60%;
 
-    /* Alert colors */
-    --alert: 0 75% 55%;
+    /* Alert colors - Softer */
+    --alert: 355 65% 60%;
     --alert-foreground: 0 0% 100%;
-    --alert-light: 0 75% 95%;
+    --alert-light: 355 70% 94%;
 
-    --warning: 35 90% 50%;
-    --warning-foreground: 35 90% 15%;
-    --warning-light: 35 90% 92%;
+    --warning: 35 80% 55%;
+    --warning-foreground: 35 80% 18%;
+    --warning-light: 35 85% 92%;
 
-    --success: 155 50% 45%;
+    --success: 160 50% 48%;
     --success-foreground: 0 0% 100%;
-    --success-light: 155 50% 92%;
+    --success-light: 160 55% 92%;
 
     /* UI elements */
-    --destructive: 27 24.5% 57.7%;
+    --destructive: 355 60% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 256 1.3% 92.9%;
-    --input: 256 1.3% 92.9%;
-    --ring: 257 4% 70.4%;
+    --border: 40 20% 90%;
+    --input: 40 20% 92%;
+    --ring: 265 50% 70%;
 
-    --radius: 0.375rem;
+    --radius: 0.75rem;
 
-    /* Sidebar */
-    --sidebar-background: 210 25% 97%;
-    --sidebar-foreground: 265 4% 12.9%;
-    --sidebar-primary: 266 4% 20.8%;
-    --sidebar-primary-foreground: 248 0.3% 98.4%;
-    --sidebar-accent: 248 0.7% 96.8%;
-    --sidebar-accent-foreground: 266 4% 20.8%;
-    --sidebar-border: 256 1.3% 92.9%;
-    --sidebar-ring: 257 4% 70.4%;
+    /* Sidebar - Soft lavender tint */
+    --sidebar-background: 265 30% 98%;
+    --sidebar-foreground: 240 10% 15%;
+    --sidebar-primary: 265 65% 65%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 265 35% 94%;
+    --sidebar-accent-foreground: 265 40% 35%;
+    --sidebar-border: 265 20% 92%;
+    --sidebar-ring: 265 50% 70%;
+
+    /* Charts */
+    --chart-1: 265 65% 65%;
+    --chart-2: 160 50% 55%;
+    --chart-3: 25 70% 65%;
+    --chart-4: 195 60% 60%;
+    --chart-5: 45 75% 60%;
 
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(210, 60%, 45%), hsl(195, 55%, 50%));
-    --gradient-wellbeing: linear-gradient(135deg, hsl(155, 50%, 45%), hsl(120, 45%, 50%));
-    --gradient-card: linear-gradient(180deg, hsl(0, 0%, 100%), hsl(210, 25%, 98%));
-    --gradient-hero: linear-gradient(135deg, hsl(210, 60%, 45%) 0%, hsl(195, 55%, 50%) 50%, hsl(155, 45%, 50%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(265, 65%, 65%), hsl(290, 55%, 70%));
+    --gradient-wellbeing: linear-gradient(135deg, hsl(160, 55%, 48%), hsl(145, 50%, 55%));
+    --gradient-card: linear-gradient(180deg, hsl(0, 0%, 100%), hsl(45, 35%, 98%));
+    --gradient-hero: linear-gradient(135deg, hsl(265, 65%, 65%) 0%, hsl(290, 55%, 70%) 50%, hsl(320, 50%, 75%) 100%);
+    --gradient-soft: linear-gradient(135deg, hsl(265, 60%, 92%) 0%, hsl(160, 45%, 92%) 50%, hsl(25, 70%, 92%) 100%);
 
     /* Shadows */
-    --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
-    --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 2px 4px -1px hsl(0 0% 0% / 0.1);
-    --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 4px 6px -1px hsl(0 0% 0% / 0.1);
-    --shadow-card: 0 4px 20px -2px hsl(210 60% 45% / 0.08);
-    --shadow-elevated: 0 20px 40px -10px hsl(215 25% 15% / 0.15);
-    --chart-1: 41 22.2% 64.6%;
-    --chart-2: 185 11.8% 60%;
-    --chart-3: 227 7% 39.8%;
-    --chart-4: 84 18.9% 82.8%;
-    --chart-5: 70 18.8% 76.9%;
-    --sidebar: 248 0.3% 98.4%;
-    --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-    --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-    --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-    --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-    --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
-    --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 8px 10px -1px hsl(0 0% 0% / 0.1);
-    --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
-    --tracking-normal: 0em;
+    --shadow-sm: 0 1px 3px 0px hsl(265 30% 15% / 0.06), 0 1px 2px -1px hsl(265 30% 15% / 0.06);
+    --shadow-md: 0 4px 6px -1px hsl(265 30% 15% / 0.08), 0 2px 4px -2px hsl(265 30% 15% / 0.06);
+    --shadow-lg: 0 10px 15px -3px hsl(265 30% 15% / 0.08), 0 4px 6px -4px hsl(265 30% 15% / 0.06);
+    --shadow-card: 0 4px 20px -4px hsl(265 40% 50% / 0.12);
+    --shadow-elevated: 0 20px 40px -12px hsl(265 40% 50% / 0.18);
+
+    --sidebar: 0 0% 100%;
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Plus Jakarta Sans', sans-serif;
     --spacing: 0.25rem;
   }
 
   .dark {
-    --background: 0 0% 15%;
-    --foreground: 248 0.3% 98.4%;
+    --background: 250 20% 10%;
+    --foreground: 45 20% 95%;
 
-    --card: 266 4% 20.8%;
-    --card-foreground: 248 0.3% 98.4%;
+    --card: 250 18% 14%;
+    --card-foreground: 45 20% 95%;
 
-    --popover: 266 4% 20.8%;
-    --popover-foreground: 248 0.3% 98.4%;
+    --popover: 250 18% 14%;
+    --popover-foreground: 45 20% 95%;
 
-    --primary: 256 1.3% 92.9%;
-    --primary-foreground: 266 4% 20.8%;
-    --primary-light: 210 40% 20%;
-    --primary-dark: 210 55% 65%;
+    /* Primary - Brighter in dark mode */
+    --primary: 265 70% 72%;
+    --primary-foreground: 250 20% 10%;
+    --primary-light: 265 35% 22%;
+    --primary-dark: 265 60% 78%;
 
-    --secondary: 260 4.1% 27.9%;
-    --secondary-foreground: 248 0.3% 98.4%;
-    --secondary-light: 155 25% 18%;
+    --secondary: 160 40% 25%;
+    --secondary-foreground: 160 50% 85%;
+    --secondary-light: 160 30% 18%;
 
-    --muted: 260 4.1% 27.9%;
-    --muted-foreground: 257 4% 70.4%;
+    --muted: 250 15% 18%;
+    --muted-foreground: 240 8% 60%;
 
-    --accent: 260 4.1% 27.9%;
-    --accent-foreground: 248 0.3% 98.4%;
-    --accent-light: 35 50% 20%;
+    --accent: 25 50% 22%;
+    --accent-foreground: 25 70% 85%;
+    --accent-light: 25 35% 18%;
 
-    --destructive: 22 19.1% 70.4%;
-    --destructive-foreground: 248 0.3% 98.4%;
+    --destructive: 355 55% 55%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 100% / 10%;
-    --input: 0 0% 100% / 15%;
-    --ring: 264 2.7% 55.1%;
+    --border: 250 12% 22%;
+    --input: 250 12% 20%;
+    --ring: 265 55% 65%;
 
-    --sidebar-background: 215 30% 12%;
-    --sidebar-foreground: 248 0.3% 98.4%;
-    --sidebar-primary: 264 24.3% 48.8%;
-    --sidebar-primary-foreground: 248 0.3% 98.4%;
-    --sidebar-accent: 260 4.1% 27.9%;
-    --sidebar-accent-foreground: 248 0.3% 98.4%;
-    --sidebar-border: 0 0% 100% / 10%;
-    --sidebar-ring: 264 2.7% 55.1%;
-    --chart-1: 264 24.3% 48.8%;
-    --chart-2: 162 17% 69.6%;
-    --chart-3: 70 18.8% 76.9%;
-    --chart-4: 304 26.5% 62.7%;
-    --chart-5: 16 24.6% 64.5%;
-    --sidebar: 266 4% 20.8%;
-    --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-    --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-    --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
-    --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
-    --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 2px 4px -1px hsl(0 0% 0% / 0.1);
-    --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 4px 6px -1px hsl(0 0% 0% / 0.1);
-    --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 8px 10px -1px hsl(0 0% 0% / 0.1);
-    --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
+    --sidebar-background: 250 18% 12%;
+    --sidebar-foreground: 45 20% 95%;
+    --sidebar-primary: 265 70% 72%;
+    --sidebar-primary-foreground: 250 20% 10%;
+    --sidebar-accent: 250 15% 20%;
+    --sidebar-accent-foreground: 45 20% 92%;
+    --sidebar-border: 250 12% 22%;
+    --sidebar-ring: 265 55% 65%;
+
+    --chart-1: 265 70% 72%;
+    --chart-2: 160 50% 55%;
+    --chart-3: 25 65% 65%;
+    --chart-4: 195 55% 60%;
+    --chart-5: 45 70% 60%;
+
+    --sidebar: 250 18% 14%;
+    --shadow-card: 0 4px 20px -4px hsl(0 0% 0% / 0.4);
+    --shadow-elevated: 0 20px 40px -12px hsl(0 0% 0% / 0.5);
   }
 }
 
@@ -207,18 +189,18 @@
 @layer components {
   /* Card styles */
   .card-elevated {
-    @apply bg-card rounded-xl border border-border;
+    @apply bg-card rounded-2xl border border-border;
     box-shadow: var(--shadow-card);
   }
 
   .card-glass {
-    @apply bg-card/80 backdrop-blur-sm rounded-xl border border-border/50;
+    @apply bg-card/80 backdrop-blur-md rounded-2xl border border-border/50;
     box-shadow: var(--shadow-md);
   }
 
   /* Wellbeing scale indicators */
   .wellbeing-indicator {
-    @apply w-12 h-12 rounded-full flex items-center justify-center font-semibold text-white transition-all duration-300;
+    @apply w-12 h-12 rounded-2xl flex items-center justify-center font-semibold text-white transition-all duration-300;
   }
 
   .wellbeing-1 { background-color: hsl(var(--wellbeing-1)); }
@@ -252,9 +234,43 @@
     background: var(--gradient-hero);
   }
 
+  .bg-gradient-soft {
+    background: var(--gradient-soft);
+  }
+
+  /* Abstract background pattern for auth */
+  .bg-pattern-auth {
+    background-color: hsl(var(--background));
+    background-image: 
+      radial-gradient(ellipse 80% 50% at 20% 40%, hsl(265 65% 65% / 0.15), transparent),
+      radial-gradient(ellipse 60% 40% at 80% 20%, hsl(160 50% 55% / 0.12), transparent),
+      radial-gradient(ellipse 50% 60% at 60% 80%, hsl(25 70% 65% / 0.1), transparent),
+      radial-gradient(ellipse 70% 30% at 10% 90%, hsl(290 55% 70% / 0.08), transparent);
+  }
+
+  .dark .bg-pattern-auth {
+    background-color: hsl(var(--background));
+    background-image: 
+      radial-gradient(ellipse 80% 50% at 20% 40%, hsl(265 70% 72% / 0.1), transparent),
+      radial-gradient(ellipse 60% 40% at 80% 20%, hsl(160 50% 55% / 0.08), transparent),
+      radial-gradient(ellipse 50% 60% at 60% 80%, hsl(25 65% 65% / 0.06), transparent);
+  }
+
   /* Smooth transitions */
   .transition-smooth {
     @apply transition-all duration-300 ease-out;
+  }
+
+  /* Floating shapes for auth background */
+  .floating-shape {
+    @apply absolute rounded-full opacity-60 blur-3xl;
+    animation: float 20s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(30px, -30px) scale(1.05); }
+    66% { transform: translate(-20px, 20px) scale(0.95); }
   }
 }
 

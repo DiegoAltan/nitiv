@@ -14,6 +14,7 @@ import StudentsPage from "./pages/StudentsPage";
 import ReportsPage from "./pages/ReportsPage";
 import SettingsPage from "./pages/SettingsPage";
 import AuthPage from "./pages/AuthPage";
+import StudentProfilePage from "./pages/StudentProfilePage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -81,6 +82,14 @@ const App = () => (
                 element={
                   <ProtectedRoute>
                     <SettingsPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/students/:studentId"
+                element={
+                  <ProtectedRoute allowedRoles={["docente", "administrador", "psicologo", "trabajador_social"]}>
+                    <StudentProfilePage />
                   </ProtectedRoute>
                 }
               />
