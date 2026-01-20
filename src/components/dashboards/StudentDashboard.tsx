@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useStudentWellbeing } from "@/hooks/useStudentWellbeing";
+import { ProgressCard } from "@/components/gamification/ProgressCard";
+import { PersonalizationCard } from "@/components/gamification/PersonalizationCard";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
@@ -102,6 +104,12 @@ export function StudentDashboard() {
           icon={TrendingUp}
           variant="default"
         />
+      </motion.div>
+
+      {/* Gamification - Progress Card */}
+      <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <ProgressCard />
+        <PersonalizationCard />
       </motion.div>
 
       {/* Wellbeing Chart */}

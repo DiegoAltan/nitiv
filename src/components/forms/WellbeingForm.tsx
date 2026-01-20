@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Send, Calendar } from "lucide-react";
+import { Send, Calendar, Heart } from "lucide-react";
 import { WellbeingScale } from "@/components/ui/WellbeingScale";
 import { EmotionSelector, Emotion } from "@/components/ui/EmotionSelector";
 import { ScaleSlider } from "@/components/ui/ScaleSlider";
@@ -10,6 +10,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { ValidatingMessage } from "@/components/gamification/ValidatingMessage";
+import { LevelBadge } from "@/components/gamification/LevelBadge";
 
 export function WellbeingForm() {
   const [wellbeingLevel, setWellbeingLevel] = useState(0);
@@ -75,27 +77,41 @@ export function WellbeingForm() {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="card-elevated p-8 text-center max-w-lg mx-auto"
+        className="space-y-6 max-w-lg mx-auto"
       >
-        <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-success-light flex items-center justify-center">
-          <span className="text-4xl">✨</span>
-        </div>
-        <h2 className="text-2xl font-display font-bold mb-2">¡Gracias por compartir!</h2>
-        <p className="text-muted-foreground mb-6">
-          Tu registro de bienestar ha sido guardado. Recuerda que siempre puedes 
-          hablar con tu profesor o psicólogo si necesitas apoyo.
-        </p>
-        <Button
-          onClick={() => {
-            setIsSubmitted(false);
-            setWellbeingLevel(0);
-            setSelectedEmotions([]);
-            setComment("");
-          }}
-          variant="outline"
-        >
-          Registrar otro día
-        </Button>
+        <Card className="card-elevated p-8 text-center">
+          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-success/20 flex items-center justify-center">
+            <span className="text-4xl">✨</span>
+          </div>
+          <h2 className="text-2xl font-display font-bold mb-2">¡Gracias por compartir!</h2>
+          <p className="text-muted-foreground mb-6">
+            Tu registro de bienestar ha sido guardado. Recuerda que siempre puedes 
+            hablar con tu profesor o psicólogo si necesitas apoyo.
+          </p>
+          
+          {/* Validating Message */}
+          <ValidatingMessage showAfterSubmit={true} />
+          
+          {/* Level Progress */}
+          <div className="mt-6 flex justify-center">
+            <LevelBadge size="md" />
+          </div>
+
+          <Button
+            onClick={() => {
+              setIsSubmitted(false);
+              setWellbeingLevel(0);
+              setAnxietyLevel(1);
+              setStressLevel(1);
+              setSelectedEmotions([]);
+              setComment("");
+            }}
+            variant="outline"
+            className="mt-6"
+          >
+            Registrar otro día
+          </Button>
+        </Card>
       </motion.div>
     );
   }

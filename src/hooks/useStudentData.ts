@@ -52,11 +52,31 @@ export function useStudentData() {
     setLoading(true);
 
     try {
-      // Fetch profiles (students)
+      // Fetch profiles (students) with their course info
       const { data: profilesData } = await supabase
         .from("profiles")
         .select("id, full_name, email, avatar_url")
         .order("full_name");
+
+      // Fetch student courses to get course names
+      const { data: studentCoursesData } = await supabase
+        .from("student_courses")
+        .select(`
+          student_id,
+          courses (
+            id,
+            name,
+            level
+          )
+        `);
+
+      // Map student to course
+      const studentCourseMap: Record<string, string> = {};
+      studentCoursesData?.forEach((sc: any) => {
+        if (sc.courses) {
+          studentCourseMap[sc.student_id] = sc.courses.name;
+        }
+      });
 
       // Fetch wellbeing records for latest wellbeing
       const { data: wellbeingData } = await supabase
@@ -86,6 +106,7 @@ export function useStudentData() {
             return {
               ...alert,
               student_name: student?.full_name || "Estudiante",
+              course: studentCourseMap[alert.student_id] || undefined,
             };
           });
         }
@@ -114,10 +135,11 @@ export function useStudentData() {
         
         setFileStatusCounts(counts);
 
-        // Add file status to students
+        // Add file status and course to students
         if (profilesData) {
           const studentsWithStatus: StudentWithData[] = profilesData.map((p) => ({
             ...p,
+            course: studentCourseMap[p.id],
             lastWellbeing: latestWellbeing[p.id],
             hasAlert: alertsData.some((a) => a.student_id === p.id && a.status !== "resuelta"),
             fileStatus: (fileStatusMap[p.id] as "abierta" | "restringida" | "confidencial") || "abierta",
@@ -125,9 +147,10 @@ export function useStudentData() {
           setStudents(studentsWithStatus);
         }
       } else if (profilesData) {
-        // For teachers, just basic info
+        // For teachers, just basic info with course
         const studentsBasic: StudentWithData[] = profilesData.map((p) => ({
           ...p,
+          course: studentCourseMap[p.id],
           lastWellbeing: latestWellbeing[p.id],
           hasAlert: false,
         }));

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Search, Filter, Users, AlertTriangle, Heart, ChevronRight } from "lucide-react";
@@ -17,6 +17,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { WellbeingScale } from "@/components/ui/WellbeingScale";
 import { cn } from "@/lib/utils";
+import { useStudentData } from "@/hooks/useStudentData";
 
 interface Student {
   id: string;
@@ -28,28 +29,28 @@ interface Student {
   hasAlert?: boolean;
 }
 
-const mockStudents: Student[] = [
-  { id: "1", full_name: "Ana Martínez García", email: "ana@school.edu", avatar_url: null, course: "8°A", lastWellbeing: 4, hasAlert: false },
-  { id: "2", full_name: "Carlos López Pérez", email: "carlos@school.edu", avatar_url: null, course: "8°A", lastWellbeing: 2, hasAlert: true },
-  { id: "3", full_name: "María González Ruiz", email: "maria@school.edu", avatar_url: null, course: "7°B", lastWellbeing: 5, hasAlert: false },
-  { id: "4", full_name: "Pedro Sánchez Torres", email: "pedro@school.edu", avatar_url: null, course: "8°B", lastWellbeing: 3, hasAlert: false },
-  { id: "5", full_name: "Laura Torres Díaz", email: "laura@school.edu", avatar_url: null, course: "7°A", lastWellbeing: 1, hasAlert: true },
-  { id: "6", full_name: "Diego Ramírez Vega", email: "diego@school.edu", avatar_url: null, course: "6°A", lastWellbeing: 4, hasAlert: false },
-  { id: "7", full_name: "Sofía Herrera Castro", email: "sofia@school.edu", avatar_url: null, course: "8°A", lastWellbeing: 3, hasAlert: true },
-  { id: "8", full_name: "Andrés Morales Jiménez", email: "andres@school.edu", avatar_url: null, course: "7°B", lastWellbeing: 5, hasAlert: false },
-];
-
 const courses = ["Todos", "6°A", "6°B", "7°A", "7°B", "8°A", "8°B"];
 const wellbeingFilters = ["Todos", "Bajo (1-2)", "Medio (3)", "Alto (4-5)"];
 const alertFilters = ["Todos", "Con alertas", "Sin alertas"];
 
 export default function StudentsPage() {
   const navigate = useNavigate();
-  const [students, setStudents] = useState<Student[]>(mockStudents);
+  const { students: studentsData, loading } = useStudentData();
   const [searchQuery, setSearchQuery] = useState("");
   const [courseFilter, setCourseFilter] = useState("Todos");
   const [wellbeingFilter, setWellbeingFilter] = useState("Todos");
   const [alertFilter, setAlertFilter] = useState("Todos");
+
+  // Map studentsData to the local Student interface
+  const students: Student[] = studentsData.map(s => ({
+    id: s.id,
+    full_name: s.full_name,
+    email: s.email,
+    avatar_url: s.avatar_url,
+    course: s.course,
+    lastWellbeing: s.lastWellbeing,
+    hasAlert: s.hasAlert,
+  }));
 
   const filteredStudents = students.filter((student) => {
     // Search filter
@@ -81,6 +82,20 @@ export default function StudentsPage() {
 
   const studentsWithAlerts = students.filter((s) => s.hasAlert).length;
   const lowWellbeingCount = students.filter((s) => (s.lastWellbeing || 0) <= 2).length;
+
+  if (loading) {
+    return (
+      <AppLayout title="Estudiantes" subtitle="Cargando...">
+        <div className="flex items-center justify-center py-20">
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+            className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full"
+          />
+        </div>
+      </AppLayout>
+    );
+  }
 
   return (
     <AppLayout title="Estudiantes" subtitle="Listado y seguimiento de estudiantes">
