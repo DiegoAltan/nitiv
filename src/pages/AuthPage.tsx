@@ -24,6 +24,7 @@ const roleLabels: Record<AppRole, string> = {
   estudiante: "Estudiante",
   inspector_general: "Inspector General",
   orientador: "Orientador/a",
+  moderador: "Moderador",
 };
 
 const roleDescriptions: Record<AppRole, string> = {
@@ -34,6 +35,7 @@ const roleDescriptions: Record<AppRole, string> = {
   estudiante: "Registro de bienestar personal",
   inspector_general: "Gestión de convivencia escolar",
   orientador: "Orientación estudiantil",
+  moderador: "Acceso total como dueño de la aplicación",
 };
 
 export default function AuthPage() {
