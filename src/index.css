@@ -7,211 +7,217 @@
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-/* Nitiv - Student Wellbeing Platform
-   Friendly, minimalist design with vivid pastel colors
+/* Nitiv - Premium Student Wellbeing Platform
+   Refined, elegant design with subtle sophistication
    All colors in HSL format
 */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
 
 @layer base {
   :root {
-    /* Core colors - Warm, friendly pastels */
-    --background: 45 40% 98%;
-    --foreground: 240 10% 15%;
+    /* Core colors - Clean, sophisticated neutrals */
+    --background: 220 20% 98%;
+    --foreground: 222 47% 11%;
 
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 15%;
+    --card-foreground: 222 47% 11%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 15%;
+    --popover-foreground: 222 47% 11%;
 
-    /* Primary - Soft lavender/violet */
-    --primary: 265 65% 65%;
+    /* Primary - Deep indigo with sophistication */
+    --primary: 243 75% 59%;
     --primary-foreground: 0 0% 100%;
-    --primary-light: 265 60% 92%;
-    --primary-dark: 265 55% 45%;
+    --primary-light: 243 60% 96%;
+    --primary-dark: 243 65% 45%;
 
-    /* Secondary - Soft mint green */
-    --secondary: 160 45% 88%;
-    --secondary-foreground: 160 50% 25%;
-    --secondary-light: 160 50% 94%;
+    /* Secondary - Soft sage green */
+    --secondary: 152 45% 92%;
+    --secondary-foreground: 152 50% 25%;
+    --secondary-light: 152 50% 96%;
 
     /* Muted tones */
-    --muted: 40 30% 95%;
-    --muted-foreground: 240 5% 45%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 8% 46%;
 
-    /* Accent - Soft peach/coral */
-    --accent: 25 75% 90%;
-    --accent-foreground: 25 60% 35%;
-    --accent-light: 25 80% 95%;
+    /* Accent - Warm amber */
+    --accent: 38 92% 95%;
+    --accent-foreground: 38 80% 35%;
+    --accent-light: 38 95% 97%;
 
-    /* Wellbeing scale colors - Softer pastels */
-    --wellbeing-1: 355 70% 65%;     /* Soft coral red */
-    --wellbeing-2: 25 75% 65%;      /* Soft peach */
-    --wellbeing-3: 45 80% 65%;      /* Soft amber */
-    --wellbeing-4: 145 50% 55%;     /* Soft mint */
-    --wellbeing-5: 160 55% 48%;     /* Soft teal */
+    /* Wellbeing scale colors - Refined palette */
+    --wellbeing-1: 0 72% 63%;
+    --wellbeing-2: 25 95% 60%;
+    --wellbeing-3: 45 93% 58%;
+    --wellbeing-4: 152 55% 50%;
+    --wellbeing-5: 160 65% 42%;
 
-    /* Emotion colors - Pastels */
-    --emotion-joy: 45 85% 70%;
-    --emotion-calm: 195 65% 65%;
-    --emotion-anxiety: 280 55% 70%;
-    --emotion-sadness: 215 55% 65%;
-    --emotion-anger: 355 65% 65%;
-    --emotion-tiredness: 215 25% 60%;
+    /* Emotion colors - Harmonious */
+    --emotion-joy: 45 93% 58%;
+    --emotion-calm: 152 55% 50%;
+    --emotion-anxiety: 280 65% 65%;
+    --emotion-sadness: 215 70% 60%;
+    --emotion-anger: 0 72% 58%;
+    --emotion-tiredness: 220 15% 55%;
 
-    /* Alert colors - Softer */
-    --alert: 355 65% 60%;
+    /* Alert colors */
+    --alert: 0 72% 58%;
     --alert-foreground: 0 0% 100%;
-    --alert-light: 355 70% 94%;
+    --alert-light: 0 75% 96%;
 
-    --warning: 35 80% 55%;
-    --warning-foreground: 35 80% 18%;
-    --warning-light: 35 85% 92%;
+    --warning: 38 92% 52%;
+    --warning-foreground: 38 92% 15%;
+    --warning-light: 38 95% 95%;
 
-    --success: 160 50% 48%;
+    --success: 152 55% 45%;
     --success-foreground: 0 0% 100%;
-    --success-light: 160 55% 92%;
+    --success-light: 152 60% 95%;
 
     /* UI elements */
-    --destructive: 355 60% 60%;
+    --destructive: 0 72% 58%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 40 20% 90%;
-    --input: 40 20% 92%;
-    --ring: 265 50% 70%;
+    --border: 220 13% 91%;
+    --input: 220 13% 93%;
+    --ring: 243 75% 59%;
 
-    --radius: 0.75rem;
+    --radius: 0.625rem;
 
-    /* Sidebar - Soft lavender tint */
-    --sidebar-background: 265 30% 98%;
-    --sidebar-foreground: 240 10% 15%;
-    --sidebar-primary: 265 65% 65%;
+    /* Sidebar - Clean & minimal */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 222 47% 11%;
+    --sidebar-primary: 243 75% 59%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 265 35% 94%;
-    --sidebar-accent-foreground: 265 40% 35%;
-    --sidebar-border: 265 20% 92%;
-    --sidebar-ring: 265 50% 70%;
+    --sidebar-accent: 243 50% 97%;
+    --sidebar-accent-foreground: 243 60% 40%;
+    --sidebar-border: 220 13% 93%;
+    --sidebar-ring: 243 75% 59%;
 
-    /* Charts */
-    --chart-1: 265 65% 65%;
-    --chart-2: 160 50% 55%;
-    --chart-3: 25 70% 65%;
-    --chart-4: 195 60% 60%;
-    --chart-5: 45 75% 60%;
+    /* Charts - Balanced palette */
+    --chart-1: 243 75% 59%;
+    --chart-2: 152 55% 50%;
+    --chart-3: 38 92% 52%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 0 72% 58%;
 
     /* Gamification colors */
-    --level-1: 160 45% 55%;
-    --level-2: 195 60% 55%;
-    --level-3: 265 55% 60%;
-    --level-4: 290 50% 60%;
-    --level-5: 320 55% 60%;
+    --level-1: 152 55% 50%;
+    --level-2: 195 80% 50%;
+    --level-3: 243 75% 59%;
+    --level-4: 280 65% 60%;
+    --level-5: 320 70% 55%;
 
-    /* Role colors - Pastel palette */
-    --role-estudiante: 195 70% 65%;
-    --role-docente: 145 55% 55%;
-    --role-psicologo: 265 60% 68%;
-    --role-trabajador-social: 320 55% 68%;
-    --role-inspector: 35 75% 58%;
-    --role-orientador: 175 55% 55%;
-    --role-administrador: 25 75% 62%;
+    /* Role colors - Professional palette */
+    --role-estudiante: 195 85% 55%;
+    --role-docente: 152 55% 45%;
+    --role-psicologo: 280 60% 60%;
+    --role-trabajador-social: 320 60% 58%;
+    --role-inspector: 38 85% 52%;
+    --role-orientador: 175 55% 45%;
+    --role-administrador: 25 80% 55%;
+    --role-moderador: 38 92% 52%;
 
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(265, 65%, 65%), hsl(290, 55%, 70%));
-    --gradient-wellbeing: linear-gradient(135deg, hsl(160, 55%, 48%), hsl(145, 50%, 55%));
-    --gradient-card: linear-gradient(180deg, hsl(0, 0%, 100%), hsl(45, 35%, 98%));
-    --gradient-hero: linear-gradient(135deg, hsl(265, 65%, 65%) 0%, hsl(290, 55%, 70%) 50%, hsl(320, 50%, 75%) 100%);
-    --gradient-soft: linear-gradient(135deg, hsl(265, 60%, 92%) 0%, hsl(160, 45%, 92%) 50%, hsl(25, 70%, 92%) 100%);
+    /* Gradients - Subtle & elegant */
+    --gradient-primary: linear-gradient(135deg, hsl(243, 75%, 59%), hsl(280, 65%, 60%));
+    --gradient-wellbeing: linear-gradient(135deg, hsl(152, 55%, 45%), hsl(160, 65%, 42%));
+    --gradient-card: linear-gradient(180deg, hsl(0, 0%, 100%), hsl(220, 20%, 98%));
+    --gradient-hero: linear-gradient(135deg, hsl(243, 75%, 59%) 0%, hsl(280, 65%, 60%) 50%, hsl(320, 70%, 55%) 100%);
+    --gradient-soft: linear-gradient(135deg, hsl(243, 60%, 96%) 0%, hsl(152, 45%, 96%) 50%, hsl(38, 92%, 95%) 100%);
+    --gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%);
 
-    /* Shadows */
-    --shadow-sm: 0 1px 3px 0px hsl(265 30% 15% / 0.06), 0 1px 2px -1px hsl(265 30% 15% / 0.06);
-    --shadow-md: 0 4px 6px -1px hsl(265 30% 15% / 0.08), 0 2px 4px -2px hsl(265 30% 15% / 0.06);
-    --shadow-lg: 0 10px 15px -3px hsl(265 30% 15% / 0.08), 0 4px 6px -4px hsl(265 30% 15% / 0.06);
-    --shadow-card: 0 4px 20px -4px hsl(265 40% 50% / 0.12);
-    --shadow-elevated: 0 20px 40px -12px hsl(265 40% 50% / 0.18);
+    /* Shadows - Refined & subtle */
+    --shadow-xs: 0 1px 2px 0 hsl(222 47% 11% / 0.03);
+    --shadow-sm: 0 1px 3px 0 hsl(222 47% 11% / 0.05), 0 1px 2px -1px hsl(222 47% 11% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(222 47% 11% / 0.06), 0 2px 4px -2px hsl(222 47% 11% / 0.04);
+    --shadow-lg: 0 10px 15px -3px hsl(222 47% 11% / 0.06), 0 4px 6px -4px hsl(222 47% 11% / 0.04);
+    --shadow-xl: 0 20px 25px -5px hsl(222 47% 11% / 0.08), 0 8px 10px -6px hsl(222 47% 11% / 0.04);
+    --shadow-card: 0 1px 3px 0 hsl(222 47% 11% / 0.04), 0 4px 12px -2px hsl(243 75% 59% / 0.08);
+    --shadow-elevated: 0 8px 30px -6px hsl(243 75% 59% / 0.15);
 
     --sidebar: 0 0% 100%;
     --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
-    --font-display: 'Plus Jakarta Sans', sans-serif;
+    --font-display: 'Outfit', sans-serif;
     --spacing: 0.25rem;
   }
 
   .dark {
-    --background: 250 20% 10%;
-    --foreground: 45 20% 95%;
+    --background: 224 25% 8%;
+    --foreground: 210 40% 98%;
 
-    --card: 250 18% 14%;
-    --card-foreground: 45 20% 95%;
+    --card: 224 25% 11%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 250 18% 14%;
-    --popover-foreground: 45 20% 95%;
+    --popover: 224 25% 11%;
+    --popover-foreground: 210 40% 98%;
 
     /* Primary - Brighter in dark mode */
-    --primary: 265 70% 72%;
-    --primary-foreground: 250 20% 10%;
-    --primary-light: 265 35% 22%;
-    --primary-dark: 265 60% 78%;
+    --primary: 243 80% 70%;
+    --primary-foreground: 224 25% 8%;
+    --primary-light: 243 35% 18%;
+    --primary-dark: 243 70% 75%;
 
-    --secondary: 160 40% 25%;
-    --secondary-foreground: 160 50% 85%;
-    --secondary-light: 160 30% 18%;
+    --secondary: 152 35% 20%;
+    --secondary-foreground: 152 55% 80%;
+    --secondary-light: 152 25% 15%;
 
-    --muted: 250 15% 18%;
-    --muted-foreground: 240 8% 60%;
+    --muted: 224 20% 15%;
+    --muted-foreground: 220 10% 55%;
 
-    --accent: 25 50% 22%;
-    --accent-foreground: 25 70% 85%;
-    --accent-light: 25 35% 18%;
+    --accent: 38 40% 18%;
+    --accent-foreground: 38 85% 80%;
+    --accent-light: 38 30% 14%;
 
-    --destructive: 355 55% 55%;
+    --destructive: 0 65% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 250 12% 22%;
-    --input: 250 12% 20%;
-    --ring: 265 55% 65%;
+    --border: 224 18% 18%;
+    --input: 224 18% 16%;
+    --ring: 243 80% 70%;
 
-    --sidebar-background: 250 18% 12%;
-    --sidebar-foreground: 45 20% 95%;
-    --sidebar-primary: 265 70% 72%;
-    --sidebar-primary-foreground: 250 20% 10%;
-    --sidebar-accent: 250 15% 20%;
-    --sidebar-accent-foreground: 45 20% 92%;
-    --sidebar-border: 250 12% 22%;
-    --sidebar-ring: 265 55% 65%;
+    --sidebar-background: 224 25% 10%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 243 80% 70%;
+    --sidebar-primary-foreground: 224 25% 8%;
+    --sidebar-accent: 224 20% 16%;
+    --sidebar-accent-foreground: 210 35% 90%;
+    --sidebar-border: 224 18% 18%;
+    --sidebar-ring: 243 80% 70%;
 
-    --chart-1: 265 70% 72%;
-    --chart-2: 160 50% 55%;
-    --chart-3: 25 65% 65%;
-    --chart-4: 195 55% 60%;
-    --chart-5: 45 70% 60%;
+    --chart-1: 243 80% 70%;
+    --chart-2: 152 55% 55%;
+    --chart-3: 38 85% 55%;
+    --chart-4: 280 60% 65%;
+    --chart-5: 0 70% 60%;
 
     /* Gamification colors - brighter for dark mode */
-    --level-1: 160 55% 50%;
-    --level-2: 195 65% 55%;
-    --level-3: 265 60% 65%;
-    --level-4: 290 55% 65%;
-    --level-5: 320 60% 65%;
+    --level-1: 152 60% 50%;
+    --level-2: 195 75% 55%;
+    --level-3: 243 75% 65%;
+    --level-4: 280 60% 65%;
+    --level-5: 320 65% 60%;
 
     /* Role colors - Adjusted for dark mode */
-    --role-estudiante: 195 65% 60%;
-    --role-docente: 145 50% 50%;
-    --role-psicologo: 265 55% 65%;
-    --role-trabajador-social: 320 50% 65%;
-    --role-inspector: 35 70% 55%;
-    --role-orientador: 175 50% 50%;
-    --role-administrador: 25 70% 58%;
+    --role-estudiante: 195 80% 60%;
+    --role-docente: 152 55% 50%;
+    --role-psicologo: 280 55% 65%;
+    --role-trabajador-social: 320 55% 62%;
+    --role-inspector: 38 80% 55%;
+    --role-orientador: 175 55% 50%;
+    --role-administrador: 25 75% 58%;
+    --role-moderador: 38 90% 55%;
 
     /* Wellbeing scale - adjusted for dark mode */
-    --wellbeing-1: 355 65% 60%;
-    --wellbeing-2: 25 70% 60%;
-    --wellbeing-3: 45 75% 60%;
-    --wellbeing-4: 145 45% 50%;
-    --wellbeing-5: 160 50% 45%;
+    --wellbeing-1: 0 68% 58%;
+    --wellbeing-2: 25 90% 55%;
+    --wellbeing-3: 45 90% 55%;
+    --wellbeing-4: 152 50% 48%;
+    --wellbeing-5: 160 60% 40%;
 
-    --sidebar: 250 18% 14%;
-    --shadow-card: 0 4px 20px -4px hsl(0 0% 0% / 0.4);
-    --shadow-elevated: 0 20px 40px -12px hsl(0 0% 0% / 0.5);
+    --sidebar: 224 25% 11%;
+    --shadow-card: 0 1px 3px 0 hsl(0 0% 0% / 0.15), 0 4px 12px -2px hsl(0 0% 0% / 0.25);
+    --shadow-elevated: 0 8px 30px -6px hsl(0 0% 0% / 0.4);
+    --gradient-glass: linear-gradient(135deg, rgba(30,32,44,0.95) 0%, rgba(30,32,44,0.8) 100%);
   }
 }
 
@@ -223,28 +229,51 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'Inter', sans-serif;
+    font-feature-settings: "cv11", "ss01";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-family: 'Outfit', sans-serif;
+    letter-spacing: -0.02em;
   }
 }
 
 @layer components {
-  /* Card styles */
+  /* Premium card styles */
   .card-elevated {
-    @apply bg-card rounded-2xl border border-border;
+    @apply bg-card rounded-xl border border-border/60;
     box-shadow: var(--shadow-card);
   }
 
   .card-glass {
-    @apply bg-card/80 backdrop-blur-md rounded-2xl border border-border/50;
+    @apply rounded-xl border border-border/40;
+    background: var(--gradient-glass);
+    backdrop-filter: blur(12px);
     box-shadow: var(--shadow-md);
+  }
+
+  .card-interactive {
+    @apply bg-card rounded-xl border border-border/60 transition-all duration-200;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .card-interactive:hover {
+    @apply border-primary/30;
+    box-shadow: var(--shadow-card);
+    transform: translateY(-1px);
+  }
+
+  /* Compact stat card */
+  .stat-card {
+    @apply bg-card rounded-lg border border-border/50 p-3;
+    box-shadow: var(--shadow-xs);
   }
 
   /* Wellbeing scale indicators */
   .wellbeing-indicator {
-    @apply w-12 h-12 rounded-2xl flex items-center justify-center font-semibold text-white transition-all duration-300;
+    @apply w-8 h-8 rounded-lg flex items-center justify-center font-semibold text-white text-sm transition-all duration-200;
   }
 
   .wellbeing-1 { background-color: hsl(var(--wellbeing-1)); }
@@ -253,9 +282,9 @@
   .wellbeing-4 { background-color: hsl(var(--wellbeing-4)); }
   .wellbeing-5 { background-color: hsl(var(--wellbeing-5)); }
 
-  /* Emotion tags */
+  /* Compact emotion tags */
   .emotion-tag {
-    @apply px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200;
+    @apply px-2 py-0.5 rounded-md text-xs font-medium transition-all duration-200;
   }
 
   /* Gradient text */
@@ -286,35 +315,41 @@
   .bg-pattern-auth {
     background-color: hsl(var(--background));
     background-image: 
-      radial-gradient(ellipse 80% 50% at 20% 40%, hsl(265 65% 65% / 0.15), transparent),
-      radial-gradient(ellipse 60% 40% at 80% 20%, hsl(160 50% 55% / 0.12), transparent),
-      radial-gradient(ellipse 50% 60% at 60% 80%, hsl(25 70% 65% / 0.1), transparent),
-      radial-gradient(ellipse 70% 30% at 10% 90%, hsl(290 55% 70% / 0.08), transparent);
+      radial-gradient(ellipse 70% 50% at 15% 45%, hsl(243 75% 59% / 0.12), transparent),
+      radial-gradient(ellipse 50% 35% at 85% 25%, hsl(152 55% 50% / 0.08), transparent),
+      radial-gradient(ellipse 40% 50% at 55% 85%, hsl(280 65% 60% / 0.06), transparent);
   }
 
   .dark .bg-pattern-auth {
     background-color: hsl(var(--background));
     background-image: 
-      radial-gradient(ellipse 80% 50% at 20% 40%, hsl(265 70% 72% / 0.1), transparent),
-      radial-gradient(ellipse 60% 40% at 80% 20%, hsl(160 50% 55% / 0.08), transparent),
-      radial-gradient(ellipse 50% 60% at 60% 80%, hsl(25 65% 65% / 0.06), transparent);
+      radial-gradient(ellipse 70% 50% at 15% 45%, hsl(243 80% 70% / 0.08), transparent),
+      radial-gradient(ellipse 50% 35% at 85% 25%, hsl(152 55% 55% / 0.05), transparent),
+      radial-gradient(ellipse 40% 50% at 55% 85%, hsl(280 60% 65% / 0.04), transparent);
   }
 
   /* Smooth transitions */
   .transition-smooth {
-    @apply transition-all duration-300 ease-out;
+    @apply transition-all duration-200 ease-out;
   }
 
-  /* Floating shapes for auth background */
-  .floating-shape {
-    @apply absolute rounded-full opacity-60 blur-3xl;
-    animation: float 20s ease-in-out infinite;
+  /* Micro-interaction hover */
+  .hover-lift {
+    @apply transition-transform duration-200 ease-out;
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-2px);
   }
 
-  @keyframes float {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    33% { transform: translate(30px, -30px) scale(1.05); }
-    66% { transform: translate(-20px, 20px) scale(0.95); }
+  /* Section headers */
+  .section-header {
+    @apply text-sm font-medium text-muted-foreground uppercase tracking-wide mb-3;
+  }
+
+  /* Compact list item */
+  .list-item-compact {
+    @apply flex items-center justify-between p-2.5 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer;
   }
 }
 
@@ -323,7 +358,7 @@
   @keyframes fade-in-up {
     from {
       opacity: 0;
-      transform: translateY(20px);
+      transform: translateY(10px);
     }
     to {
       opacity: 1;
@@ -336,14 +371,14 @@
       opacity: 1;
     }
     50% {
-      opacity: 0.7;
+      opacity: 0.8;
     }
   }
 
   @keyframes scale-in {
     from {
       opacity: 0;
-      transform: scale(0.95);
+      transform: scale(0.97);
     }
     to {
       opacity: 1;
@@ -351,21 +386,37 @@
     }
   }
 
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
   .animate-fade-in-up {
-    animation: fade-in-up 0.5s ease-out forwards;
+    animation: fade-in-up 0.4s ease-out forwards;
   }
 
   .animate-pulse-soft {
-    animation: pulse-soft 2s ease-in-out infinite;
+    animation: pulse-soft 2.5s ease-in-out infinite;
   }
 
   .animate-scale-in {
-    animation: scale-in 0.3s ease-out forwards;
+    animation: scale-in 0.25s ease-out forwards;
+  }
+
+  .animate-shimmer {
+    animation: shimmer 2s linear infinite;
+    background: linear-gradient(90deg, transparent, hsl(var(--muted)) 50%, transparent);
+    background-size: 200% 100%;
   }
 
   /* Staggered animations */
+  .animate-delay-75 { animation-delay: 75ms; }
   .animate-delay-100 { animation-delay: 100ms; }
+  .animate-delay-150 { animation-delay: 150ms; }
   .animate-delay-200 { animation-delay: 200ms; }
   .animate-delay-300 { animation-delay: 300ms; }
-  .animate-delay-400 { animation-delay: 400ms; }
 }

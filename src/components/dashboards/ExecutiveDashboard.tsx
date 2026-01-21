@@ -34,16 +34,15 @@ const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
+    transition: { staggerChildren: 0.05 },
   },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 10 },
   visible: { opacity: 1, y: 0 },
 };
+
 const EMOTION_COLORS = {
   alegría: "#facc15",
   calma: "#22c55e",
@@ -58,22 +57,22 @@ export function ExecutiveDashboard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
+      <div className="flex items-center justify-center h-48">
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-          className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full"
+          className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full"
         />
       </div>
     );
   }
 
   const wellbeingDistribution = [
-    { name: "Muy Bajo (1)", value: stats.wellbeingDistribution.level1, color: "#ef4444" },
-    { name: "Bajo (2)", value: stats.wellbeingDistribution.level2, color: "#f97316" },
-    { name: "Medio (3)", value: stats.wellbeingDistribution.level3, color: "#facc15" },
-    { name: "Alto (4)", value: stats.wellbeingDistribution.level4, color: "#22c55e" },
-    { name: "Muy Alto (5)", value: stats.wellbeingDistribution.level5, color: "#10b981" },
+    { name: "Muy Bajo", value: stats.wellbeingDistribution.level1, color: "#ef4444" },
+    { name: "Bajo", value: stats.wellbeingDistribution.level2, color: "#f97316" },
+    { name: "Medio", value: stats.wellbeingDistribution.level3, color: "#facc15" },
+    { name: "Alto", value: stats.wellbeingDistribution.level4, color: "#22c55e" },
+    { name: "Muy Alto", value: stats.wellbeingDistribution.level5, color: "#10b981" },
   ];
 
   const emotionData = Object.entries(stats.emotionDistribution).map(([name, value]) => ({
@@ -87,144 +86,139 @@ export function ExecutiveDashboard() {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="space-y-6"
+      className="space-y-4"
     >
       {/* Executive Header */}
-      <motion.div variants={itemVariants} className="flex items-center gap-3 mb-2">
-        <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 px-3 py-1">
-          <Award className="w-4 h-4 mr-1" />
+      <motion.div variants={itemVariants} className="flex items-center gap-2">
+        <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 px-2.5 py-0.5 text-xs">
+          <Award className="w-3 h-3 mr-1" />
           Dashboard Ejecutivo
         </Badge>
-        <span className="text-muted-foreground text-sm">
-          Resumen institucional actualizado
+        <span className="text-muted-foreground text-xs">
+          Resumen institucional
         </span>
       </motion.div>
 
-      {/* Key Performance Indicators */}
+      {/* Key Performance Indicators - Compact */}
       <motion.div variants={itemVariants}>
-        <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-          <Target className="w-5 h-5 text-primary" />
-          KPIs Principales
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="p-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+          <Card className="p-3 border-border/50 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Bienestar Institucional</p>
-                <p className="text-2xl font-bold">{stats.averageWellbeing.toFixed(1)}</p>
-                <p className="text-xs text-muted-foreground">Promedio general</p>
+                <p className="text-xs text-muted-foreground">Bienestar</p>
+                <p className="text-xl font-bold font-display">{stats.averageWellbeing.toFixed(1)}</p>
+                <p className="text-[10px] text-muted-foreground">Promedio</p>
               </div>
-              <Activity className="w-8 h-8 text-primary/50" />
+              <Activity className="w-6 h-6 text-primary/40" />
             </div>
           </Card>
-          <Card className="p-4">
+          <Card className="p-3 border-border/50 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Participación Diaria</p>
-                <p className="text-2xl font-bold">{stats.participationRate}%</p>
-                <p className="text-xs text-muted-foreground">{stats.activeStudents} estudiantes activos</p>
+                <p className="text-xs text-muted-foreground">Participación</p>
+                <p className="text-xl font-bold font-display">{stats.participationRate}%</p>
+                <p className="text-[10px] text-muted-foreground">{stats.activeStudents} activos</p>
               </div>
-              <Users className="w-8 h-8 text-green-500/50" />
+              <Users className="w-6 h-6 text-success/40" />
             </div>
           </Card>
-          <Card className="p-4">
+          <Card className="p-3 border-border/50 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Alertas Activas</p>
-                <p className="text-2xl font-bold">{stats.activeAlerts}</p>
-                <p className="text-xs text-muted-foreground">{stats.criticalAlerts} críticas</p>
+                <p className="text-xs text-muted-foreground">Alertas</p>
+                <p className="text-xl font-bold font-display">{stats.activeAlerts}</p>
+                <p className="text-[10px] text-muted-foreground">{stats.criticalAlerts} críticas</p>
               </div>
-              <AlertTriangle className="w-8 h-8 text-amber-500/50" />
+              <AlertTriangle className="w-6 h-6 text-warning/40" />
             </div>
           </Card>
-          <Card className="p-4">
+          <Card className="p-3 border-border/50 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Discrepancia Media</p>
-                <p className="text-2xl font-bold">{stats.discrepancyLabel}</p>
-                <p className="text-xs text-muted-foreground">Docente vs Estudiante</p>
+                <p className="text-xs text-muted-foreground">Discrepancia</p>
+                <p className="text-xl font-bold font-display">{stats.discrepancyLabel}</p>
+                <p className="text-[10px] text-muted-foreground">Doc vs Est</p>
               </div>
-              <BarChart3 className="w-8 h-8 text-muted-foreground/50" />
+              <BarChart3 className="w-6 h-6 text-muted-foreground/40" />
             </div>
           </Card>
         </div>
       </motion.div>
 
-      {/* Secondary KPIs */}
-      <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border-blue-200 dark:border-blue-800">
-          <CardContent className="p-4">
+      {/* Secondary KPIs - Compact */}
+      <motion.div variants={itemVariants} className="grid grid-cols-3 gap-2">
+        <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 border-blue-200/50 dark:border-blue-800/50">
+          <CardContent className="p-3">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-blue-600 dark:text-blue-400 font-medium">Total Estudiantes</p>
-                <p className="text-3xl font-bold text-blue-700 dark:text-blue-300">{stats.totalStudents}</p>
+                <p className="text-xs text-blue-600 dark:text-blue-400 font-medium">Estudiantes</p>
+                <p className="text-2xl font-bold font-display text-blue-700 dark:text-blue-300">{stats.totalStudents}</p>
               </div>
-              <Users className="w-10 h-10 text-blue-500/50" />
+              <Users className="w-7 h-7 text-blue-500/30" />
             </div>
           </CardContent>
         </Card>
-        <Card className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 border-purple-200 dark:border-purple-800">
-          <CardContent className="p-4">
+        <Card className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 border-purple-200/50 dark:border-purple-800/50">
+          <CardContent className="p-3">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-purple-600 dark:text-purple-400 font-medium">Cursos Activos</p>
-                <p className="text-3xl font-bold text-purple-700 dark:text-purple-300">{stats.totalCourses}</p>
+                <p className="text-xs text-purple-600 dark:text-purple-400 font-medium">Cursos</p>
+                <p className="text-2xl font-bold font-display text-purple-700 dark:text-purple-300">{stats.totalCourses}</p>
               </div>
-              <Building className="w-10 h-10 text-purple-500/50" />
+              <Building className="w-7 h-7 text-purple-500/30" />
             </div>
           </CardContent>
         </Card>
-        <Card className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30 border-emerald-200 dark:border-emerald-800">
-          <CardContent className="p-4">
+        <Card className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/20 dark:to-teal-950/20 border-emerald-200/50 dark:border-emerald-800/50">
+          <CardContent className="p-3">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-emerald-600 dark:text-emerald-400 font-medium">Registros Hoy</p>
-                <p className="text-3xl font-bold text-emerald-700 dark:text-emerald-300">{stats.todayRecords}</p>
+                <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Hoy</p>
+                <p className="text-2xl font-bold font-display text-emerald-700 dark:text-emerald-300">{stats.todayRecords}</p>
               </div>
-              <Calendar className="w-10 h-10 text-emerald-500/50" />
+              <Calendar className="w-7 h-7 text-emerald-500/30" />
             </div>
           </CardContent>
         </Card>
       </motion.div>
 
-      {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Charts Row - Compact */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         {/* Wellbeing Distribution */}
         <motion.div variants={itemVariants}>
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <PieChartIcon className="w-5 h-5 text-primary" />
+          <Card className="border-border/50 shadow-sm">
+            <CardHeader className="pb-1 pt-3 px-4">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                <PieChartIcon className="w-4 h-4 text-primary" />
                 Distribución de Bienestar
               </CardTitle>
-              <CardDescription>
-                Porcentaje de estudiantes por nivel
-              </CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="h-[280px]">
+            <CardContent className="px-4 pb-4">
+              <div className="h-[180px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
                       data={wellbeingDistribution}
                       cx="50%"
                       cy="50%"
-                      innerRadius={60}
-                      outerRadius={100}
+                      innerRadius={45}
+                      outerRadius={70}
                       paddingAngle={2}
                       dataKey="value"
-                      label={({ name, percent }) => 
-                        percent > 0.05 ? `${(percent * 100).toFixed(0)}%` : ''
-                      }
                     >
                       {wellbeingDistribution.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
                     <Tooltip
-                      formatter={(value: number) => [`${value} estudiantes`, 'Cantidad']}
+                      formatter={(value: number) => [`${value}`, 'Estudiantes']}
+                      contentStyle={{ fontSize: '11px', borderRadius: '6px' }}
                     />
-                    <Legend />
+                    <Legend 
+                      wrapperStyle={{ fontSize: '10px' }}
+                      layout="horizontal"
+                      verticalAlign="bottom"
+                    />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
@@ -234,18 +228,15 @@ export function ExecutiveDashboard() {
 
         {/* Weekly Trend */}
         <motion.div variants={itemVariants}>
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-primary" />
+          <Card className="border-border/50 shadow-sm">
+            <CardHeader className="pb-1 pt-3 px-4">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                <TrendingUp className="w-4 h-4 text-primary" />
                 Tendencia Semanal
               </CardTitle>
-              <CardDescription>
-                Evolución del bienestar vs evaluación docente
-              </CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="h-[280px]">
+            <CardContent className="px-4 pb-4">
+              <div className="h-[180px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={stats.weeklyTrend}>
                     <defs>
@@ -258,15 +249,14 @@ export function ExecutiveDashboard() {
                         <stop offset="95%" stopColor="#22c55e" stopOpacity={0}/>
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                    <XAxis dataKey="day" className="text-xs" />
-                    <YAxis domain={[1, 5]} className="text-xs" />
-                    <Tooltip />
-                    <Legend />
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+                    <XAxis dataKey="day" fontSize={10} tickLine={false} axisLine={false} />
+                    <YAxis domain={[1, 5]} fontSize={10} tickLine={false} axisLine={false} width={25} />
+                    <Tooltip contentStyle={{ fontSize: '11px', borderRadius: '6px' }} />
                     <Area
                       type="monotone"
                       dataKey="estudiante"
-                      name="Autoevaluación"
+                      name="Estudiante"
                       stroke="#8b5cf6"
                       fill="url(#colorStudent)"
                       strokeWidth={2}
@@ -274,7 +264,7 @@ export function ExecutiveDashboard() {
                     <Area
                       type="monotone"
                       dataKey="docente"
-                      name="Eval. Docente"
+                      name="Docente"
                       stroke="#22c55e"
                       fill="url(#colorTeacher)"
                       strokeWidth={2}
@@ -287,31 +277,29 @@ export function ExecutiveDashboard() {
         </motion.div>
       </div>
 
-      {/* Emotion Distribution & Course Performance */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Emotion & Course Performance - Compact */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         {/* Emotion Distribution */}
         <motion.div variants={itemVariants}>
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Activity className="w-5 h-5 text-primary" />
+          <Card className="border-border/50 shadow-sm">
+            <CardHeader className="pb-1 pt-3 px-4">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                <Activity className="w-4 h-4 text-primary" />
                 Emociones Predominantes
               </CardTitle>
-              <CardDescription>
-                Distribución emocional institucional
-              </CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="h-[280px]">
+            <CardContent className="px-4 pb-4">
+              <div className="h-[180px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={emotionData} layout="vertical">
-                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                    <XAxis type="number" className="text-xs" />
-                    <YAxis dataKey="name" type="category" width={80} className="text-xs" />
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" horizontal={false} />
+                    <XAxis type="number" fontSize={10} tickLine={false} axisLine={false} />
+                    <YAxis dataKey="name" type="category" width={60} fontSize={10} tickLine={false} axisLine={false} />
                     <Tooltip
                       formatter={(value: number) => [`${value}%`, 'Frecuencia']}
+                      contentStyle={{ fontSize: '11px', borderRadius: '6px' }}
                     />
-                    <Bar dataKey="value" radius={[0, 4, 4, 0]}>
+                    <Bar dataKey="value" radius={[0, 3, 3, 0]}>
                       {emotionData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
@@ -323,29 +311,27 @@ export function ExecutiveDashboard() {
           </Card>
         </motion.div>
 
-        {/* Top/Bottom Courses */}
+        {/* Course Performance */}
         <motion.div variants={itemVariants}>
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <BarChart3 className="w-5 h-5 text-primary" />
+          <Card className="border-border/50 shadow-sm">
+            <CardHeader className="pb-1 pt-3 px-4">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                <BarChart3 className="w-4 h-4 text-primary" />
                 Rendimiento por Curso
               </CardTitle>
-              <CardDescription>
-                Comparativa de bienestar promedio
-              </CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="h-[280px]">
+            <CardContent className="px-4 pb-4">
+              <div className="h-[180px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={stats.coursePerformance}>
-                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                    <XAxis dataKey="name" className="text-xs" />
-                    <YAxis domain={[0, 5]} className="text-xs" />
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+                    <XAxis dataKey="name" fontSize={10} tickLine={false} axisLine={false} />
+                    <YAxis domain={[0, 5]} fontSize={10} tickLine={false} axisLine={false} width={25} />
                     <Tooltip
                       formatter={(value: number) => [value.toFixed(1), 'Bienestar']}
+                      contentStyle={{ fontSize: '11px', borderRadius: '6px' }}
                     />
-                    <Bar dataKey="wellbeing" name="Bienestar" radius={[4, 4, 0, 0]}>
+                    <Bar dataKey="wellbeing" radius={[3, 3, 0, 0]}>
                       {stats.coursePerformance.map((entry, index) => (
                         <Cell 
                           key={`cell-${index}`} 
@@ -361,31 +347,31 @@ export function ExecutiveDashboard() {
         </motion.div>
       </div>
 
-      {/* Quick Insights */}
+      {/* Quick Insights - Compact */}
       <motion.div variants={itemVariants}>
-        <Card className="bg-gradient-to-r from-primary/5 to-secondary/5 border-primary/20">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Award className="w-5 h-5 text-primary" />
+        <Card className="bg-gradient-to-r from-primary/5 to-secondary/5 border-primary/15">
+          <CardHeader className="pb-2 pt-3 px-4">
+            <CardTitle className="text-sm font-semibold flex items-center gap-2">
+              <Award className="w-4 h-4 text-primary" />
               Insights Clave
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="p-4 bg-background/60 rounded-lg">
-                <h4 className="font-medium text-sm text-muted-foreground mb-1">Mejor Rendimiento</h4>
-                <p className="text-lg font-semibold">{stats.topCourse || "N/A"}</p>
-                <p className="text-sm text-green-600">Mayor bienestar promedio</p>
+          <CardContent className="px-4 pb-4">
+            <div className="grid grid-cols-3 gap-2">
+              <div className="p-2.5 bg-background/60 rounded-lg">
+                <h4 className="font-medium text-xs text-muted-foreground mb-0.5">Mejor Rendimiento</h4>
+                <p className="text-sm font-semibold">{stats.topCourse || "N/A"}</p>
+                <p className="text-[10px] text-success">Mayor bienestar</p>
               </div>
-              <div className="p-4 bg-background/60 rounded-lg">
-                <h4 className="font-medium text-sm text-muted-foreground mb-1">Requiere Atención</h4>
-                <p className="text-lg font-semibold">{stats.bottomCourse || "N/A"}</p>
-                <p className="text-sm text-amber-600">Menor bienestar promedio</p>
+              <div className="p-2.5 bg-background/60 rounded-lg">
+                <h4 className="font-medium text-xs text-muted-foreground mb-0.5">Requiere Atención</h4>
+                <p className="text-sm font-semibold">{stats.bottomCourse || "N/A"}</p>
+                <p className="text-[10px] text-warning">Menor bienestar</p>
               </div>
-              <div className="p-4 bg-background/60 rounded-lg">
-                <h4 className="font-medium text-sm text-muted-foreground mb-1">Emoción Dominante</h4>
-                <p className="text-lg font-semibold capitalize">{stats.dominantEmotion || "N/A"}</p>
-                <p className="text-sm text-blue-600">Más frecuente esta semana</p>
+              <div className="p-2.5 bg-background/60 rounded-lg">
+                <h4 className="font-medium text-xs text-muted-foreground mb-0.5">Emoción Dominante</h4>
+                <p className="text-sm font-semibold capitalize">{stats.dominantEmotion || "N/A"}</p>
+                <p className="text-[10px] text-primary">Esta semana</p>
               </div>
             </div>
           </CardContent>
