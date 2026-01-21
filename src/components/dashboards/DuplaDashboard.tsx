@@ -20,18 +20,17 @@ import { Badge } from "@/components/ui/badge";
 import { StudentFileCard } from "@/components/students/StudentFileCard";
 import { useStudentData } from "@/hooks/useStudentData";
 import { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.1 },
+    transition: { staggerChildren: 0.05 },
   },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 10 },
   visible: { opacity: 1, y: 0 },
 };
 
@@ -40,14 +39,12 @@ export function DuplaDashboard() {
   const { students, alerts, fileStatusCounts, stats, loading, refetch } = useStudentData();
   const [searchQuery, setSearchQuery] = useState("");
 
-  const activeAlerts = alerts.filter((a) => a.status !== "resuelta").slice(0, 5);
+  const activeAlerts = alerts.filter((a) => a.status !== "resuelta").slice(0, 4);
   
-  // Find discrepancy cases from alerts
   const discrepancyCases = alerts
     .filter((a) => a.alert_type === "discrepancia" && a.status !== "resuelta")
-    .slice(0, 4);
+    .slice(0, 3);
 
-  // Filter students with restricted/confidential status
   const restrictedStudents = students
     .filter((s) => s.fileStatus === "restringida" || s.fileStatus === "confidencial")
     .filter((s) => s.full_name.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -64,11 +61,11 @@ export function DuplaDashboard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20">
+      <div className="flex items-center justify-center py-16">
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-          className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full"
+          className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full"
         />
       </div>
     );
@@ -79,16 +76,17 @@ export function DuplaDashboard() {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="space-y-6"
+      className="space-y-4"
     >
-      {/* Stats Grid */}
-      <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      {/* Stats Grid - Compact */}
+      <motion.div variants={itemVariants} className="grid grid-cols-2 lg:grid-cols-4 gap-2">
         <StatCard
           title="Total Estudiantes"
           value={String(stats.totalStudents)}
           subtitle="En seguimiento"
           icon={Users}
           variant="primary"
+          compact
         />
         <StatCard
           title="Alertas Activas"
@@ -96,60 +94,64 @@ export function DuplaDashboard() {
           subtitle="Requieren atención"
           icon={AlertTriangle}
           variant="alert"
+          compact
         />
         <StatCard
-          title="Fichas Restringidas"
+          title="Fichas Limitadas"
           value={String(fileStatusCounts.restringida + fileStatusCounts.confidencial)}
-          subtitle="Con acceso limitado"
+          subtitle="Acceso restringido"
           icon={Shield}
           variant="secondary"
+          compact
         />
         <StatCard
-          title="Bienestar Promedio"
+          title="Bienestar"
           value={String(stats.averageWellbeing || "N/A")}
-          subtitle="Institucional"
+          subtitle="Promedio"
           icon={TrendingUp}
           trend={{ value: 2, isPositive: true }}
-          variant="default"
+          compact
         />
       </motion.div>
 
-      {/* Main Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Main Grid - Compact */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         {/* Active Alerts */}
         <motion.div variants={itemVariants}>
-          <Card className="border-0 bg-card/80 backdrop-blur-xl shadow-lg h-full">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-lg font-display flex items-center gap-2">
-                <AlertTriangle className="w-5 h-5 text-alert" />
-                Alertas Activas
-              </CardTitle>
-              <Button variant="ghost" size="sm" onClick={() => navigate("/alerts")}>
-                Ver todas <ArrowRight className="w-4 h-4 ml-1" />
-              </Button>
+          <Card className="border-border/50 shadow-sm h-full">
+            <CardHeader className="pb-2 pt-3 px-4">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4 text-alert" />
+                  Alertas Activas
+                </CardTitle>
+                <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => navigate("/alerts")}>
+                  Ver todas <ArrowRight className="w-3 h-3 ml-1" />
+                </Button>
+              </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="px-4 pb-4">
               {activeAlerts.length === 0 ? (
-                <p className="text-center text-muted-foreground py-8">
+                <p className="text-center text-muted-foreground py-6 text-sm">
                   No hay alertas activas
                 </p>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-2">
                   {activeAlerts.map((alert, index) => (
                     <motion.div
                       key={alert.id}
-                      initial={{ opacity: 0, y: 10 }}
+                      initial={{ opacity: 0, y: 5 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="p-3 rounded-xl bg-muted/30 backdrop-blur-sm border border-border/50 hover:border-primary/30 transition-all cursor-pointer"
+                      transition={{ delay: index * 0.05 }}
+                      className="p-2.5 rounded-lg bg-muted/30 border border-border/40 hover:border-primary/30 transition-all cursor-pointer"
                       onClick={() => navigate(`/students/${alert.student_id}`)}
                     >
-                      <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center justify-between mb-1.5">
                         <div className="flex items-center gap-2">
-                          <p className="font-medium">{alert.student_name}</p>
+                          <p className="font-medium text-sm">{alert.student_name}</p>
                           <span className="text-xs text-muted-foreground">{alert.course}</span>
                         </div>
-                        <span className="text-xs text-muted-foreground">
+                        <span className="text-[10px] text-muted-foreground">
                           {new Date(alert.created_at).toLocaleDateString()}
                         </span>
                       </div>
@@ -164,37 +166,39 @@ export function DuplaDashboard() {
 
         {/* Discrepancy Cases */}
         <motion.div variants={itemVariants}>
-          <Card className="border-0 bg-card/80 backdrop-blur-xl shadow-lg h-full">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-lg font-display flex items-center gap-2">
-                <Eye className="w-5 h-5 text-warning" />
-                Casos de Discrepancia
-              </CardTitle>
-              <Button variant="ghost" size="sm" onClick={() => navigate("/reports")}>
-                Ver reportes <ArrowRight className="w-4 h-4 ml-1" />
-              </Button>
+          <Card className="border-border/50 shadow-sm h-full">
+            <CardHeader className="pb-2 pt-3 px-4">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                  <Eye className="w-4 h-4 text-warning" />
+                  Casos de Discrepancia
+                </CardTitle>
+                <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => navigate("/reports")}>
+                  Reportes <ArrowRight className="w-3 h-3 ml-1" />
+                </Button>
+              </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="px-4 pb-4">
               {discrepancyCases.length === 0 ? (
-                <p className="text-center text-muted-foreground py-8">
-                  No hay discrepancias activas
+                <p className="text-center text-muted-foreground py-6 text-sm">
+                  Sin discrepancias activas
                 </p>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-2">
                   {discrepancyCases.map((item, index) => (
                     <motion.div
                       key={item.id}
-                      initial={{ opacity: 0, y: 10 }}
+                      initial={{ opacity: 0, y: 5 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="p-3 rounded-xl bg-warning/10 backdrop-blur-sm border border-warning/30 cursor-pointer hover:border-warning/50 transition-all"
+                      transition={{ delay: index * 0.05 }}
+                      className="p-2.5 rounded-lg bg-warning/5 border border-warning/20 cursor-pointer hover:border-warning/40 transition-all"
                       onClick={() => navigate(`/students/${item.student_id}`)}
                     >
-                      <div className="flex items-center justify-between mb-2">
-                        <p className="font-medium">{item.student_name}</p>
+                      <div className="flex items-center justify-between mb-1">
+                        <p className="font-medium text-sm">{item.student_name}</p>
                         <span className="text-xs text-muted-foreground">{item.course}</span>
                       </div>
-                      <p className="text-sm text-muted-foreground">{item.description}</p>
+                      <p className="text-xs text-muted-foreground line-clamp-1">{item.description}</p>
                     </motion.div>
                   ))}
                 </div>
@@ -204,48 +208,48 @@ export function DuplaDashboard() {
         </motion.div>
       </div>
 
-      {/* File Status Overview */}
+      {/* File Status Overview - Compact */}
       <motion.div variants={itemVariants}>
-        <Card className="border-0 bg-card/80 backdrop-blur-xl shadow-lg">
-          <CardHeader>
-            <CardTitle className="text-lg font-display flex items-center gap-2">
-              <FileText className="w-5 h-5 text-primary" />
+        <Card className="border-border/50 shadow-sm">
+          <CardHeader className="pb-2 pt-3 px-4">
+            <CardTitle className="text-sm font-semibold flex items-center gap-2">
+              <FileText className="w-4 h-4 text-primary" />
               Estado de Fichas
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="p-4 rounded-xl bg-success/10 backdrop-blur-sm border border-success/20">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-success">Abiertas</span>
-                  <Badge variant="outline" className="border-success text-success">
+          <CardContent className="px-4 pb-4">
+            <div className="grid grid-cols-3 gap-2">
+              <div className="p-3 rounded-lg bg-success/5 border border-success/20">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-xs font-medium text-success">Abiertas</span>
+                  <Badge variant="outline" className="border-success text-success h-5 text-xs">
                     {fileStatusCounts.abierta}
                   </Badge>
                 </div>
-                <p className="text-xs text-muted-foreground">
-                  Acceso normal para docentes de curso
+                <p className="text-[10px] text-muted-foreground">
+                  Acceso normal
                 </p>
               </div>
-              <div className="p-4 rounded-xl bg-warning/10 backdrop-blur-sm border border-warning/20">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-warning">Restringidas</span>
-                  <Badge variant="outline" className="border-warning text-warning">
+              <div className="p-3 rounded-lg bg-warning/5 border border-warning/20">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-xs font-medium text-warning">Restringidas</span>
+                  <Badge variant="outline" className="border-warning text-warning h-5 text-xs">
                     {fileStatusCounts.restringida}
                   </Badge>
                 </div>
-                <p className="text-xs text-muted-foreground">
-                  Requieren autorización para acceso docente
+                <p className="text-[10px] text-muted-foreground">
+                  Requieren autorización
                 </p>
               </div>
-              <div className="p-4 rounded-xl bg-alert/10 backdrop-blur-sm border border-alert/20">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-alert">Confidenciales</span>
-                  <Badge variant="outline" className="border-alert text-alert">
+              <div className="p-3 rounded-lg bg-alert/5 border border-alert/20">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-xs font-medium text-alert">Confidenciales</span>
+                  <Badge variant="outline" className="border-alert text-alert h-5 text-xs">
                     {fileStatusCounts.confidencial}
                   </Badge>
                 </div>
-                <p className="text-xs text-muted-foreground">
-                  Solo acceso dupla psicosocial
+                <p className="text-[10px] text-muted-foreground">
+                  Solo dupla
                 </p>
               </div>
             </div>
@@ -253,27 +257,29 @@ export function DuplaDashboard() {
         </Card>
       </motion.div>
 
-      {/* Restricted/Confidential Students Management */}
+      {/* Restricted Students - Compact */}
       {(fileStatusCounts.restringida + fileStatusCounts.confidencial) > 0 && (
         <motion.div variants={itemVariants}>
-          <Card className="card-elevated">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-lg font-display flex items-center gap-2">
-                <Shield className="w-5 h-5 text-warning" />
-                Fichas con Acceso Limitado
-              </CardTitle>
-              <div className="relative w-64">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input
-                  placeholder="Buscar estudiante..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
-                />
+          <Card className="border-border/50 shadow-sm">
+            <CardHeader className="pb-2 pt-3 px-4">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                  <Shield className="w-4 h-4 text-warning" />
+                  Fichas con Acceso Limitado
+                </CardTitle>
+                <div className="relative w-48">
+                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+                  <Input
+                    placeholder="Buscar..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-8 h-8 text-xs"
+                  />
+                </div>
               </div>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <CardContent className="px-4 pb-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
                 {restrictedStudents.map((student, index) => (
                   <StudentFileCard
                     key={student.id}
@@ -284,7 +290,7 @@ export function DuplaDashboard() {
                 ))}
               </div>
               {restrictedStudents.length === 0 && (
-                <p className="text-center text-muted-foreground py-8">
+                <p className="text-center text-muted-foreground py-6 text-sm">
                   No se encontraron estudiantes
                 </p>
               )}
@@ -293,42 +299,36 @@ export function DuplaDashboard() {
         </motion.div>
       )}
 
-      {/* Student Case Files Section */}
+      {/* Student Case Files - Compact */}
       <motion.div variants={itemVariants}>
-        <Card className="card-elevated">
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-lg font-display flex items-center gap-2">
-              <FolderOpen className="w-5 h-5 text-primary" />
-              Fichas de Estudiantes
-            </CardTitle>
-            <Button variant="ghost" size="sm" onClick={() => navigate("/students")}>
-              Ver todos <ArrowRight className="w-4 h-4 ml-1" />
-            </Button>
+        <Card className="border-border/50 shadow-sm">
+          <CardHeader className="pb-2 pt-3 px-4">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                <FolderOpen className="w-4 h-4 text-primary" />
+                Fichas de Estudiantes
+              </CardTitle>
+              <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => navigate("/students")}>
+                Ver todos <ArrowRight className="w-3 h-3 ml-1" />
+              </Button>
+            </div>
           </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground mb-4">
-              Accede a las fichas de seguimiento de cada estudiante. Puedes agregar registros de conducta, atenciones, citas y más.
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <CardContent className="px-4 pb-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
               {students.slice(0, 6).map((student, index) => (
                 <motion.div
                   key={student.id}
-                  initial={{ opacity: 0, y: 10 }}
+                  initial={{ opacity: 0, y: 5 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                  className="p-4 rounded-xl bg-muted/30 border border-border/50 hover:border-primary/30 cursor-pointer transition-all"
+                  transition={{ delay: index * 0.03 }}
+                  className="p-2.5 rounded-lg bg-muted/30 border border-border/40 hover:border-primary/30 cursor-pointer transition-all text-center"
                   onClick={() => navigate(`/students/${student.id}`)}
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-gradient-hero flex items-center justify-center text-white text-sm font-bold">
-                      {student.full_name.split(" ").map(n => n[0]).slice(0, 2).join("")}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium truncate">{student.full_name}</p>
-                      <p className="text-xs text-muted-foreground truncate">{student.course || "Sin curso"}</p>
-                    </div>
-                    <FileText className="w-4 h-4 text-muted-foreground" />
+                  <div className="w-8 h-8 mx-auto rounded-lg bg-gradient-hero flex items-center justify-center text-white text-xs font-bold mb-1.5">
+                    {student.full_name.split(" ").map(n => n[0]).slice(0, 2).join("")}
                   </div>
+                  <p className="font-medium text-xs truncate">{student.full_name.split(" ")[0]}</p>
+                  <p className="text-[10px] text-muted-foreground truncate">{student.course || "Sin curso"}</p>
                 </motion.div>
               ))}
             </div>
@@ -336,23 +336,24 @@ export function DuplaDashboard() {
         </Card>
       </motion.div>
 
-      {/* Quick Access */}
+      {/* Quick Access - Compact */}
       <motion.div variants={itemVariants}>
-        <Card className="card-elevated bg-gradient-to-r from-primary/5 to-secondary/5">
-          <CardContent className="p-6">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+        <Card className="border-primary/20 bg-gradient-to-r from-primary/5 to-secondary/5">
+          <CardContent className="p-4">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
               <div>
-                <h3 className="font-display font-semibold text-lg">Acceso Completo</h3>
-                <p className="text-sm text-muted-foreground">
-                  Como parte del equipo psicosocial, tienes acceso a fichas completas y gestión de alertas
+                <h3 className="font-semibold text-sm">Acceso Completo</h3>
+                <p className="text-xs text-muted-foreground">
+                  Tienes acceso a fichas completas y gestión de alertas
                 </p>
               </div>
-              <div className="flex gap-3">
-                <Button variant="outline" onClick={() => navigate("/students")}>
-                  Ver estudiantes
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" className="h-8 text-xs" onClick={() => navigate("/students")}>
+                  Estudiantes
                 </Button>
                 <Button 
-                  className="bg-gradient-hero hover:opacity-90"
+                  className="bg-gradient-hero hover:opacity-90 h-8 text-xs"
+                  size="sm"
                   onClick={() => navigate("/alerts")}
                 >
                   Gestionar alertas

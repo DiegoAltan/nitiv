@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Users, TrendingUp, AlertTriangle, ClipboardCheck, ArrowRight, Sparkles } from "lucide-react";
+import { Users, TrendingUp, AlertTriangle, ClipboardCheck, ArrowRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatCard } from "@/components/ui/StatCard";
 import { Button } from "@/components/ui/button";
@@ -11,25 +11,19 @@ const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.1 },
+    transition: { staggerChildren: 0.05 },
   },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 10 },
   visible: { opacity: 1, y: 0 },
 };
 
-const getWellbeingColor = (level: number) => {
-  if (level >= 4) return "text-success bg-success/10";
-  if (level >= 3) return "text-warning bg-warning/10";
-  return "text-alert bg-alert/10";
-};
-
-const getWellbeingLabel = (level: number) => {
-  if (level >= 4) return "Bueno";
-  if (level >= 3) return "Regular";
-  return "Bajo";
+const getWellbeingStyles = (level: number) => {
+  if (level >= 4) return { text: "text-success", bg: "bg-success/10", label: "Bueno" };
+  if (level >= 3) return { text: "text-warning", bg: "bg-warning/10", label: "Regular" };
+  return { text: "text-alert", bg: "bg-alert/10", label: "Bajo" };
 };
 
 export function TeacherDashboard() {
@@ -41,16 +35,17 @@ export function TeacherDashboard() {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="space-y-6"
+      className="space-y-4"
     >
-      {/* Stats Grid */}
-      <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      {/* Stats Grid - Compact */}
+      <motion.div variants={itemVariants} className="grid grid-cols-2 lg:grid-cols-4 gap-2">
         <StatCard
           title="Mis Estudiantes"
           value={loading ? "..." : stats.totalStudents.toString()}
           subtitle={`En ${stats.courses.length} cursos`}
           icon={Users}
           variant="primary"
+          compact
         />
         <StatCard
           title="Evaluaciones Hoy"
@@ -58,14 +53,15 @@ export function TeacherDashboard() {
           subtitle={`De ${stats.totalStudents} estudiantes`}
           icon={ClipboardCheck}
           variant="secondary"
+          compact
         />
         <StatCard
           title="Bienestar Promedio"
-          value={loading ? "..." : stats.avgWellbeing.toString()}
+          value={loading ? "..." : stats.avgWellbeing.toFixed(1)}
           subtitle="Mis cursos"
           icon={TrendingUp}
           trend={stats.avgWellbeing >= 3 ? { value: 3, isPositive: true } : undefined}
-          variant="default"
+          compact
         />
         <StatCard
           title="Requieren Atención"
@@ -73,94 +69,99 @@ export function TeacherDashboard() {
           subtitle="Semáforo bajo"
           icon={AlertTriangle}
           variant="alert"
+          compact
         />
       </motion.div>
 
-      {/* Course Overview */}
+      {/* Course Overview - Compact */}
       <motion.div variants={itemVariants}>
-        <Card className="border-0 bg-card/80 backdrop-blur-xl shadow-lg">
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-lg font-display flex items-center gap-2">
-              Resumen por Curso
-              <Sparkles className="w-4 h-4 text-warning" />
-            </CardTitle>
-            <Button variant="ghost" size="sm" onClick={() => navigate("/students")}>
-              Ver estudiantes <ArrowRight className="w-4 h-4 ml-1" />
-            </Button>
+        <Card className="border-border/50 shadow-sm">
+          <CardHeader className="pb-2 pt-3 px-4">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                <TrendingUp className="w-4 h-4 text-primary" />
+                Resumen por Curso
+              </CardTitle>
+              <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => navigate("/students")}>
+                Ver estudiantes <ArrowRight className="w-3 h-3 ml-1" />
+              </Button>
+            </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-4 pb-4">
             {loading ? (
-              <div className="text-center py-8 text-muted-foreground">
+              <div className="text-center py-6 text-muted-foreground text-sm">
                 Cargando cursos...
               </div>
             ) : stats.courses.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                <p>No tienes cursos asignados aún.</p>
-                <p className="text-sm mt-2">Contacta al administrador para asignarte cursos.</p>
+              <div className="text-center py-6 text-muted-foreground">
+                <p className="text-sm">No tienes cursos asignados</p>
+                <p className="text-xs mt-1">Contacta al administrador</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {stats.courses.map((course, index) => (
-                  <motion.div
-                    key={course.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="p-4 rounded-xl bg-muted/30 backdrop-blur-sm border border-border/50 hover:border-primary/30 transition-all cursor-pointer hover:shadow-md"
-                    onClick={() => navigate("/students")}
-                  >
-                    <div className="flex items-center justify-between mb-3">
-                      <h3 className="font-display font-semibold text-lg">{course.name}</h3>
-                      <span className="text-sm text-muted-foreground">
-                        {course.students} estudiantes
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm text-muted-foreground">Bienestar:</span>
-                        <span
-                          className={cn(
-                            "px-2 py-1 rounded-full text-xs font-medium backdrop-blur-sm",
-                            getWellbeingColor(course.avgWellbeing)
-                          )}
-                        >
-                          {getWellbeingLabel(course.avgWellbeing)} ({course.avgWellbeing.toFixed(1)})
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                {stats.courses.map((course, index) => {
+                  const wellbeingStyle = getWellbeingStyles(course.avgWellbeing);
+                  return (
+                    <motion.div
+                      key={course.id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                      className="p-3 rounded-lg bg-muted/30 border border-border/40 hover:border-primary/30 transition-all cursor-pointer hover:shadow-sm"
+                      onClick={() => navigate("/students")}
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="font-semibold text-sm">{course.name}</h3>
+                        <span className="text-xs text-muted-foreground">
+                          {course.students} est.
                         </span>
                       </div>
-                      {course.needsAttention > 0 && (
-                        <span className="flex items-center gap-1 text-xs text-alert">
-                          <AlertTriangle className="w-3 h-3" />
-                          {course.needsAttention}
+                      <div className="flex items-center justify-between">
+                        <span
+                          className={cn(
+                            "px-2 py-0.5 rounded text-xs font-medium",
+                            wellbeingStyle.bg,
+                            wellbeingStyle.text
+                          )}
+                        >
+                          {wellbeingStyle.label} ({course.avgWellbeing.toFixed(1)})
                         </span>
-                      )}
-                    </div>
-                  </motion.div>
-                ))}
+                        {course.needsAttention > 0 && (
+                          <span className="flex items-center gap-1 text-xs text-alert">
+                            <AlertTriangle className="w-3 h-3" />
+                            {course.needsAttention}
+                          </span>
+                        )}
+                      </div>
+                    </motion.div>
+                  );
+                })}
               </div>
             )}
           </CardContent>
         </Card>
       </motion.div>
 
-      {/* Quick Actions */}
+      {/* Quick Actions - Compact */}
       <motion.div variants={itemVariants}>
-        <Card className="border-0 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10 backdrop-blur-xl shadow-lg">
-          <CardContent className="p-6">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-hero flex items-center justify-center shadow-lg">
-                  <ClipboardCheck className="w-6 h-6 text-white" />
+        <Card className="border-primary/20 bg-gradient-to-r from-primary/5 to-secondary/5">
+          <CardContent className="p-4">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-gradient-hero flex items-center justify-center shadow-md">
+                  <ClipboardCheck className="w-4 h-4 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-display font-semibold text-lg">Evaluación Docente</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Registra tu percepción del bienestar de tus estudiantes
+                  <h3 className="font-semibold text-sm">Evaluación Docente</h3>
+                  <p className="text-xs text-muted-foreground">
+                    Registra tu percepción del bienestar
                   </p>
                 </div>
               </div>
               <Button
                 onClick={() => navigate("/teacher-assessment")}
-                className="bg-gradient-hero hover:opacity-90 shadow-lg rounded-xl"
+                className="bg-gradient-hero hover:opacity-90 shadow-sm h-8 text-xs"
+                size="sm"
               >
                 Realizar evaluación
               </Button>
@@ -169,16 +170,13 @@ export function TeacherDashboard() {
         </Card>
       </motion.div>
 
-      {/* Privacy Notice */}
+      {/* Privacy Notice - Compact */}
       <motion.div variants={itemVariants}>
-        <Card className="border-muted/50 bg-muted/30 backdrop-blur-xl">
-          <CardContent className="p-4">
-            <p className="text-sm text-muted-foreground text-center">
-              🔒 Como docente, puedes ver indicadores generales de bienestar de tus estudiantes.
-              Para información sensible o fichas completas, contacta al equipo psicosocial.
-            </p>
-          </CardContent>
-        </Card>
+        <div className="p-3 rounded-lg bg-muted/30 border border-border/40">
+          <p className="text-xs text-muted-foreground text-center">
+            🔒 Puedes ver indicadores generales. Para información sensible, contacta al equipo psicosocial.
+          </p>
+        </div>
       </motion.div>
     </motion.div>
   );
