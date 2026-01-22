@@ -14,6 +14,38 @@ export type Database = {
   }
   public: {
     Tables: {
+      activity_ratings: {
+        Row: {
+          activity_id: string
+          created_at: string
+          id: string
+          rating: number
+          student_id: string
+        }
+        Insert: {
+          activity_id: string
+          created_at?: string
+          id?: string
+          rating: number
+          student_id: string
+        }
+        Update: {
+          activity_id?: string
+          created_at?: string
+          id?: string
+          rating?: number
+          student_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "activity_ratings_activity_id_fkey"
+            columns: ["activity_id"]
+            isOneToOne: false
+            referencedRelation: "school_activities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       alerts: {
         Row: {
           alert_type: string
@@ -196,6 +228,72 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "profiles_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      school_activities: {
+        Row: {
+          activity_date: string
+          activity_time: string | null
+          activity_type: string
+          course_id: string | null
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          institution_id: string | null
+          is_upcoming: boolean
+          organizers: string[]
+          photo_urls: string[] | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          activity_date: string
+          activity_time?: string | null
+          activity_type?: string
+          course_id?: string | null
+          created_at?: string
+          created_by: string
+          description?: string | null
+          id?: string
+          institution_id?: string | null
+          is_upcoming?: boolean
+          organizers?: string[]
+          photo_urls?: string[] | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          activity_date?: string
+          activity_time?: string | null
+          activity_type?: string
+          course_id?: string | null
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          institution_id?: string | null
+          is_upcoming?: boolean
+          organizers?: string[]
+          photo_urls?: string[] | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "school_activities_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "school_activities_institution_id_fkey"
             columns: ["institution_id"]
             isOneToOne: false
             referencedRelation: "institutions"
