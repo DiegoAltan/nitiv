@@ -8,6 +8,7 @@ import {
   Settings,
   Heart,
   FileText,
+  CalendarDays,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
@@ -24,11 +25,12 @@ interface NavItem {
 const navigation: NavItem[] = [
   { name: "Dashboard", href: "/", icon: LayoutDashboard },
   { name: "Bienestar", href: "/wellbeing", icon: Heart, roles: ["estudiante"] },
-  { name: "Evaluación", href: "/teacher-assessment", icon: ClipboardCheck, roles: ["docente"] },
-  { name: "Estudiantes", href: "/students", icon: Users, roles: ["docente", "psicologo", "trabajador_social"] },
-  { name: "Fichas", href: "/fichas", icon: FileText, roles: ["psicologo", "trabajador_social", "administrador", "docente"] },
-  { name: "Reportes", href: "/reports", icon: BarChart3, roles: ["administrador", "psicologo", "trabajador_social"] },
-  { name: "Alertas", href: "/alerts", icon: Bell, roles: ["psicologo", "trabajador_social"] },
+  { name: "Actividades", href: "/activities", icon: CalendarDays },
+  { name: "Evaluación", href: "/teacher-assessment", icon: ClipboardCheck, roles: ["docente", "moderador"] },
+  { name: "Estudiantes", href: "/students", icon: Users, roles: ["docente", "psicologo", "trabajador_social", "inspector_general", "orientador", "moderador"] },
+  { name: "Fichas", href: "/fichas", icon: FileText, roles: ["psicologo", "trabajador_social", "administrador", "docente", "inspector_general", "orientador", "moderador"] },
+  { name: "Reportes", href: "/reports", icon: BarChart3, roles: ["administrador", "psicologo", "trabajador_social", "inspector_general", "moderador"] },
+  { name: "Alertas", href: "/alerts", icon: Bell, roles: ["psicologo", "trabajador_social", "inspector_general", "orientador", "moderador"] },
   { name: "Ajustes", href: "/settings", icon: Settings },
 ];
 

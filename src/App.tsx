@@ -16,6 +16,7 @@ import SettingsPage from "./pages/SettingsPage";
 import AuthPage from "./pages/AuthPage";
 import StudentProfilePage from "./pages/StudentProfilePage";
 import FichasPage from "./pages/FichasPage";
+import ActivitiesPage from "./pages/ActivitiesPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -89,6 +90,15 @@ const App = () => (
                 element={
                   <ProtectedRoute allowedRoles={["psicologo", "trabajador_social", "administrador", "docente", "inspector_general", "orientador"]}>
                     <FichasPage />
+                  </ProtectedRoute>
+                }
+              />
+              {/* Activities: All roles can view, Staff can manage */}
+              <Route
+                path="/activities"
+                element={
+                  <ProtectedRoute>
+                    <ActivitiesPage />
                   </ProtectedRoute>
                 }
               />

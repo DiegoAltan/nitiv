@@ -1,12 +1,9 @@
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 import { motion } from "framer-motion";
-import { Sidebar } from "./Sidebar";
-import { Header } from "./Header";
+import { TopNavigation } from "./TopNavigation";
 import { StudentLayout } from "./StudentLayout";
 import { Breadcrumbs } from "./Breadcrumbs";
-import { BottomNav } from "./BottomNav";
 import { useAuth } from "@/contexts/AuthContext";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -15,11 +12,9 @@ interface AppLayoutProps {
 }
 
 export function AppLayout({ children, title, subtitle }: AppLayoutProps) {
-  const [sidebarCollapsed] = useState(false);
   const { activeRole } = useAuth();
-  const isMobile = useIsMobile();
 
-  // Students get a special layout without sidebar
+  // Students get a special layout without full navigation
   const isStudent = activeRole === "estudiante";
 
   if (isStudent) {
@@ -32,23 +27,29 @@ export function AppLayout({ children, title, subtitle }: AppLayoutProps) {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Hide sidebar on mobile */}
-      {!isMobile && <Sidebar />}
+      <TopNavigation />
       
-      <motion.div
-        initial={false}
-        animate={{ marginLeft: isMobile ? 0 : (sidebarCollapsed ? 80 : 280) }}
-        className="flex flex-col min-h-screen"
-      >
-        <Header title={title} subtitle={subtitle} />
-        <main className="flex-1 p-6 pb-24 md:pb-6">
+      <main className="flex-1 p-4 md:p-6">
+        <div className="max-w-7xl mx-auto">
           <Breadcrumbs />
+          
+          {/* Page Header */}
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6"
+          >
+            <h1 className="text-2xl md:text-3xl font-display font-bold text-foreground">
+              {title}
+            </h1>
+            {subtitle && (
+              <p className="text-muted-foreground mt-1">{subtitle}</p>
+            )}
+          </motion.div>
+          
           {children}
-        </main>
-      </motion.div>
-      
-      {/* Bottom nav for mobile */}
-      <BottomNav />
+        </div>
+      </main>
     </div>
   );
 }
