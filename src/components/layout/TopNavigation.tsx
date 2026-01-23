@@ -17,6 +17,7 @@ import {
   ChevronDown,
   LogOut,
   User,
+  Shuffle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth, AppRole } from "@/contexts/AuthContext";
@@ -32,6 +33,8 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { NotificationsDropdown } from "@/components/notifications/NotificationsDropdown";
+import { useToast } from "@/hooks/use-toast";
 
 const navigation = [
   { name: "Dashboard", href: "/", icon: LayoutDashboard },
@@ -66,12 +69,24 @@ const roleColors: Record<AppRole, string> = {
   moderador: "bg-gradient-to-r from-amber-100 to-yellow-100 text-amber-700 dark:from-amber-900/30 dark:to-yellow-900/30 dark:text-amber-300",
 };
 
+const allRoles: AppRole[] = [
+  "estudiante",
+  "docente",
+  "psicologo",
+  "trabajador_social",
+  "administrador",
+  "inspector_general",
+  "orientador",
+  "moderador",
+];
+
 export function TopNavigation() {
   const location = useLocation();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const { toast } = useToast();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { profile, activeRole, signOut, switchRole, canSwitchRole, roles } = useAuth();
+  const { profile, activeRole, signOut, switchRole, isStudent } = useAuth();
 
   const filteredNavigation = navigation.filter((item) => {
     if (!item.roles) return true;
@@ -82,6 +97,15 @@ export function TopNavigation() {
   const handleSignOut = async () => {
     await signOut();
     navigate("/auth");
+  };
+
+  const handleRoleSwitch = (role: AppRole) => {
+    switchRole(role);
+    toast({
+      title: "Rol cambiado",
+      description: `Ahora estás viendo como ${roleLabels[role]}`,
+    });
+    navigate("/");
   };
 
   const NavItems = ({ mobile = false, onItemClick }: { mobile?: boolean; onItemClick?: () => void }) => (
@@ -136,12 +160,50 @@ export function TopNavigation() {
 
         {/* Right side */}
         <div className="flex items-center gap-2 ml-auto">
+          {/* Role Switcher - Always visible for testing */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="gap-2 hidden md:flex">
+                <Shuffle className="w-3.5 h-3.5" />
+                <span className="hidden lg:inline">Cambiar rol</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <div className="px-2 py-1.5">
+                <p className="text-xs text-muted-foreground mb-1">
+                  Probar como otro perfil
+                </p>
+              </div>
+              <DropdownMenuSeparator />
+              {allRoles.map((role) => (
+                <DropdownMenuItem
+                  key={role}
+                  onClick={() => handleRoleSwitch(role)}
+                  className={cn(
+                    "cursor-pointer",
+                    role === activeRole && "bg-primary/10"
+                  )}
+                >
+                  <Badge className={cn("mr-2", roleColors[role])}>
+                    {roleLabels[role]}
+                  </Badge>
+                  {role === activeRole && (
+                    <span className="ml-auto text-xs text-muted-foreground">Actual</span>
+                  )}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
           {/* Role Badge */}
           {activeRole && (
             <Badge className={cn("hidden md:flex", roleColors[activeRole])}>
               {roleLabels[activeRole]}
             </Badge>
           )}
+
+          {/* Notifications (Students only) */}
+          {isStudent && <NotificationsDropdown />}
 
           {/* Settings */}
           <Button
@@ -172,28 +234,6 @@ export function TopNavigation() {
                 <p className="text-xs text-muted-foreground">{profile?.email}</p>
               </div>
               <DropdownMenuSeparator />
-              
-              {/* Role Switcher (Dev Mode) */}
-              {import.meta.env.DEV && canSwitchRole && (
-                <>
-                  <div className="px-2 py-1.5">
-                    <p className="text-xs text-muted-foreground mb-1">Cambiar rol (Dev)</p>
-                    <div className="flex flex-wrap gap-1">
-                      {roles.map((role) => (
-                        <Badge
-                          key={role}
-                          variant={role === activeRole ? "default" : "outline"}
-                          className="cursor-pointer text-xs"
-                          onClick={() => switchRole(role)}
-                        >
-                          {roleLabels[role]}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                  <DropdownMenuSeparator />
-                </>
-              )}
               
               <DropdownMenuItem onClick={() => navigate("/settings")}>
                 <User className="w-4 h-4 mr-2" />
@@ -237,6 +277,29 @@ export function TopNavigation() {
                           </Badge>
                         )}
                       </div>
+                    </div>
+                  </div>
+
+                  {/* Mobile Role Switcher */}
+                  <div className="p-4 border-b border-border">
+                    <p className="text-xs text-muted-foreground mb-2">Cambiar perfil para probar:</p>
+                    <div className="flex flex-wrap gap-1">
+                      {allRoles.map((role) => (
+                        <Badge
+                          key={role}
+                          variant={role === activeRole ? "default" : "outline"}
+                          className={cn(
+                            "cursor-pointer text-xs",
+                            role === activeRole && roleColors[role]
+                          )}
+                          onClick={() => {
+                            handleRoleSwitch(role);
+                            setMobileMenuOpen(false);
+                          }}
+                        >
+                          {roleLabels[role]}
+                        </Badge>
+                      ))}
                     </div>
                   </div>
                   
