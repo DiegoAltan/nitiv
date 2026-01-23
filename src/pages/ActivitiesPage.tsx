@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Plus, Calendar, History, Sparkles } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
@@ -6,11 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ActivityCard } from "@/components/activities/ActivityCard";
 import { CreateActivityDialog } from "@/components/activities/CreateActivityDialog";
+import { ActivityFilters, ActivityFiltersState } from "@/components/activities/ActivityFilters";
 import { useActivities } from "@/hooks/useActivities";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const ActivitiesPage = () => {
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [filters, setFilters] = useState<ActivityFiltersState>({});
   const {
     upcomingActivities,
     pastActivities,
@@ -22,6 +24,45 @@ const ActivitiesPage = () => {
     canEdit,
     canRate,
   } = useActivities();
+
+  // Apply filters to activities
+  const filterActivities = (activities: typeof upcomingActivities) => {
+    return activities.filter((activity) => {
+      // Date from filter
+      if (filters.dateFrom) {
+        const activityDate = new Date(activity.activity_date);
+        if (activityDate < filters.dateFrom) return false;
+      }
+
+      // Date to filter
+      if (filters.dateTo) {
+        const activityDate = new Date(activity.activity_date);
+        if (activityDate > filters.dateTo) return false;
+      }
+
+      // Activity type filter
+      if (filters.activityType && activity.activity_type !== filters.activityType) {
+        return false;
+      }
+
+      // Organizer filter
+      if (filters.organizer && !activity.organizers.includes(filters.organizer)) {
+        return false;
+      }
+
+      return true;
+    });
+  };
+
+  const filteredUpcoming = useMemo(
+    () => filterActivities(upcomingActivities),
+    [upcomingActivities, filters]
+  );
+
+  const filteredPast = useMemo(
+    () => filterActivities(pastActivities),
+    [pastActivities, filters]
+  );
 
   const handleRate = (activityId: string, rating: number) => {
     rateActivity.mutate({ activityId, rating });
@@ -40,24 +81,25 @@ const ActivitiesPage = () => {
     >
       <div className="space-y-6">
         {/* Header with action */}
-        {canEdit && (
-          <div className="flex justify-end">
+        <div className="flex items-center justify-between gap-4">
+          <ActivityFilters filters={filters} onFiltersChange={setFilters} />
+          {canEdit && (
             <Button onClick={() => setCreateDialogOpen(true)} className="gap-2">
               <Plus className="w-4 h-4" />
               Nueva Actividad
             </Button>
-          </div>
-        )}
+          )}
+        </div>
 
         <Tabs defaultValue="upcoming" className="space-y-4">
           <TabsList className="grid w-full max-w-md grid-cols-2">
             <TabsTrigger value="upcoming" className="gap-2">
               <Sparkles className="w-4 h-4" />
-              Próximas ({upcomingActivities.length})
+              Próximas ({filteredUpcoming.length})
             </TabsTrigger>
             <TabsTrigger value="past" className="gap-2">
               <History className="w-4 h-4" />
-              Realizadas ({pastActivities.length})
+              Realizadas ({filteredPast.length})
             </TabsTrigger>
           </TabsList>
 
@@ -68,7 +110,7 @@ const ActivitiesPage = () => {
                   <Skeleton key={i} className="h-48 rounded-xl" />
                 ))}
               </div>
-            ) : upcomingActivities.length === 0 ? (
+            ) : filteredUpcoming.length === 0 ? (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -86,7 +128,7 @@ const ActivitiesPage = () => {
               </motion.div>
             ) : (
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {upcomingActivities.map((activity) => (
+                {filteredUpcoming.map((activity) => (
                   <ActivityCard
                     key={activity.id}
                     activity={activity}
@@ -107,7 +149,7 @@ const ActivitiesPage = () => {
                   <Skeleton key={i} className="h-48 rounded-xl" />
                 ))}
               </div>
-            ) : pastActivities.length === 0 ? (
+            ) : filteredPast.length === 0 ? (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -120,7 +162,7 @@ const ActivitiesPage = () => {
               </motion.div>
             ) : (
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {pastActivities.map((activity) => (
+                {filteredPast.map((activity) => (
                   <ActivityCard
                     key={activity.id}
                     activity={activity}

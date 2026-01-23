@@ -14,6 +14,38 @@ export type Database = {
   }
   public: {
     Tables: {
+      activity_notifications: {
+        Row: {
+          activity_id: string
+          created_at: string
+          id: string
+          is_read: boolean
+          student_id: string
+        }
+        Insert: {
+          activity_id: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          student_id: string
+        }
+        Update: {
+          activity_id?: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          student_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "activity_notifications_activity_id_fkey"
+            columns: ["activity_id"]
+            isOneToOne: false
+            referencedRelation: "school_activities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       activity_ratings: {
         Row: {
           activity_id: string

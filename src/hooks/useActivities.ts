@@ -33,6 +33,7 @@ export interface CreateActivityData {
   activity_type: "interna" | "externa" | "conjunta";
   organizers: string[];
   is_upcoming: boolean;
+  photo_urls?: string[];
 }
 
 export function useActivities() {

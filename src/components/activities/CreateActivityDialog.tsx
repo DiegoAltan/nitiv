@@ -32,11 +32,12 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { CreateActivityData } from "@/hooks/useActivities";
 import { cn } from "@/lib/utils";
+import { PhotoUpload } from "./PhotoUpload";
 
 interface CreateActivityDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (data: CreateActivityData) => void;
+  onSubmit: (data: CreateActivityData & { photo_urls?: string[] }) => void;
   isLoading?: boolean;
 }
 
@@ -62,6 +63,7 @@ export function CreateActivityDialog({
   const [activityType, setActivityType] = useState<"interna" | "externa" | "conjunta">("interna");
   const [organizers, setOrganizers] = useState<string[]>([]);
   const [isUpcoming, setIsUpcoming] = useState(true);
+  const [photos, setPhotos] = useState<string[]>([]);
 
   const { data: courses = [] } = useQuery({
     queryKey: ["courses"],
@@ -97,6 +99,7 @@ export function CreateActivityDialog({
       activity_type: activityType,
       organizers,
       is_upcoming: isUpcoming,
+      photo_urls: photos.length > 0 ? photos : undefined,
     });
 
     // Reset form
@@ -108,6 +111,7 @@ export function CreateActivityDialog({
     setActivityType("interna");
     setOrganizers([]);
     setIsUpcoming(true);
+    setPhotos([]);
   };
 
   return (
@@ -237,6 +241,12 @@ export function CreateActivityDialog({
                 ))}
               </div>
             )}
+          </div>
+
+          {/* Photo Upload */}
+          <div className="space-y-2">
+            <Label>Fotografías</Label>
+            <PhotoUpload photos={photos} onPhotosChange={setPhotos} />
           </div>
 
           <div className="flex items-center justify-between">
