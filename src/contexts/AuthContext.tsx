@@ -198,16 +198,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     sessionStorage.removeItem(ROLE_STORAGE_KEY);
   };
 
-  // Dev mode: Switch role for testing - persists in sessionStorage
+  // Switch role for testing - always allowed for now to facilitate platform testing
+  // Persists in sessionStorage so it survives page navigation
   const switchRole = (role: AppRole) => {
-    if (!import.meta.env.DEV) return;
+    console.log("Switching role to:", role);
     setSelectedRole(role);
     sessionStorage.setItem(ROLE_STORAGE_KEY, role);
   };
 
   // Use selectedRole for permission checks (if set), fallback to checking all roles
   const activeRole = selectedRole || roles[0];
-  const canSwitchRole = import.meta.env.DEV;
+  // Allow role switching for platform testing
+  const canSwitchRole = true;
   const isModerador = activeRole === "moderador";
   const isAdmin = activeRole === "administrador" || isModerador;
   const isDupla = activeRole === "psicologo" || activeRole === "trabajador_social" || isModerador;

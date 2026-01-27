@@ -19,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { StudentFileCard } from "@/components/students/StudentFileCard";
 import { useStudentData } from "@/hooks/useStudentData";
+import { AIAnalysisCard } from "@/components/ai/AIAnalysisCard";
 import { useState } from "react";
 
 const containerVariants = {
@@ -334,6 +335,23 @@ export function DuplaDashboard() {
             </div>
           </CardContent>
         </Card>
+      </motion.div>
+
+      {/* AI Analysis - Compact */}
+      <motion.div variants={itemVariants}>
+        <AIAnalysisCard
+          title="Análisis Psicosocial IA"
+          analysisType="dupla"
+          dashboardData={{
+            activeAlerts: stats.activeAlerts,
+            casesCount: fileStatusCounts.restringida + fileStatusCounts.confidencial,
+            riskCount: students.filter(s => (s.lastWellbeing || 0) <= 2).length,
+            highDiscrepancyCount: discrepancyCases.length,
+            avgWellbeing: stats.averageWellbeing,
+            topEmotions: [],
+          }}
+          compact
+        />
       </motion.div>
 
       {/* Quick Access - Compact */}

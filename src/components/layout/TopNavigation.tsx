@@ -100,12 +100,14 @@ export function TopNavigation() {
   };
 
   const handleRoleSwitch = (role: AppRole) => {
+    console.log("TopNavigation: switching to role:", role);
     switchRole(role);
     toast({
       title: "Rol cambiado",
       description: `Ahora estás viendo como ${roleLabels[role]}`,
     });
-    navigate("/");
+    // Use window.location to force a full navigation refresh
+    window.location.href = "/";
   };
 
   const NavItems = ({ mobile = false, onItemClick }: { mobile?: boolean; onItemClick?: () => void }) => (
