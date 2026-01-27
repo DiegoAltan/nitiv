@@ -28,8 +28,8 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
   }
 
   // Check if user has any of the allowed roles.
-  // In DEV we allow testing by switching the active role (client-side) without changing DB roles.
-  const effectiveRoles: AppRole[] = import.meta.env.DEV && canSwitchRole && activeRole
+  // When canSwitchRole is enabled (for testing), use the activeRole for permission checks
+  const effectiveRoles: AppRole[] = canSwitchRole && activeRole
     ? [activeRole]
     : roles;
 

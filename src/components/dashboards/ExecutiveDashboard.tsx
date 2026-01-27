@@ -29,6 +29,7 @@ import {
   AreaChart,
 } from "recharts";
 import { useExecutiveData } from "@/hooks/useExecutiveData";
+import { AIAnalysisCard } from "@/components/ai/AIAnalysisCard";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -346,6 +347,25 @@ export function ExecutiveDashboard() {
           </Card>
         </motion.div>
       </div>
+
+      {/* AI Analysis Section */}
+      <motion.div variants={itemVariants}>
+        <AIAnalysisCard
+          title="Análisis Ejecutivo IA"
+          analysisType="executive"
+          dashboardData={{
+            overallWellbeing: stats.averageWellbeing,
+            participation: stats.participationRate,
+            activeAlerts: stats.activeAlerts,
+            totalStudents: stats.totalStudents,
+            totalRecords: stats.todayRecords,
+            trend: stats.weeklyTrend.length > 1 
+              ? (stats.weeklyTrend[stats.weeklyTrend.length - 1].estudiante > stats.weeklyTrend[0].estudiante ? "Ascendente" : "Descendente")
+              : "Estable",
+            avgDiscrepancy: stats.discrepancyLabel,
+          }}
+        />
+      </motion.div>
 
       {/* Quick Insights - Compact */}
       <motion.div variants={itemVariants}>

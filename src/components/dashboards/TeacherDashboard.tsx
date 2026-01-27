@@ -5,6 +5,7 @@ import { StatCard } from "@/components/ui/StatCard";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useTeacherData } from "@/hooks/useTeacherData";
+import { AIAnalysisCard } from "@/components/ai/AIAnalysisCard";
 import { cn } from "@/lib/utils";
 
 const containerVariants = {
@@ -140,6 +141,24 @@ export function TeacherDashboard() {
             )}
           </CardContent>
         </Card>
+      </motion.div>
+
+      {/* AI Analysis - Compact */}
+      <motion.div variants={itemVariants}>
+        <AIAnalysisCard
+          title="Recomendaciones IA"
+          analysisType="teacher"
+          dashboardData={{
+            totalStudents: stats.totalStudents,
+            avgWellbeing: stats.avgWellbeing,
+            participation: Math.round((stats.evaluationsToday / Math.max(stats.totalStudents, 1)) * 100),
+            alertCount: stats.needsAttention,
+            evaluationCount: stats.evaluationsToday,
+            discrepancy: "N/A",
+            topEmotions: [],
+          }}
+          compact
+        />
       </motion.div>
 
       {/* Quick Actions - Compact */}

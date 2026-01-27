@@ -1,1 +1,7 @@
 project_id = "znaqrvxnwdcuaaibfoyb"
+
+[functions.analyze-course]
+verify_jwt = false
+
+[functions.analyze-dashboard]
+verify_jwt = false

@@ -40,6 +40,7 @@ import { CourseDetailPanel } from "@/components/reports/CourseDetailPanel";
 import { AdvancedFilters, ReportFilters } from "@/components/reports/AdvancedFilters";
 import { HistoricalComparison } from "@/components/reports/HistoricalComparison";
 import { ExportReportDialog } from "@/components/reports/ExportReportDialog";
+import { AIAnalysisCard } from "@/components/ai/AIAnalysisCard";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ReportsPage() {
@@ -180,6 +181,22 @@ export default function ReportsPage() {
 
         {/* Summary Cards */}
         <ReportsSummaryCards stats={stats} />
+
+        {/* AI Analysis for Reports */}
+        <AIAnalysisCard
+          title="Análisis Institucional IA"
+          analysisType="reports"
+          dashboardData={{
+            averageWellbeing: stats.averageWellbeing,
+            totalStudents: stats.totalStudents,
+            participation: stats.participation,
+            averageDiscrepancy: stats.averageDiscrepancy,
+            totalRecords: stats.totalRecords,
+            activeAlerts: stats.activeAlerts,
+            lowWellbeingCount: stats.lowWellbeingCount,
+            coursesCount: courses.length,
+          }}
+        />
 
         {/* Historical Comparison */}
         <HistoricalComparison 
