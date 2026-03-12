@@ -29,6 +29,7 @@ const navigation = [
   // Dupla, Admin, Inspector, Teachers with shared access, Orientador, Moderador
   { name: "Fichas/Registros", href: "/fichas", icon: FileText, roles: ["psicologo", "trabajador_social", "administrador", "docente", "inspector_general", "orientador", "moderador"] },
   // Dupla, Admin, Inspector, Moderador
+  { name: "Clima de Aula", href: "/classroom-climate", icon: Cloud, roles: ["docente", "psicologo", "trabajador_social", "administrador", "inspector_general", "orientador", "moderador"] },
   { name: "Reportes", href: "/reports", icon: BarChart3, roles: ["administrador", "psicologo", "trabajador_social", "inspector_general", "moderador"] },
   // Dupla, Inspector, Orientador, Moderador
   { name: "Alertas", href: "/alerts", icon: Bell, roles: ["psicologo", "trabajador_social", "inspector_general", "orientador", "moderador"] },
