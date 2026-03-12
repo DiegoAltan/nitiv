@@ -64,8 +64,12 @@ Enfócate en:
 - Evaluaciones realizadas: ${dashboardData.evaluationCount}
 - Discrepancia con autoevaluación: ${dashboardData.discrepancy || "N/A"}
 - Emociones frecuentes: ${dashboardData.topEmotions?.join(", ") || "Sin datos"}
+- Clima de aula predominante: ${dashboardData.climateDominant || "Sin registros"}
+- Conflictos reportados esta semana: ${dashboardData.climateConflicts ?? "Sin datos"}
+- Energía predominante: ${dashboardData.climateEnergy || "Sin datos"}
+- Participación de aula: ${dashboardData.climateParticipation || "Sin datos"}
 
-Proporciona análisis y recomendaciones prácticas para mi rol docente.`;
+Proporciona análisis y recomendaciones prácticas para mi rol docente, correlacionando el clima de aula con el bienestar estudiantil.`;
         break;
 
       case "dupla":
