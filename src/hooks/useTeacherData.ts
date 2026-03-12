@@ -66,7 +66,7 @@ export function useTeacherData() {
           return;
         }
 
-        const courseIds = teacherCourses.map((tc: any) => tc.course_id);
+        const courseIds = effectiveCourses.map((tc: any) => tc.course_id);
 
         // Fetch students in these courses
         const { data: studentCourses, error: scError } = await supabase
