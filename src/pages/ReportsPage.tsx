@@ -41,6 +41,8 @@ import { AdvancedFilters, ReportFilters } from "@/components/reports/AdvancedFil
 import { HistoricalComparison } from "@/components/reports/HistoricalComparison";
 import { ExportReportDialog } from "@/components/reports/ExportReportDialog";
 import { AIAnalysisCard } from "@/components/ai/AIAnalysisCard";
+import { ClimateStats } from "@/components/climate/ClimateStats";
+import { useClassroomClimate } from "@/hooks/useClassroomClimate";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ReportsPage() {
