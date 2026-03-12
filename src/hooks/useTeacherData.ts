@@ -101,7 +101,7 @@ export function useTeacherData() {
           .eq("evaluated_at", today);
 
         // Calculate stats per course
-        const courseStats: CourseStats[] = teacherCourses.map((tc: any) => {
+        const courseStats: CourseStats[] = effectiveCourses.map((tc: any) => {
           const courseStudents = studentCourses?.filter(
             (sc: any) => sc.course_id === tc.course_id
           ) || [];
