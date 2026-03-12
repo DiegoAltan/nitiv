@@ -44,6 +44,7 @@ const navigation = [
   { name: "Estudiantes", href: "/students", icon: Users, roles: ["docente", "psicologo", "trabajador_social", "inspector_general", "orientador", "moderador"] },
   { name: "Fichas", href: "/fichas", icon: FileText, roles: ["psicologo", "trabajador_social", "administrador", "docente", "inspector_general", "orientador", "moderador"] },
   { name: "Actividades", href: "/activities", icon: CalendarDays },
+  { name: "Clima", href: "/classroom-climate", icon: Cloud, roles: ["docente", "psicologo", "trabajador_social", "administrador", "inspector_general", "orientador", "moderador"] },
   { name: "Reportes", href: "/reports", icon: BarChart3, roles: ["administrador", "psicologo", "trabajador_social", "inspector_general", "moderador"] },
   { name: "Alertas", href: "/alerts", icon: Bell, roles: ["psicologo", "trabajador_social", "inspector_general", "orientador", "moderador"] },
 ];
