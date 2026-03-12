@@ -190,6 +190,10 @@ export function TeacherDashboard() {
             evaluationCount: stats.evaluationsToday,
             discrepancy: "N/A",
             topEmotions: [],
+            climateDominant: climateSummary.dominant,
+            climateConflicts: climateSummary.conflicts,
+            climateEnergy: climateSummary.energy,
+            climateParticipation: climateSummary.participation,
           }}
           compact
         />
