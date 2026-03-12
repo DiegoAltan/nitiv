@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { BarChart3, TrendingUp, Download, Calendar, FileSpreadsheet, FileText, Users, Search, Grid3X3, List } from "lucide-react";
 import { useNavigate } from "react-router-dom";
