@@ -430,6 +430,11 @@ export default function ReportsPage() {
               </Card>
             </div>
           </TabsContent>
+
+          {/* Climate Tab */}
+          <TabsContent value="clima">
+            <ClimateStats />
+          </TabsContent>
         </Tabs>
       </div>
     </AppLayout>
