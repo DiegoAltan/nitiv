@@ -126,6 +126,60 @@ export type Database = {
           },
         ]
       }
+      classroom_climate: {
+        Row: {
+          climate_level: string
+          conflict_present: boolean
+          course_id: string
+          created_at: string
+          energy_level: string
+          id: string
+          notes: string | null
+          participation_level: string
+          recorded_at: string
+          teacher_id: string
+        }
+        Insert: {
+          climate_level: string
+          conflict_present?: boolean
+          course_id: string
+          created_at?: string
+          energy_level: string
+          id?: string
+          notes?: string | null
+          participation_level: string
+          recorded_at?: string
+          teacher_id: string
+        }
+        Update: {
+          climate_level?: string
+          conflict_present?: boolean
+          course_id?: string
+          created_at?: string
+          energy_level?: string
+          id?: string
+          notes?: string | null
+          participation_level?: string
+          recorded_at?: string
+          teacher_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "classroom_climate_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "classroom_climate_teacher_id_fkey"
+            columns: ["teacher_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       courses: {
         Row: {
           created_at: string
