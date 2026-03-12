@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { BarChart3, TrendingUp, Download, Calendar, FileSpreadsheet, FileText, Users, Search, Grid3X3, List } from "lucide-react";
+import { BarChart3, TrendingUp, Download, FileSpreadsheet, FileText, Users, Search, Grid3X3, List, Cloud } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -41,6 +41,8 @@ import { AdvancedFilters, ReportFilters } from "@/components/reports/AdvancedFil
 import { HistoricalComparison } from "@/components/reports/HistoricalComparison";
 import { ExportReportDialog } from "@/components/reports/ExportReportDialog";
 import { AIAnalysisCard } from "@/components/ai/AIAnalysisCard";
+import { ClimateStats } from "@/components/climate/ClimateStats";
+import { useClassroomClimate } from "@/hooks/useClassroomClimate";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ReportsPage() {
@@ -57,7 +59,29 @@ export default function ReportsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [comparisonPeriod, setComparisonPeriod] = useState("previous-week");
+  const { records: climateRecords } = useClassroomClimate();
   
+  // Compute climate summary for AI
+  const climateSummary = useMemo(() => {
+    if (!climateRecords.length) return { total: 0, dominant: "Sin datos", conflicts: 0, energy: "Sin datos", participation: "Sin datos" };
+    const thirtyDays = new Date(); thirtyDays.setDate(thirtyDays.getDate() - 30);
+    const recent = climateRecords.filter(r => new Date(r.recorded_at) >= thirtyDays);
+    const counts: Record<string, number> = {};
+    const energyCounts: Record<string, number> = {};
+    const partCounts: Record<string, number> = {};
+    let conflicts = 0;
+    recent.forEach(r => {
+      counts[r.climate_level] = (counts[r.climate_level] || 0) + 1;
+      energyCounts[r.energy_level] = (energyCounts[r.energy_level] || 0) + 1;
+      partCounts[r.participation_level] = (partCounts[r.participation_level] || 0) + 1;
+      if (r.conflict_present) conflicts++;
+    });
+    const dominant = Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] || "Sin datos";
+    const energy = Object.entries(energyCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || "Sin datos";
+    const participation = Object.entries(partCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || "Sin datos";
+    return { total: recent.length, dominant, conflicts, energy, participation };
+  }, [climateRecords]);
+
   const { 
     loading, 
     wellbeingByCourse, 
@@ -195,6 +219,11 @@ export default function ReportsPage() {
             activeAlerts: stats.activeAlerts,
             lowWellbeingCount: stats.lowWellbeingCount,
             coursesCount: courses.length,
+            climateTotal: climateSummary.total,
+            climateDominant: climateSummary.dominant,
+            climateConflicts: climateSummary.conflicts,
+            climateEnergy: climateSummary.energy,
+            climateParticipation: climateSummary.participation,
           }}
         />
 
@@ -223,6 +252,10 @@ export default function ReportsPage() {
             <TabsTrigger value="emociones" className="gap-2">
               <BarChart3 className="w-4 h-4" />
               Emociones
+            </TabsTrigger>
+            <TabsTrigger value="clima" className="gap-2">
+              <Cloud className="w-4 h-4" />
+              Clima de Aula
             </TabsTrigger>
           </TabsList>
 
@@ -396,6 +429,11 @@ export default function ReportsPage() {
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          {/* Climate Tab */}
+          <TabsContent value="clima">
+            <ClimateStats />
           </TabsContent>
         </Tabs>
       </div>

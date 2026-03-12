@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { Users, TrendingUp, AlertTriangle, ClipboardCheck, ArrowRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,6 +7,9 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useTeacherData } from "@/hooks/useTeacherData";
 import { AIAnalysisCard } from "@/components/ai/AIAnalysisCard";
+import { ClimateSummaryWidget } from "@/components/climate/ClimateSummaryWidget";
+import { useClassroomClimate } from "@/hooks/useClassroomClimate";
+import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
 
 const containerVariants = {
@@ -30,6 +34,31 @@ const getWellbeingStyles = (level: number) => {
 export function TeacherDashboard() {
   const navigate = useNavigate();
   const { stats, loading } = useTeacherData();
+  const { profile } = useAuth();
+  const { records: climateRecords } = useClassroomClimate();
+
+  const climateSummary = useMemo(() => {
+    if (!profile?.id || !climateRecords.length) return { dominant: "Sin datos", conflicts: 0, energy: "Sin datos", participation: "Sin datos" };
+    const myRecords = climateRecords.filter(r => r.teacher_id === profile.id);
+    const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7);
+    const recent = myRecords.filter(r => new Date(r.recorded_at) >= weekAgo);
+    const counts: Record<string, number> = {};
+    const eCounts: Record<string, number> = {};
+    const pCounts: Record<string, number> = {};
+    let conflicts = 0;
+    recent.forEach(r => {
+      counts[r.climate_level] = (counts[r.climate_level] || 0) + 1;
+      eCounts[r.energy_level] = (eCounts[r.energy_level] || 0) + 1;
+      pCounts[r.participation_level] = (pCounts[r.participation_level] || 0) + 1;
+      if (r.conflict_present) conflicts++;
+    });
+    return {
+      dominant: Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] || "Sin datos",
+      conflicts,
+      energy: Object.entries(eCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || "Sin datos",
+      participation: Object.entries(pCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || "Sin datos",
+    };
+  }, [climateRecords, profile?.id]);
 
   return (
     <motion.div
@@ -143,6 +172,11 @@ export function TeacherDashboard() {
         </Card>
       </motion.div>
 
+      {/* Climate Summary Widget */}
+      <motion.div variants={itemVariants}>
+        <ClimateSummaryWidget />
+      </motion.div>
+
       {/* AI Analysis - Compact */}
       <motion.div variants={itemVariants}>
         <AIAnalysisCard
@@ -156,6 +190,10 @@ export function TeacherDashboard() {
             evaluationCount: stats.evaluationsToday,
             discrepancy: "N/A",
             topEmotions: [],
+            climateDominant: climateSummary.dominant,
+            climateConflicts: climateSummary.conflicts,
+            climateEnergy: climateSummary.energy,
+            climateParticipation: climateSummary.participation,
           }}
           compact
         />
