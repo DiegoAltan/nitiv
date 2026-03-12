@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useTeacherData } from "@/hooks/useTeacherData";
 import { AIAnalysisCard } from "@/components/ai/AIAnalysisCard";
+import { ClimateSummaryWidget } from "@/components/climate/ClimateSummaryWidget";
 import { cn } from "@/lib/utils";
 
 const containerVariants = {
