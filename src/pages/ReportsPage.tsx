@@ -253,6 +253,10 @@ export default function ReportsPage() {
               <BarChart3 className="w-4 h-4" />
               Emociones
             </TabsTrigger>
+            <TabsTrigger value="clima" className="gap-2">
+              <Cloud className="w-4 h-4" />
+              Clima de Aula
+            </TabsTrigger>
           </TabsList>
 
           {/* Courses Tab */}
