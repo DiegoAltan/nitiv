@@ -8,23 +8,18 @@ interface AvatarDisplayProps {
   onClick?: () => void;
 }
 
-const breathingVariants = {
-  neutral: {
-    scale: [1, 1.04, 1],
-    transition: { duration: 4, repeat: Infinity, ease: "easeInOut" },
-  },
-  happy: {
-    y: [0, -4, 0],
-    transition: { duration: 2.5, repeat: Infinity, ease: "easeInOut" },
-  },
-  thinking: {
-    rotate: [0, 2, -2, 0],
-    transition: { duration: 3, repeat: Infinity, ease: "easeInOut" },
-  },
-  alert: {
-    scale: [1, 1.06, 1],
-    transition: { duration: 0.8, repeat: Infinity, ease: "easeInOut" },
-  },
+const breathingVariants: Record<AvatarEmotion, { scale?: number[]; y?: number[]; rotate?: number[] }> = {
+  neutral: { scale: [1, 1.04, 1] },
+  happy: { y: [0, -4, 0] },
+  thinking: { rotate: [0, 2, -2, 0] },
+  alert: { scale: [1, 1.06, 1] },
+};
+
+const breathingTransitions: Record<AvatarEmotion, { duration: number; repeat: typeof Infinity; ease: "easeInOut" }> = {
+  neutral: { duration: 4, repeat: Infinity, ease: "easeInOut" as const },
+  happy: { duration: 2.5, repeat: Infinity, ease: "easeInOut" as const },
+  thinking: { duration: 3, repeat: Infinity, ease: "easeInOut" as const },
+  alert: { duration: 0.8, repeat: Infinity, ease: "easeInOut" as const },
 };
 
 function VigaAvatar({ emotion, size }: { emotion: AvatarEmotion; size: number }) {
