@@ -47,9 +47,9 @@ export function useTeacherData() {
 
         let effectiveCourses = teacherCourses || [];
 
-        // In dev mode, if no teacher_courses found (e.g. role switcher),
+        // If no teacher_courses found (e.g. role switcher or moderador),
         // fallback to all courses so the teacher UI is testable
-        if (effectiveCourses.length === 0 && import.meta.env.DEV) {
+        if (effectiveCourses.length === 0) {
           const { data: allCourses } = await supabase
             .from("courses")
             .select("id, name");
