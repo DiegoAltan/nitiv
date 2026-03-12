@@ -219,6 +219,11 @@ export default function ReportsPage() {
             activeAlerts: stats.activeAlerts,
             lowWellbeingCount: stats.lowWellbeingCount,
             coursesCount: courses.length,
+            climateTotal: climateSummary.total,
+            climateDominant: climateSummary.dominant,
+            climateConflicts: climateSummary.conflicts,
+            climateEnergy: climateSummary.energy,
+            climateParticipation: climateSummary.participation,
           }}
         />
 
