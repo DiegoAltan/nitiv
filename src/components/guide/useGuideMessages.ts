@@ -304,7 +304,7 @@ export function useGuideMessages() {
       }
 
       // 3. Fichas con severidad alta/crítica pendientes
-      const { data: highSeverity, count: highCount } = await supabase
+      const { count: highCount } = await supabase
         .from("student_case_records")
         .select("id, title, severity_level", { count: "exact" })
         .in("severity_level", ["alta", "critica"])

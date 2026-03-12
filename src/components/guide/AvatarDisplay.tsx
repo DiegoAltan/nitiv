@@ -202,6 +202,7 @@ export function AvatarDisplay({ character, emotion, size = 56, onClick }: Avatar
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.95 }}
       animate={breathingVariants[emotion]}
+      transition={breathingTransitions[emotion]}
       onClick={onClick}
     >
       {character === "vigo" ? (
