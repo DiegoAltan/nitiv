@@ -172,7 +172,7 @@ export function useGuideMessages() {
       }
 
       // 6. Misiones pendientes
-      const { data: missions, count: missionCount } = await supabase
+      const { count: missionCount } = await supabase
         .from("student_missions")
         .select("id", { count: "exact" })
         .eq("student_id", profile.id)
