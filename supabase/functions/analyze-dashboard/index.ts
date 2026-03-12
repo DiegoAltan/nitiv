@@ -96,14 +96,14 @@ Proporciona análisis psicosocial y recomendaciones de intervención prioritaria
         break;
 
       case "reports":
-        systemPrompt = `Eres un analista de datos educativos especializado en bienestar estudiantil.
-Tu rol es interpretar datos y proporcionar insights accionables para la toma de decisiones.
+        systemPrompt = `Eres un analista de datos educativos especializado en bienestar estudiantil y clima escolar.
+Tu rol es interpretar datos de bienestar, clima de aula y métricas institucionales para proporcionar insights accionables.
 Responde SIEMPRE en español, de forma analítica y precisa.
 Limita tu respuesta a 5-6 oraciones.
 Estructura tu análisis en:
 1. Resumen ejecutivo de los indicadores
-2. Tendencias identificadas
-3. Anomalías o puntos de atención
+2. Correlación entre clima de aula y bienestar estudiantil
+3. Tendencias y anomalías identificadas
 4. Recomendaciones basadas en datos
 5. Áreas que requieren monitoreo continuo`;
 
@@ -116,8 +116,13 @@ Estructura tu análisis en:
 - Alertas Activas: ${dashboardData.activeAlerts}
 - Estudiantes en Riesgo: ${dashboardData.lowWellbeingCount}
 - Cursos Analizados: ${dashboardData.coursesCount}
+- Clima de Aula - Registros totales: ${dashboardData.climateTotal ?? "Sin datos"}
+- Clima predominante: ${dashboardData.climateDominant || "Sin datos"}
+- Conflictos reportados: ${dashboardData.climateConflicts ?? "Sin datos"}
+- Energía predominante: ${dashboardData.climateEnergy || "Sin datos"}
+- Participación de aula predominante: ${dashboardData.climateParticipation || "Sin datos"}
 
-Proporciona un análisis completo con insights y recomendaciones de intervención.`;
+Proporciona un análisis completo correlacionando clima de aula con bienestar estudiantil, con insights y recomendaciones de intervención.`;
         break;
 
       default:
