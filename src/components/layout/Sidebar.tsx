@@ -13,6 +13,7 @@ import {
   ChevronRight,
   Brain,
   FileText,
+  Cloud,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
