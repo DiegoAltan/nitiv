@@ -20,6 +20,7 @@ import AuthPage from "./pages/AuthPage";
 import StudentProfilePage from "./pages/StudentProfilePage";
 import FichasPage from "./pages/FichasPage";
 import ActivitiesPage from "./pages/ActivitiesPage";
+import ClassroomClimatePage from "./pages/ClassroomClimatePage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
