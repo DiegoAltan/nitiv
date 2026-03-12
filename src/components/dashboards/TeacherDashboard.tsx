@@ -144,6 +144,11 @@ export function TeacherDashboard() {
         </Card>
       </motion.div>
 
+      {/* Climate Summary Widget */}
+      <motion.div variants={itemVariants}>
+        <ClimateSummaryWidget />
+      </motion.div>
+
       {/* AI Analysis - Compact */}
       <motion.div variants={itemVariants}>
         <AIAnalysisCard
