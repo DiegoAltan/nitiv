@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { Users, TrendingUp, AlertTriangle, ClipboardCheck, ArrowRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,6 +8,8 @@ import { useNavigate } from "react-router-dom";
 import { useTeacherData } from "@/hooks/useTeacherData";
 import { AIAnalysisCard } from "@/components/ai/AIAnalysisCard";
 import { ClimateSummaryWidget } from "@/components/climate/ClimateSummaryWidget";
+import { useClassroomClimate } from "@/hooks/useClassroomClimate";
+import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
 
 const containerVariants = {
