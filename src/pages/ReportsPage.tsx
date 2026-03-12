@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { BarChart3, TrendingUp, Download, Calendar, FileSpreadsheet, FileText, Users, Search, Grid3X3, List } from "lucide-react";
+import { BarChart3, TrendingUp, Download, FileSpreadsheet, FileText, Users, Search, Grid3X3, List, Cloud } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
