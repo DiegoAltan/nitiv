@@ -18,6 +18,7 @@ import {
   LogOut,
   User,
   Shuffle,
+  Cloud,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth, AppRole } from "@/contexts/AuthContext";
