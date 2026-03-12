@@ -20,6 +20,7 @@ import AuthPage from "./pages/AuthPage";
 import StudentProfilePage from "./pages/StudentProfilePage";
 import FichasPage from "./pages/FichasPage";
 import ActivitiesPage from "./pages/ActivitiesPage";
+import ClassroomClimatePage from "./pages/ClassroomClimatePage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -105,6 +106,15 @@ const App = () => (
                 element={
                   <ProtectedRoute>
                     <ActivitiesPage />
+                  </ProtectedRoute>
+                }
+              />
+              {/* Classroom Climate */}
+              <Route
+                path="/classroom-climate"
+                element={
+                  <ProtectedRoute allowedRoles={["docente", "psicologo", "trabajador_social", "administrador", "inspector_general", "orientador", "moderador"]}>
+                    <ClassroomClimatePage />
                   </ProtectedRoute>
                 }
               />
