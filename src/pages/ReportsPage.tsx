@@ -59,7 +59,29 @@ export default function ReportsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [comparisonPeriod, setComparisonPeriod] = useState("previous-week");
+  const { records: climateRecords } = useClassroomClimate();
   
+  // Compute climate summary for AI
+  const climateSummary = useMemo(() => {
+    if (!climateRecords.length) return { total: 0, dominant: "Sin datos", conflicts: 0, energy: "Sin datos", participation: "Sin datos" };
+    const thirtyDays = new Date(); thirtyDays.setDate(thirtyDays.getDate() - 30);
+    const recent = climateRecords.filter(r => new Date(r.recorded_at) >= thirtyDays);
+    const counts: Record<string, number> = {};
+    const energyCounts: Record<string, number> = {};
+    const partCounts: Record<string, number> = {};
+    let conflicts = 0;
+    recent.forEach(r => {
+      counts[r.climate_level] = (counts[r.climate_level] || 0) + 1;
+      energyCounts[r.energy_level] = (energyCounts[r.energy_level] || 0) + 1;
+      partCounts[r.participation_level] = (partCounts[r.participation_level] || 0) + 1;
+      if (r.conflict_present) conflicts++;
+    });
+    const dominant = Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] || "Sin datos";
+    const energy = Object.entries(energyCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || "Sin datos";
+    const participation = Object.entries(partCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || "Sin datos";
+    return { total: recent.length, dominant, conflicts, energy, participation };
+  }, [climateRecords]);
+
   const { 
     loading, 
     wellbeingByCourse, 
