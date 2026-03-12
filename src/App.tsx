@@ -5,7 +5,10 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import { GuideProvider } from "@/contexts/GuideContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { NitivGuide } from "@/components/guide/NitivGuide";
+import { AvatarOnboarding } from "@/components/guide/AvatarOnboarding";
 import Dashboard from "./pages/Dashboard";
 import StudentWellbeing from "./pages/StudentWellbeing";
 import TeacherAssessment from "./pages/TeacherAssessment";
@@ -25,9 +28,12 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider>
       <AuthProvider>
+        <GuideProvider>
         <TooltipProvider>
           <Toaster />
           <Sonner />
+          <AvatarOnboarding />
+          <NitivGuide />
           <BrowserRouter>
             <Routes>
               <Route path="/auth" element={<AuthPage />} />
@@ -123,6 +129,7 @@ const App = () => (
             </Routes>
           </BrowserRouter>
         </TooltipProvider>
+        </GuideProvider>
       </AuthProvider>
     </ThemeProvider>
   </QueryClientProvider>

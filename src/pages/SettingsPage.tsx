@@ -14,6 +14,7 @@ import {
   Palette,
   UserCog,
   Home,
+  Bot,
 } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -26,6 +27,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth, AppRole } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { cn } from "@/lib/utils";
+import { useGuide } from "@/contexts/GuideContext";
+import { AvatarSelector } from "@/components/guide/AvatarSelector";
 
 type ThemeOption = "light" | "dark" | "system";
 
@@ -59,6 +62,7 @@ export default function SettingsPage() {
   const { profile, signOut, roles, activeRole, switchRole, canSwitchRole, isStudent } = useAuth();
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
+  const { enabled: guideEnabled, setEnabled: setGuideEnabled, character } = useGuide();
   const { toast } = useToast();
 
   const [fullName, setFullName] = useState(profile?.full_name || "");
@@ -398,6 +402,44 @@ export default function SettingsPage() {
                   checked={weeklySummary}
                   onCheckedChange={setWeeklySummary}
                 />
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Guía Nitiv Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.35 }}
+        >
+          <Card className="card-elevated">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 font-display">
+                <Bot className="w-5 h-5 text-primary" />
+                Guía Nitiv
+              </CardTitle>
+              <CardDescription>Tu compañero inteligente en la plataforma</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label className="text-base">Activar Guía Nitiv</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Muestra consejos y recordatorios contextuales
+                  </p>
+                </div>
+                <Switch
+                  checked={guideEnabled}
+                  onCheckedChange={setGuideEnabled}
+                />
+              </div>
+
+              <Separator />
+
+              <div className="space-y-3">
+                <Label className="text-base">Elige tu compañero</Label>
+                <AvatarSelector compact />
               </div>
             </CardContent>
           </Card>
