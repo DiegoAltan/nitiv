@@ -109,6 +109,15 @@ const App = () => (
                   </ProtectedRoute>
                 }
               />
+              {/* Classroom Climate */}
+              <Route
+                path="/classroom-climate"
+                element={
+                  <ProtectedRoute allowedRoles={["docente", "psicologo", "trabajador_social", "administrador", "inspector_general", "orientador", "moderador"]}>
+                    <ClassroomClimatePage />
+                  </ProtectedRoute>
+                }
+              />
               <Route
                 path="/settings"
                 element={
