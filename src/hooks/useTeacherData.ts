@@ -45,7 +45,23 @@ export function useTeacherData() {
 
         if (tcError) throw tcError;
 
-        if (!teacherCourses || teacherCourses.length === 0) {
+        let effectiveCourses = teacherCourses || [];
+
+        // In dev mode, if no teacher_courses found (e.g. role switcher),
+        // fallback to all courses so the teacher UI is testable
+        if (effectiveCourses.length === 0 && import.meta.env.DEV) {
+          const { data: allCourses } = await supabase
+            .from("courses")
+            .select("id, name");
+          if (allCourses && allCourses.length > 0) {
+            effectiveCourses = allCourses.map((c: any) => ({
+              course_id: c.id,
+              courses: { id: c.id, name: c.name },
+            }));
+          }
+        }
+
+        if (effectiveCourses.length === 0) {
           setLoading(false);
           return;
         }
